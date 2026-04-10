@@ -1,5 +1,7 @@
 package com.kh.spring09.dao;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,6 +16,8 @@ public class MemberDao {
 	@Autowired
 	private MemberMapper memberMapper;
 
+	
+	
 	public void insert(MemberDto memberDto) {
 		String sql = "insert into member ( "
 		        + "member_id, member_email, member_password, member_nickname, "
@@ -31,5 +35,12 @@ public class MemberDao {
 	
 	}
 	
+	public boolean login(MemberDto memberDto) {
+		String sql = " select member.* from member where member_id = ? and member_password = ?";
+		Object[] params = {memberDto.getMemberId(),memberDto.getMemberPassword()};
+		List<MemberDto> success = jdbcTemplate.query(sql, memberMapper,params );
+		return !success.isEmpty()?true:false;
+		
+	}
 	
 }

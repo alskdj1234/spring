@@ -2,10 +2,12 @@ package com.kh.spring09.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dto.MemberDto;
@@ -31,5 +33,20 @@ public class MemberController {
  		return"/WEB-INF/views/member/joinComplete.jsp";
  	}
 	
+	@GetMapping("/login")
+	
+	public String login() {
+		MemberDto memberDto = new MemberDto();
+		memberDao.login(memberDto);
+		return"/WEB-INF/views/member/login.jsp";
+	}
+	
+	@PostMapping("/login")
+	public String loginComplete(boolean success) {
+		if(success)
+		return"redirect:./loginComplete";
+		else
+		return"redirect:./loginFail";
+	}
 	
 }
