@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
+<jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <!-- 제목 -->
 <h1>강좌 목록 및 검색</h1>
 
@@ -103,3 +103,5 @@
 
 
 </c:forEach>
+
+<jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

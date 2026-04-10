@@ -19,4 +19,6 @@ public class ErrorController {
 		model.addAttribute("message", e.getMessage());//메시지를 화면에 전달하고
 		return "/WEB-INF/views/error/500.jsp";
 	}
+	
+	
 }
