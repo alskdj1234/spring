@@ -2,6 +2,6 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<h1>로그인 실패</h1>
+<h1>로그인 실패했어요</h1>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
