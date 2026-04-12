@@ -3,9 +3,9 @@
      <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <h1>로그인</h1>
 
-<form action="./join" method="post">
+<form action="./login" method="post">
 Id <input type="text" name="memberId" required><br>
-Email <input type="text" name="memberEmail" required><br>
+Password <input type="text" name="memberPassword" required><br>
 <button>로그인하기</button>
 </form>
 
