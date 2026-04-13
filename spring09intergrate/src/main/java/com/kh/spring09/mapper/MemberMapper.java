@@ -2,7 +2,8 @@ package com.kh.spring09.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -27,9 +28,9 @@ public class MemberMapper implements RowMapper<MemberDto> {
 		memberDto.setMemberLevel(rs.getString("member_level"));
 		memberDto.setMemberMessage(rs.getString("member_message"));
 		memberDto.setMemberBlock(rs.getString("member_block"));
-		memberDto.setMemberJoin(rs.getObject("member_join", LocalDateTime.class));
-		memberDto.setMemberLogin(rs.getObject("member_Login", LocalDateTime.class)==null ? null : rs.getObject("member_Login", LocalDateTime.class));
-		memberDto.setMemberChange(rs.getObject("member_change", LocalDateTime.class)==null ? null : rs.getObject("member_change", LocalDateTime.class));
+		memberDto.setMemberJoin(rs.getTimestamp("member_join"));
+		memberDto.setMemberLogin(rs.getTimestamp("member_Login"));
+		memberDto.setMemberChange(rs.getTimestamp("member_change"));
 		return memberDto;
 	}
 	

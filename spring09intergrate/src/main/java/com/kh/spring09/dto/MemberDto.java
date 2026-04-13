@@ -1,6 +1,6 @@
 package com.kh.spring09.dto;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import lombok.Data;
 @Data
@@ -16,9 +16,8 @@ public class MemberDto {
     private String memberAddress2;
     private String memberLevel;
     private String memberMessage;
-    private LocalDateTime memberJoin;
-    private LocalDateTime memberLogin;
-    private LocalDateTime memberChange;
+    private Timestamp memberJoin,memberLogin,memberChange;
+   
     private String memberBlock;
     private int memberPoint;
 	
