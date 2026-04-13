@@ -3,9 +3,11 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 
-<h1>로그인 실패</h1>
 
-<h1>로그인 실패했어요</h1>
+<h1>비밀번호 변경 완료</h1>
+
+비밀번호가 바뀌었습니다.
+<h2> <a href="./mypage">마이페이지</a></h2>
 
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

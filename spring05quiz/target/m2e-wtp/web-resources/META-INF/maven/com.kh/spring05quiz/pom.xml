@@ -46,16 +46,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
-=======
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 	</dependencies>
 
 	<build>

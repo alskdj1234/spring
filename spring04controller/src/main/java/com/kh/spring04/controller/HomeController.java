@@ -1,6 +1,5 @@
 package com.kh.spring04.controller;
 
-<<<<<<< HEAD
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,6 +80,6 @@ public class HomeController {
 	@RequestMapping("/score")
 	public String score(@ModelAttribute Student student) {
 		return "평균 : " + student.getAverage();
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
+
 	}
 }

@@ -2,4 +2,8 @@
     pageEncoding="UTF-8"%>
  <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
  <h1> 회원 가입이 완료되었습니다. </h1>
+
+
+ <h3><a href = "./login">로그인</a></h3>
+
  <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
