@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.MemberDao;
+import com.kh.spring09.dao.MemberExitDao;
 import com.kh.spring09.dto.MemberDto;
+import com.kh.spring09.dto.MemberExitDto;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,6 +21,8 @@ import jakarta.servlet.http.HttpSession;
 public class MemberController {
 	@Autowired
 	private MemberDao memberDao;
+	@Autowired
+	private MemberExitDao memberExitDao;
 	
 	//가입에 필요한 매핑들
 	@GetMapping("/join")
@@ -46,7 +50,11 @@ public class MemberController {
 	public String login(@ModelAttribute MemberDto memberDto,//아이디, 비밀번호가 존재 
 							HttpSession session) {//세션을 사용하겠다고 요청
 		//[1] 사용자가 입력한 아이디를 이용하여 DB에 대상이 존재하는지 조회
-		MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
+		//MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
+		MemberExitDto findMemberDto = memberExitDao.selectOne(memberDto.getMemberId());
+		
+		
+		
 		if(findMemberDto == null) {
 			return "redirect:./login?error";//아이디 없음 (되돌려보내기, redirect는 GET만 가능)
 		}
@@ -65,7 +73,13 @@ public class MemberController {
 			return "redirect:./block";//차단 페이지로 이동
 		}
 		
-		//[4] 차단되지 않았다면 로그인 성공
+		//[4] 탈퇴 예정이면 로그인을 취소하고 안내 페이지로 이동
+		
+		if(findMemberDto.isWaitForDelete()) {
+			return "redirect:./waiting";//삭제 예정 안내 페이지로 이동
+		}
+		
+		//[5] 차단되지 않았다면 로그인 성공
 		//- 로그인시간을 갱신
 		memberDao.updateMemberLogin(findMemberDto.getMemberId());
 		
@@ -89,6 +103,11 @@ public class MemberController {
 	@RequestMapping("/block")
 	public String block() {
 		return "/WEB-INF/views/member/block.jsp";
+	}
+	
+	@RequestMapping("/waiting")
+	public String waiting() {
+		return "/WEB-INF/views/member/waiting.jsp";
 	}
 	
 	
@@ -182,7 +201,9 @@ public class MemberController {
 			return "redirect:./goodbye?error";//비밀번호 입력페이지로 되돌린다
 		}
 		
-		memberDao.delete(loginId);
+		//memberDao.delete(loginId);//회원과 연결된 모든 데이터가 날라감
+		
+		memberExitDao.insert(loginId);
 		
 		//로그아웃 처리
 		//session.invalidate();//세션 파괴 명령
@@ -197,6 +218,8 @@ public class MemberController {
 		return "/WEB-INF/views/member/goodbyeFinish.jsp";
 	}
 	
+	
+
 }
 
 
