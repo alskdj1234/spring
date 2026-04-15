@@ -23,7 +23,7 @@ import com.kh.spring09.exception.TargetNotfoundException;
 public class CourseController {
 	@Autowired
 	private CourseDao courseDao;
-
+	
 	//@RequestMapping(value="/insert", method = RequestMethod.GET)
  	@GetMapping("/insert")
 	public String insert() {
