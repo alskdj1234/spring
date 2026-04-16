@@ -17,7 +17,7 @@ import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
-import com.kh.spring09.exception.TargetNotfoundException;
+
 
 @Controller
 @RequestMapping("/admin/member")
@@ -46,7 +46,7 @@ public class AdminMemberController {
 	
 	MemberExitDto everyInfo = memberExitDao.selectOne(memberId);
 	
-	if(everyInfo==null)throw new TargetNotfoundException("존재하지 않는 회원");
+	
 	model.addAttribute("everyInfo", everyInfo);
 	
 	return"admin/detail";
@@ -56,7 +56,7 @@ public class AdminMemberController {
 	@RequestMapping("/block")
 	public String block(@RequestParam String memberId) {
 		MemberDto memberDto = memberDao.selectOne(memberId);
-		if(memberDto == null) throw new TargetNotfoundException("존재 하지 않는 회원");
+	
 		
 		String current = memberDto.getMemberBlock();
 		
@@ -71,15 +71,15 @@ public class AdminMemberController {
 	@GetMapping("edit")
 	public String edit(@RequestParam String memberId, Model model ) {
 		MemberDto memberDto = memberDao.selectOne(memberId);
-		if(memberDto==null) throw new TargetNotfoundException("존재 하지 않는 회원");
+	
 		model.addAttribute("memberDto", memberDto);
 		return"/admin/edit";
 	}
 	
 	@PostMapping("edit")
 	public String edit(@ModelAttribute MemberDto memberDto) {
-		MemberDto findMemberDto = memberDao.selectOne(memberDto.getMemberId());
-		if(findMemberDto ==null)throw new TargetNotfoundException("존재 하지 않는 회원");
+		
+		
 		memberDao.updateByMaster(memberDto);
 		return "redirect:./detail?memberId="+memberDto.getMemberId();
 	}

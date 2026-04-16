@@ -21,6 +21,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private MasterOnlyInterceptor masterOnlyInterceptor;
+    @Autowired
+    private MasterDenyInterceptor masterDenyInterceptor;
 	
 	//가져온 인터셉터를 특정 주소에서 일하도록 설정
 	@Override
@@ -42,7 +44,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		.addPathPatterns("/book/**",
 				//"/course/insert*","/course/edit","/course/delete");
 				"/course/**","/member/**"
-				//,"/admin/**"
+				,"/admin/**"
 				)
 		.excludePathPatterns(
 						"/course/list",
@@ -52,8 +54,19 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 						"/member/goodbyeFinish"
 						);//허용하는 것만 빼고 잠가라
 	
-			//registry.addInterceptor(masterOnlyInterceptor)
-			//	.addPathPatterns("/admin/**");
+			registry.addInterceptor(masterOnlyInterceptor)
+				.addPathPatterns("/admin/**");
+	
+			
+			registry.addInterceptor(masterDenyInterceptor)
+			.addPathPatterns(
+					"/admin/member/detail"
+					,"/admin/member/edit"
+					,"/admin/member/block"
+					
+					
+					);
+	
 	}
 	
 }

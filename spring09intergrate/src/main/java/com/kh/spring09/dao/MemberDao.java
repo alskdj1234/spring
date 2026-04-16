@@ -89,7 +89,7 @@ public class MemberDao {
 		Set<String> allow = Set.of("member_id","member_nickname","member_email","member_contact");
 		if(!allow.contains(column))return List.of();
 		
-		String sql = "select * from member where instr(" + column + ",?)>0 order by "+column+" asc, member_id asc";
+		String sql = "select * from member where instr(" + column + ",?)>0 and member_level != '마스터' order by "+column+" asc, member_id asc";
 		
 		Object[] params = {keyword};
 		
