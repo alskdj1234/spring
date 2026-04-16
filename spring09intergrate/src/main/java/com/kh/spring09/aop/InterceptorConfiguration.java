@@ -41,9 +41,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(memberOnlyInterceptor)
 		.addPathPatterns("/book/**",
 				//"/course/insert*","/course/edit","/course/delete");
-				"/course/**").excludePathPatterns(
+				"/course/**","/member/**").excludePathPatterns(
 						"/course/list",
-						"/course/detail"
+						"/course/detail",
+						"/member/join*",
+						"/member/login",
+						"/member/goodbyeFinish"
 						);//허용하는 것만 빼고 잠가라
 	
 	}
