@@ -23,23 +23,23 @@ public class ErrorController {
 	public String error(Exception e, Model model) {
 		e.printStackTrace();//오류 로그를 서버에 출력하고
 		model.addAttribute("message", e.getMessage());//메세지 화면에 전달하고
-		return "/WEB-INF/views/error/500.jsp";//오류 페이지 연결
+		return "error/500";//오류 페이지 연결
 	}
 	
 	@ExceptionHandler(TargetNotfoundException.class)
 	public String notFound(Exception e, Model model) {
 		model.addAttribute("message", e.getMessage());//메세지 화면에 전달하고
-		return "/WEB-INF/views/error/404.jsp";//오류 페이지 연결
+		return "error/404";//오류 페이지 연결
 	}
 	@ExceptionHandler(WhoAreYouException.class)
 	public String unauthorize(Exception e, Model model) {
 		model.addAttribute("message", e.getMessage());//메세지 화면에 전달하고
-		return "/WEB-INF/views/error/401.jsp";//오류 페이지 연결
+		return "error/401";//오류 페이지 연결
 	}
 	@ExceptionHandler(GetOutException.class)
 	public String forbidden(Exception e, Model model) {
 		model.addAttribute("message", e.getMessage());//메세지 화면에 전달하고
-		return "/WEB-INF/views/error/403.jsp";//오류 페이지 연결
+		return "error/403";//오류 페이지 연결
 	}
 	
 }

@@ -10,6 +10,6 @@ public class OlympicController {
 	@RequestMapping("/table")
 	public String table() {
 		
-		return"/WEB-INF/views/olympic/olympic.jsp";
+		return"olympic/olympic";
 	}
 }

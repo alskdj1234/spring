@@ -26,7 +26,7 @@ public class CountryController {
  	// 입력 -> 처리 + 출력
  	@GetMapping("/insert")
  	public String insert() {
- 		return "/WEB-INF/views/country/insert.jsp";
+ 		return "country/insert";
  	}
  	
  	@PostMapping("/insert")
@@ -38,7 +38,7 @@ public class CountryController {
  	
  	@RequestMapping("/insertComplete")
  	public String insertComplete() {
- 		return"/WEB-INF/views/country/insertComplete.jsp";
+ 		return"country/insertComplete";
  	}
  	
  	@RequestMapping("/list")
@@ -48,7 +48,7 @@ public class CountryController {
  		
  		model.addAttribute("list", list);
  		
- 		return"/WEB-INF/views/country/list.jsp";
+ 		return"country/list";
  		
  	}
  	
@@ -60,7 +60,7 @@ public class CountryController {
  			throw new TargetNotfoundException("국가가 없어요");
  		}
  		model.addAttribute("countryDto", countryDto);
- 	 return"/WEB-INF/views/country/detail.jsp";
+ 	 return"country/detail";
  	}
  	
  	//삭제 매핑
@@ -82,7 +82,7 @@ public class CountryController {
  			if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
  			
  			model.addAttribute("countryDto", countryDto);
- 			return "/WEB-INF/views/country/edit.jsp";
+ 			return "country/edit";
  		}
  		
  		@PostMapping("/edit")

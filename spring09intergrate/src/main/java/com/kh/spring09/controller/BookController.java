@@ -27,7 +27,7 @@ public class BookController {
 	public String insert() {
 
 		
-		return "/WEB-INF/views/book/insert.jsp";
+		return "book/insert";
 	}
 	@PostMapping("/insert")
 	public String insert(@ModelAttribute BookDto bookDto) {
@@ -40,7 +40,7 @@ public class BookController {
 	public String insertComplete() {
 
 		
-		return "/WEB-INF/views/book/insertComplete.jsp";
+		return "book/insertComplete";
 	}
 	
 
@@ -61,7 +61,7 @@ public class BookController {
 		}
 	
 		
-		return"/WEB-INF/views/book/list.jsp";
+		return"book/list";
 	}
 	
 	@RequestMapping("/detail")
@@ -69,7 +69,7 @@ public class BookController {
 		BookDto bookDto = bookDao.selectOne(bookId);
 		if(bookDto==null)throw new TargetNotfoundException("도서가 존재하지 않아요");
 		model.addAttribute("bookDto", bookDto);
-		return "/WEB-INF/views/book/detail.jsp";
+		return "book/detail";
 	}
 	
 	@RequestMapping("/delete")
@@ -86,7 +86,7 @@ public class BookController {
 		if(bookDto==null)throw new TargetNotfoundException("도서가 존재하지 않아요");
 		
 		model.addAttribute("bookDto", bookDto);
-		return "/WEB-INF/views/book/edit.jsp";
+		return "book/edit";
 	}
 	
 }

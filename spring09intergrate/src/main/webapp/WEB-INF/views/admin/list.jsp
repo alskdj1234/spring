@@ -20,13 +20,13 @@
 		 ${param.column == "member_contact" ? "selected" : ""}>연락처</option>
 	 
 	</select>
-	<input type="text" name="keyword" placeholder="검색어 입력" value="${param.keyword}">
+	<input type="text" name="keyword" placeholder="검색어 입력" value="${param.keyword}" required>
 	
 	
 	<button>검색</button>
 </form>
 	
-	<table>
+	<table border="1" width="1000">
 	
 		<thead>
 		<tr>
@@ -40,16 +40,16 @@
 		</tr>
 		</thead>
 		
-		<tbody align="center" width ="1000">
-		<c:forEach var="countryDto" items="${list}">
+		<tbody align="center">
+		<c:forEach var="memberDto" items="${list}">
 			<tr>
-				<td>${memberDto.memberId}</td>
+				<td><a href="./detail?memberId=${memberDto.memberId}">${memberDto.memberId}</a></td>
 				<td>${memberDto.memberNickname}</td>
 				<td>${memberDto.memberEmail}</td>
 				<td>${memberDto.memberContact}</td>
-				<td>${memberDto.memberJoin}</td>
+				<td><fmt:formatDate value="${memberDto.memberJoin}" pattern="yyyy-MM-dd"></fmt:formatDate></td>
 				<td>${memberDto.memberLevel}</td>
-				<td>${memberDto.member차단여부}</td>
+				<td>${memberDto.memberBlock}</td>
 			</tr>
 			
 								

@@ -52,7 +52,7 @@ public class MemberDao {
 		Object[] params = { memberId };
 		return jdbcTemplate.update(sql, params) > 0;
 	}
-//	public boolean updateMemberPassword(String memberId, Strig memberPw) {
+//	public boolean updateMemberPassword(String memberId, String memberPw) {
 	public boolean updateMemberPassword(MemberDto memberDto) {
 		String sql = "update member "
 					+ "set member_password=?, member_change=systimestamp "
@@ -89,7 +89,7 @@ public class MemberDao {
 		Set<String> allow = Set.of("member_id","member_nickname","member_email","member_contact");
 		if(!allow.contains(column))return List.of();
 		
-		String sql = "select * from member where instr(" + column + ", ?)>0 order by member_no asc";
+		String sql = "select * from member where instr(" + column + ",?)>0 order by "+column+" asc, member_id asc";
 		
 		Object[] params = {keyword};
 		
@@ -97,12 +97,43 @@ public class MemberDao {
 		
 	}
 	
-	public MemberDto detailInfo(String memberId) {
+	public List<MemberDto> detailInfo(String memberId) {
 		String sql = "select * from member where member_id = ?";
 		Object[] params = {memberId};
-		List<MemberDto> info = jdbcTemplate.query(sql, memberMapper, params);
-		return info.isEmpty()?null:info.get(0);
+		return jdbcTemplate.query(sql, memberMapper, params);
+		
 	}
+	
+	//차단 수정
+	public boolean updateMemberBlock(MemberDto memberDto) {
+		String sql = "update member set member_block = ? where member_id=?";
+		Object[] params = {memberDto.getMemberBlock(),memberDto.getMemberId()};
+		return jdbcTemplate.update(sql, params)>0;
+	}
+
+	
+	//관리자 수정
+	public boolean updateByMaster(MemberDto memberDto) {
+		String sql = "update member "
+				+ 			"set member_email=?, member_nickname=? "
+				+ "member_birth=?, member_contact=?, member_post=? "
+				+ "member_address1=?, member_address2=?, member_level=?, "
+				+ "member_point=?, member_message=? "
+				+ "where member_id=?";
+		
+		Object [] params = {
+				memberDto.getMemberEmail(),memberDto.getMemberNickname(),
+				memberDto.getMemberBirth(),memberDto.getMemberContact(),
+				memberDto.getMemberPost(),memberDto.getMemberAddress1(),
+				memberDto.getMemberAddress2(), memberDto.getMemberLevel(),
+				memberDto.getMemberPoint(), memberDto.getMemberMessage(),
+				memberDto.getMemberId()
+		};
+		
+		return jdbcTemplate.update(sql, params)>0;
+			
+	}
+
 }
 
 

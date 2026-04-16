@@ -27,7 +27,7 @@ public class CourseController {
 	//@RequestMapping(value="/insert", method = RequestMethod.GET)
  	@GetMapping("/insert")
 	public String insert() {
- 		return "/WEB-INF/views/course/insert.jsp";
+ 		return "course/insert";
  	}
  	
 	//@RequestMapping(value="/insert", method = RequestMethod.POST)
@@ -40,14 +40,14 @@ public class CourseController {
 	
 	@RequestMapping("/insertComplete")
  	public String insertComplete() {
- 		return"/WEB-INF/views/course/insertComplete.jsp";
+ 		return"course/insertComplete";
  	}
 	
 	@RequestMapping("/list")
 	public String list (Model model,@RequestParam(required=false) String column, @RequestParam(required=false) String keyword){
 		List<CourseDto> list = courseDao.selectList(column,keyword);
 		model.addAttribute("list", list);
-		return"/WEB-INF/views/course/list.jsp";
+		return"course/list";
 	}
 	
 	@RequestMapping("/detail")
@@ -55,7 +55,7 @@ public class CourseController {
 		CourseDto courseDto = courseDao.selectOne(courseNo);
 		if(courseDto==null)throw new TargetNotfoundException("강좌가 존재하지 않아요");
 		model.addAttribute("courseDto", courseDto);
-		return "/WEB-INF/views/course/detail.jsp";
+		return "course/detail";
 	}
  	
 	@RequestMapping("/delete")
@@ -76,7 +76,7 @@ public class CourseController {
 			if(courseDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
 			
 			model.addAttribute("courseDto", courseDto);
-			return "/WEB-INF/views/course/edit.jsp";
+			return "course/edit";
 		}
 		
 		@PostMapping("/edit")

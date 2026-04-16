@@ -37,7 +37,7 @@ public class MemberController {
 	// 가입에 필요한 매핑들
 	@GetMapping("/join")
 	public String join() {
-		return "/WEB-INF/views/member/join.jsp";
+		return "member/join";
 	}
 
 	@PostMapping("/join")
@@ -49,13 +49,13 @@ public class MemberController {
 
 	@RequestMapping("/joinFinish")
 	public String joinFinish() {
-		return "/WEB-INF/views/member/joinFinish.jsp";
+		return "member/joinFinish";
 	}
 
 	// 로그인 매핑
 	@GetMapping("/login")
 	public String login() {
-		return "/WEB-INF/views/member/login.jsp";
+		return "member/login";
 	}
 
 	@PostMapping("/login")
@@ -144,12 +144,12 @@ public class MemberController {
 
 	@RequestMapping("/block")
 	public String block() {
-		return "/WEB-INF/views/member/block.jsp";
+		return "member/block";
 	}
 
 	@RequestMapping("/waiting")
 	public String waiting() {
-		return "/WEB-INF/views/member/waiting.jsp";
+		return "member/waiting";
 	}
 
 	// 마이페이지(회원 전용 기능)
@@ -166,7 +166,7 @@ public class MemberController {
 		//로그인 이력 조회 후 첨부
 		List<MemberHistoryDto> loginHistory = memberHistoryDao.selectList(loginId, 1, 10);
 		model.addAttribute("loginHistory", loginHistory);
-		return "/WEB-INF/views/member/mypage.jsp";
+		return "member/mypage";
 	}
 	
  @GetMapping("/loginHistory")
@@ -174,21 +174,21 @@ public class MemberController {
 	 
 	 
 	 
-	 return"/WEB-INF/views/member/loginHistory.jsp";
+	 return"member/loginHistory";
  }
  @PostMapping("/loginHistory")
  public String loginHistory(Model model, MemberHistoryDto memberHistoryDto, String beginDate, String endDate) {
 	 model.addAttribute("memberHistoryOrigin", memberHistoryDto.getMemberHistoryOrigin());
 	 List<MemberHistoryDto> loginHistoryList = memberHistoryDao.historyList(memberHistoryDto, beginDate, endDate);
 	 model.addAttribute("loginHistoryList", loginHistoryList);
-	 return"/WEB-INF/views/member/loginHistoryList.jsp";
+	 return"member/loginHistoryList";
  }
  
 	
 	// 비밀번호 변경(회원 전용 기능)
 	@GetMapping("/password")
 	public String password() {
-		return "/WEB-INF/views/member/password.jsp";
+		return "member/password";
 	}
 
 	@PostMapping("/password")
@@ -219,7 +219,7 @@ public class MemberController {
 
 	@RequestMapping("/passwordFinish")
 	public String passwordFinish() {
-		return "/WEB-INF/views/member/passwordFinish.jsp";
+		return "member/passwordFinish";
 	}
 
 	// 개인정보 변경 매핑(회원 전용 기능)
@@ -228,7 +228,7 @@ public class MemberController {
 		String loginId = (String) session.getAttribute("loginId");
 		MemberDto memberDto = memberDao.selectOne(loginId);
 		model.addAttribute("memberDto", memberDto);
-		return "/WEB-INF/views/member/edit.jsp";
+		return "member/edit";
 	}
 
 	@PostMapping("/edit")
@@ -252,7 +252,7 @@ public class MemberController {
 	// 회원 탈퇴 매핑(회원 전용 기능)
 	@GetMapping("/goodbye")
 	public String goodbye() {
-		return "/WEB-INF/views/member/goodbye.jsp";
+		return "member/goodbye";
 	}
 
 	@PostMapping("/goodbye")
@@ -279,13 +279,13 @@ public class MemberController {
 
 	@RequestMapping("/goodbyeFinish")
 	public String goodbyeFinish() {
-		return "/WEB-INF/views/member/goodbyeFinish.jsp";
+		return "member/goodbyeFinish";
 	}
 
 	
 	@RequestMapping("/notice")
 	public String notice() {
-		return "/WEB-INF/views/member/notice.jsp";
+		return "member/notice";
 	}
 	
 	@RequestMapping("/later")

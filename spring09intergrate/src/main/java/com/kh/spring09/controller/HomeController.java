@@ -7,6 +7,6 @@ public class HomeController {
 
 	@RequestMapping("/")
 	public String home() {
-		return "/WEB-INF/views/home.jsp";
+		return "home";
 	}
 }
