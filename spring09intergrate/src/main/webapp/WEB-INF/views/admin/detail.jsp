@@ -45,5 +45,6 @@ ${memberHistoryDto.memberHistoryTime}
 </c:forEach>
 <h2><a href="./block?memberId=${memberDto.memberId}">${memberDto.memberBlock== 'y' ? '해제' : '차단' }</a></h2>
 <h2><a href="./edit?memberId=${memberDto.memberId}">${memberDto.memberId}의 정보 변경</a></h2>
+<h2><a href="./list">목록으로</a></h2>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
