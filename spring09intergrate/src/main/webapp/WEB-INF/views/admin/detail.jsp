@@ -21,7 +21,7 @@
 	<li>최종로그인 : <fmt:formatDate value="${everyInfo.memberLogin}" pattern="y년 M월 d일 E a h시 m분"/></li>
 	<li>최종변경일 : <fmt:formatDate value="${everyInfo.memberChange}" pattern="y년 M월 d일 E a h시 m분"/></li>
 	<li>차단여부 : ${everyInfo.memberBlock}</li>
-	<li>탈퇴예정일 : <fmt:formatDate value="${everyInfo.memberExitTime}" pattern="y년 M월 d일 E a h시 m분"/></li>
+	<li>탈퇴신청일 : <fmt:formatDate value="${everyInfo.memberExitTime}" pattern="y년 M월 d일 E a h시 m분"/></li>
 
 
 </ul>
