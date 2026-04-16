@@ -1,6 +1,7 @@
 package com.kh.spring09.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -82,6 +83,26 @@ public class MemberDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 	
+	public List<MemberDto> selectList (String column, String keyword){
+		if(column == null || keyword ==null)
+			return List.of();
+		Set<String> allow = Set.of("member_id","member_nickname","member_email","member_contact");
+		if(!allow.contains(column))return List.of();
+		
+		String sql = "select * from member where instr(" + column + ", ?)>0 order by member_no asc";
+		
+		Object[] params = {keyword};
+		
+		return jdbcTemplate.query(sql, memberMapper, params);
+		
+	}
+	
+	public MemberDto detailInfo(String memberId) {
+		String sql = "select * from member where member_id = ?";
+		Object[] params = {memberId};
+		List<MemberDto> info = jdbcTemplate.query(sql, memberMapper, params);
+		return info.isEmpty()?null:info.get(0);
+	}
 }
 
 
