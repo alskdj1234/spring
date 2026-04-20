@@ -30,6 +30,12 @@ public class BoardController {
 			@RequestParam(required = false) String column,
 			@RequestParam(required = false) String keyword
 	) {
+		//공지사항 게시글
+		
+		//List<BoardDto> noticeList = boardDao.selectList("board_head", "공지");
+		List<BoardDto> noticeList = boardDao.selectNoticeList();
+		model.addAttribute("noticeList", noticeList);
+		
 		List<BoardDto> list = boardDao.selectList(column, keyword);
 		model.addAttribute("list", list);
 		return "board/list";

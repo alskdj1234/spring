@@ -15,6 +15,7 @@
 <!-- 	수정 됨 표시 -->
 <c:if test="${boardDto.boardEtime != null}">
 
+
 (수정됨)
 </c:if>
 </h1>
@@ -40,8 +41,10 @@ ${boardDto.boardWriter} <br><br>
 <c:if test="${sessionScope.loginId != null}">
 <a href="./write">글쓰기</a>
 </c:if>
+<c:if test="${boardDto.boardWriter != null && boardDto.boardWriter == sessionScope.loginId}">
 <a href="./edit?boardNo=${boardDto.boardNo}">수정</a>
 <a href="./delete?boardNo=${boardDto.boardNo}">삭제</a>
+</c:if>
 <a href="./list">목록으로</a>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

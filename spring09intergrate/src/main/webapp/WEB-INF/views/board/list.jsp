@@ -18,6 +18,7 @@
 <!-- 게시글 목록 출력 -->
 <table border="1" width="1000">
 	<thead>
+
 		<tr>
 			<th>번호</th>
 			<th width="45%">제목</th>
@@ -28,6 +29,35 @@
 		</tr>
 	</thead>
 	<tbody align="center">
+<!-- 	공지사항 -->
+	<c:forEach var="boardDto" items="${noticeList}">
+		<tr bgcolor="fab1a0">
+			<td>${boardDto.boardNo}</td>
+			<td align="left">
+				<!-- 말머리가 있으면 표시 -->
+				<c:if test="${boardDto.boardHead != null}">
+				(${boardDto.boardHead})
+				</c:if>
+			
+				<!-- 게시글 제목 -->
+				<a href="./detail?boardNo=${boardDto.boardNo}">
+				${boardDto.boardTitle}
+				</a>
+				
+				<!-- 댓글개수도 있으면(>0) 표시 -->
+				<c:if test="${boardDto.boardReplycount > 0}">
+				[${boardDto.boardReplycount}]
+				</c:if>
+			</td>
+			<td>${boardDto.boardWriter}</td>
+			<td>${boardDto.getBoardWtimeString()}</td>
+			<td>${boardDto.boardReadcount}</td>
+			<td>${boardDto.boardLikecount}</td>
+		</tr>
+	</c:forEach>
+
+
+<!-- 일반 글 -->
 		<c:forEach var="boardDto" items="${list}">
 		<tr>
 			<td>${boardDto.boardNo}</td>

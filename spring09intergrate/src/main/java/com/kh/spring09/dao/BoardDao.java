@@ -99,6 +99,11 @@ public class BoardDao {
 			
 			return jdbcTemplate.update(sql, params)>0;
 	}
+	
+	public List<BoardDto> selectNoticeList() {
+		String sql ="select * from board_list where board_head ='공지' order by board_no desc";
+		return jdbcTemplate.query(sql, boardMapper);
+	}
 }
 
 

@@ -23,7 +23,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     private MasterOnlyInterceptor masterOnlyInterceptor;
     @Autowired
     private MasterDenyInterceptor masterDenyInterceptor;
-	
+	@Autowired
+	private BoardOwnerInterceptor boardOwnerInterceptor;
 	//가져온 인터셉터를 특정 주소에서 일하도록 설정
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -45,6 +46,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 				//"/course/insert*","/course/edit","/course/delete");
 				"/course/**","/member/**"
 				,"/admin/**"
+				,"/board/write"
 				)
 		.excludePathPatterns(
 						"/course/list",
@@ -64,6 +66,12 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 					,"/admin/member/edit"
 					,"/admin/member/block"
 					
+					
+					);
+	
+			registry.addInterceptor(boardOwnerInterceptor).addPathPatterns(
+					"/board/edit"
+					,"board/delete"
 					
 					);
 	
