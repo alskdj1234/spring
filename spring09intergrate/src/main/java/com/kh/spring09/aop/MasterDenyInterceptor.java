@@ -1,6 +1,7 @@
 package com.kh.spring09.aop;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.kh.spring09.dao.MemberDao;
@@ -10,7 +11,7 @@ import com.kh.spring09.exception.TargetNotfoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+@Service
 //아이디 파라미터로 전달 되는 아이디가 관리자면 차단
 public class MasterDenyInterceptor implements HandlerInterceptor {
 	@Autowired
