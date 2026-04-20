@@ -19,7 +19,10 @@
 (수정됨)
 </c:if>
 </h1>
-${boardDto.boardWriter} <br><br>
+
+<!-- 이름 누르면 상세로 -->
+<a href="/member/detail?memberId=${boardDto.boardWriter}">${boardDto.boardWriter}</a>
+ <br><br>
 <fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                    
 조회수 ${boardDto.boardReadcount}

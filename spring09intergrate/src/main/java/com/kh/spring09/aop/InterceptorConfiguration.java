@@ -25,6 +25,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     private MasterDenyInterceptor masterDenyInterceptor;
 	@Autowired
 	private BoardOwnerInterceptor boardOwnerInterceptor;
+
 	//가져온 인터셉터를 특정 주소에서 일하도록 설정
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -74,6 +75,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 					,"board/delete"
 					
 					);
+			
+		
 	
 	}
 	

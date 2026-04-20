@@ -30,38 +30,18 @@
 	</thead>
 	<tbody align="center">
 <!-- 	공지사항 -->
-	<c:forEach var="boardDto" items="${noticeList}">
-		<tr bgcolor="fab1a0">
-			<td>${boardDto.boardNo}</td>
-			<td align="left">
-				<!-- 말머리가 있으면 표시 -->
-				<c:if test="${boardDto.boardHead != null}">
-				(${boardDto.boardHead})
-				</c:if>
-			
-				<!-- 게시글 제목 -->
-				<a href="./detail?boardNo=${boardDto.boardNo}">
-				${boardDto.boardTitle}
-				</a>
-				
-				<!-- 댓글개수도 있으면(>0) 표시 -->
-				<c:if test="${boardDto.boardReplycount > 0}">
-				[${boardDto.boardReplycount}]
-				</c:if>
-			</td>
-			<td>${boardDto.boardWriter}</td>
-			<td>${boardDto.getBoardWtimeString()}</td>
-			<td>${boardDto.boardReadcount}</td>
-			<td>${boardDto.boardLikecount}</td>
-		</tr>
-	</c:forEach>
+	
 
-
+<!-- varStatus를 쓰면 반복문의 상태를 알 수 있다. index, count, first, last -->
 <!-- 일반 글 -->
-		<c:forEach var="boardDto" items="${list}">
-		<tr>
+		<c:forEach var="boardDto" items="${list}" varStatus="stat">
+		<tr bgcolor="${stat.index < noticeCount ? 'fab1a0' : '' }">
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
+<%-- 	인덱스는 	0부터 시작	${stat.index} --%>
+<%-- 	카운트는	1부터 시작 	${stat.count} --%>
+
+			
 				<!-- 말머리가 있으면 표시 -->
 				<c:if test="${boardDto.boardHead != null}">
 				(${boardDto.boardHead})
@@ -77,7 +57,16 @@
 				[${boardDto.boardReplycount}]
 				</c:if>
 			</td>
-			<td>${boardDto.boardWriter}</td>
+			<td>
+				<c:if test="${boardDto.boardWriter==null}">
+					탈퇴한 사용자
+				</c:if>
+			</td>	
+		<td>	
+		<c:if	 test="${boardDto.boardWriter!=null}">
+			<a href="/member/detail?memberId=${boardDto.boardWriter}">
+			${boardDto.boardWriter}</a></c:if></td>
+			
 			<td>${boardDto.getBoardWtimeString()}</td>
 			<td>${boardDto.boardReadcount}</td>
 			<td>${boardDto.boardLikecount}</td>

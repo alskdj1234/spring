@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,18 @@ public class BoardController {
 		
 		//List<BoardDto> noticeList = boardDao.selectList("board_head", "공지");
 		List<BoardDto> noticeList = boardDao.selectNoticeList();
-		model.addAttribute("noticeList", noticeList);
 		
-		List<BoardDto> list = boardDao.selectList(column, keyword);
+		
+		//일반 게시글
+		List<BoardDto> boardList = boardDao.selectList(column, keyword);
+		
+		//병합
+		List<BoardDto> list = new ArrayList<>();
+		
+		list.addAll(noticeList);
+		list.addAll(boardList);
 		model.addAttribute("list", list);
+		model.addAttribute("noticeCount",noticeList.size());
 		return "board/list";
 	}
 	

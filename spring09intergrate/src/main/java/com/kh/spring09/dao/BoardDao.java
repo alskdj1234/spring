@@ -104,6 +104,12 @@ public class BoardDao {
 		String sql ="select * from board_list where board_head ='공지' order by board_no desc";
 		return jdbcTemplate.query(sql, boardMapper);
 	}
+	
+	public List<BoardDto> selectListByBoardWriter(String boardWriter){
+		String sql ="select * from board_list where board_writer=? order by board_no desc";
+		Object [] params = {boardWriter};
+		return jdbcTemplate.query(sql,boardMapper, params);
+	}
 }
 
 

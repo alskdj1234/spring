@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.kh.spring09.dao.BoardDao;
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dao.MemberExitDao;
 import com.kh.spring09.dao.MemberHistoryDao;
+import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
+import com.kh.spring09.exception.TargetNotfoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -33,7 +36,8 @@ public class MemberController {
 	private MemberExitDao memberExitDao;
 	@Autowired
 	private MemberHistoryDao memberHistoryDao;
-
+	@Autowired
+	private BoardDao boardDao;
 	// 가입에 필요한 매핑들
 	@GetMapping("/join")
 	public String join() {
@@ -296,4 +300,20 @@ public class MemberController {
 		
 		return"redirect:/";
 	}
+//남의 정보를 볼 때
+	@RequestMapping("/detail")
+	public String detail(@RequestParam String memberId, Model model) {
+		
+		MemberDto memberDto = memberDao.selectOne(memberId);
+		if(memberDto == null) throw new TargetNotfoundException("존재하지 않은 회원");
+		//만약 관리자 정보는 못본다면 memberDto의 등급을 확인해서 겟아웃 익셉션
+		model.addAttribute("memberDto", memberDto);
+		
+		List<BoardDto> boardList = boardDao.selectListByBoardWriter(memberId);
+		model.addAttribute("boardList", boardList);
+		return "/member/detail";
+		
+	}
+	
+	
 }
