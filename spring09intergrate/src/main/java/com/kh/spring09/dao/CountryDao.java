@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.mapper.CountryMapper;
+import com.kh.spring09.vo.PageVO;
 
 @Repository // db나 파일을 제어하기 우히나 도구 (영속성을 가진 대상 제어 도구)
 public class CountryDao {
@@ -45,35 +47,54 @@ public class CountryDao {
 		return jdbcTemplate.update(sql, params) > 0;
 	}
 
-	public List<CountryDto> selectList() {
-
-		String sql = "select * from country order by country_no asc";
-
-		return jdbcTemplate.query(sql, countryMapper);
-	}
-
-	public List<CountryDto> selectList(String column, String keyword) {
-		if (column == null || keyword == null)
-			return selectList();
-
-		Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
-		if (allowList.contains(column) == false)
-			return List.of();
-
-		String sql = "select * from country where instr(" + column + ",?)>0 order by country_no asc";
-
-		Object[] params = { keyword };
-
+	public List<CountryDto> selectList(int page, int size) {
+		String sql = "select * from (" + "select rownum rn, TMP.* from ("
+				+ "select * from country order by country_no desc" + ") TMP" + ") where rn between ? and ?";
+		int beginRow = page * size - (size - 1);
+		int endRow = page * size;
+		Object[] params = { beginRow, endRow };
 		return jdbcTemplate.query(sql, countryMapper, params);
 	}
-	
+
+	public List<CountryDto> selectList(PageVO pageVO) {
+		if (pageVO.isList())
+			return selectList(pageVO.getPage(), pageVO.getSize());
+
+		Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
+		if (allowList.contains(pageVO.getColumn()) == false)
+			return List.of();
+
+		String sql = "select * from (" + "select rownum rn, TMP.* from (" + "select * from country" + "where instr("
+				+ pageVO.getColumn() + ", ?) > 0 " + "order by country_no desc" + ") TMP"
+				+ ") where rn between ? and ?";
+		Object[] params = { pageVO.getKeyword(), pageVO.getBeginRownum(), pageVO.getEndRownum() };
+		return jdbcTemplate.query(sql, countryMapper, params);
+	}
+
 	public CountryDto selectOne(int countryNo) {
-		
+
 		String sql = "select * from country where country_no = ? ";
-		Object[] params = {countryNo};
+		Object[] params = { countryNo };
+
+		List<CountryDto> list = jdbcTemplate.query(sql, countryMapper, params);
+		return list.isEmpty() ? null : list.get(0);
+
+	}
+
+	public int count() {
+		String sql = "select count(*) from country";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+
+	public int count(PageVO pageVO) {
 		
-		List<CountryDto> list = jdbcTemplate.query(sql, countryMapper,params);
-		return list.isEmpty()?null:list.get(0);
-		
+		if (pageVO.isList())
+			return count();
+		Set<String> allowList = Set.of("country_region", "country_name", "country_capital");
+		if (allowList.contains(pageVO.getColumn()) == false) return 0;//결과 없음
+
+		String sql = "select count(*) from country " + "where instr(" + pageVO.getColumn() + ", ?) > 0";
+		Object[] params = { pageVO.getKeyword() };
+		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 }

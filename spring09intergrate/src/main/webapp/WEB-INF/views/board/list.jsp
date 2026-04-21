@@ -18,7 +18,6 @@
 <!-- 게시글 목록 출력 -->
 <table border="1" width="1000">
 	<thead>
-
 		<tr>
 			<th>번호</th>
 			<th width="45%">제목</th>
@@ -29,19 +28,12 @@
 		</tr>
 	</thead>
 	<tbody align="center">
-<!-- 	공지사항 -->
-	
-
-<!-- varStatus를 쓰면 반복문의 상태를 알 수 있다. index, count, first, last -->
-<!-- 일반 글 -->
+		<!-- 일반 게시글 -->
+		<!-- varStatus를 쓰면 반복문의 상태를 알 수 있다(index, count, first, last) -->
 		<c:forEach var="boardDto" items="${list}" varStatus="stat">
-		<tr bgcolor="${stat.index < noticeCount ? 'fab1a0' : '' }">
+		<tr bgcolor="${stat.index < noticeCount ? '#ffeaa7':''}">
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
-<%-- 	인덱스는 	0부터 시작	${stat.index} --%>
-<%-- 	카운트는	1부터 시작 	${stat.count} --%>
-
-			
 				<!-- 말머리가 있으면 표시 -->
 				<c:if test="${boardDto.boardHead != null}">
 				(${boardDto.boardHead})
@@ -58,15 +50,16 @@
 				</c:if>
 			</td>
 			<td>
-				<c:if test="${boardDto.boardWriter==null}">
-					탈퇴한 사용자
+				<c:if test="${boardDto.boardWriter == null}">
+					(탈퇴한사용자)
 				</c:if>
-			</td>	
-		<td>	
-		<c:if	 test="${boardDto.boardWriter!=null}">
-			<a href="/member/detail?memberId=${boardDto.boardWriter}">
-			${boardDto.boardWriter}</a></c:if></td>
-			
+				<c:if test="${boardDto.boardWriter != null}">
+					<!-- 누르면 이동하도록 링크 구현 -->
+					<a href="/member/detail?memberId=${boardDto.boardWriter}">
+						${boardDto.boardWriter}
+					</a>
+				</c:if>
+			</td>
 			<td>${boardDto.getBoardWtimeString()}</td>
 			<td>${boardDto.boardReadcount}</td>
 			<td>${boardDto.boardLikecount}</td>
@@ -75,8 +68,7 @@
 	</tbody>
 </table>
 
-<!-- 페이지네이션 -->
-<h2>&lt; 1 2 3 4 5 6 7 8 9 10 &gt;</h2>
+<jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 <!-- 검색창 -->
 <form action="./list" method="get">

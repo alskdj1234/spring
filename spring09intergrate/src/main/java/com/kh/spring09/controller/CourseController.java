@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring09.dao.CourseDao;
-import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.dto.CourseDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVO;
 
 @Controller
 @RequestMapping("/course") // 공용주소
@@ -44,8 +44,12 @@ public class CourseController {
  	}
 	
 	@RequestMapping("/list")
-	public String list (Model model,@RequestParam(required=false) String column, @RequestParam(required=false) String keyword){
-		List<CourseDto> list = courseDao.selectList(column,keyword);
+	public String list (Model model,PageVO pageVO){
+		List<CourseDto> list = courseDao.selectList(pageVO);
+		//페이징을 위해 추가로 전달할 값이 있다면 전달해야 한다
+				int count = courseDao.count(pageVO);
+				pageVO.setCount(count);//데이터 개수 설정
+				model.addAttribute("pageVO", pageVO);
 		model.addAttribute("list", list);
 		return"course/list";
 	}

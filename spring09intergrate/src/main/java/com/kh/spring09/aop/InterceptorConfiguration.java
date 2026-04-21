@@ -25,7 +25,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
     private MasterDenyInterceptor masterDenyInterceptor;
 	@Autowired
 	private BoardOwnerInterceptor boardOwnerInterceptor;
-
+	@Autowired
+	private BoardReadInterceptor4 boardReadInterceptor4;
 	//가져온 인터셉터를 특정 주소에서 일하도록 설정
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -76,7 +77,10 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 					
 					);
 			
-		
+			registry.addInterceptor(boardReadInterceptor4).addPathPatterns(
+					
+					"/board/detail"
+					);
 	
 	}
 	

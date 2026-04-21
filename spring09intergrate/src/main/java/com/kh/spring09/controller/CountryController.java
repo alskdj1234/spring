@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.kh.spring09.dao.CountryDao;
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.vo.PageVO;
 
 @Controller
 
@@ -43,11 +44,15 @@ public class CountryController {
  	
  	@RequestMapping("/list")
  	public String list(Model model,
- 			@RequestParam(required=false) String column, @RequestParam(required=false) String keyword ) {
- 		List<CountryDto> list = countryDao.selectList(column,keyword);
+ 			PageVO pageVO ) {
+ 		List<CountryDto> list = countryDao.selectList(pageVO);
  		
  		model.addAttribute("list", list);
  		
+ 		//페이징을 위해 추가로 전달할 값이 있다면 전달해야 한다
+ 				int count = countryDao.count(pageVO);
+ 				pageVO.setCount(count);//데이터 개수 설정
+ 				model.addAttribute("pageVO", pageVO);
  		return"country/list";
  		
  	}

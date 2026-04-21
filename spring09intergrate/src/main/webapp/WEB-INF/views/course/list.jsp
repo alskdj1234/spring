@@ -57,7 +57,7 @@
 
 </table>
 
-
+<jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 <!-- 검색 창 -->
 <form action="./list" method="get">

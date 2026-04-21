@@ -43,7 +43,7 @@
 
 </table>
 
-
+<jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 <!-- 검색창 -->
 <form action="./list">
@@ -59,7 +59,7 @@
 
 
 <!-- 결과 출력 -->
-<h2>결과 수 : ${list.size()}</h2>
+<h2>결과 수 : ${pageVO.beginRownum}~${pageVO.endRownum} ${pageVO.count}개</h2>
 
 
 

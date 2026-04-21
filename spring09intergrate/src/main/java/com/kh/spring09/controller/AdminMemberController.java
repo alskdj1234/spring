@@ -17,6 +17,7 @@ import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
+import com.kh.spring09.vo.PageVO;
 
 
 @Controller
@@ -31,9 +32,18 @@ public class AdminMemberController {
 	private MemberHistoryDao memberHistoryDao;
 
 	@RequestMapping("/list")
-	public String list(Model model,@RequestParam(required = false) String column, @RequestParam(required = false) String keyword) {
-		List<MemberDto> list = memberDao.selectList(column, keyword);
+	public String list(Model model,@ModelAttribute PageVO pageVO) {
+		
+		int totalCount = memberDao.count();
+		model.addAttribute("totalCount",totalCount);
+		List<MemberDto> list = memberDao.selectList(pageVO);
 		model.addAttribute("list", list);
+		
+		//페이징을 위해 추가로 전달할 값이 있다면 전달해야 한다
+			int count = memberDao.count(pageVO);
+				pageVO.setCount(count);//데이터 개수 설정
+				model.addAttribute("pageVO", pageVO);
+				
 		return "admin/list";
 	}
 

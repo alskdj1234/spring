@@ -6,6 +6,7 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>회원 조회</h1>
+결과 수 : ${totalCount}개 중 ${pageVO.count}개
 
 <form action="./list" method="get">
 	
@@ -78,7 +79,7 @@
 	
 	</table>
 
-
+<jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 
 
