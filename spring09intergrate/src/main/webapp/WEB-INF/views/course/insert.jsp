@@ -5,7 +5,7 @@
 
 <h1>강의 정보 등록 페이지</h1>
 
-<form action="./insert" method="post">
+<form action="./insert" method="post" enctype="multipart/form-data">
 
 	이름 <input type="text" name="courseName" required> <br>
 <!-- 	<br> 카테고리<input type="text" name="category" placeholder="이론/실습/시험" required> <br> -->
@@ -33,6 +33,8 @@
 		
 		
 	</select>
+	
+	미리보기 <input type="file" name="attach" accept=".png, .jpg" multiple>
 	<br>
 	<button>등록하기</button>
 

@@ -2,6 +2,7 @@ package com.kh.spring09.controller;
 
 
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.CourseDao;
 import com.kh.spring09.dto.CourseDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 import com.kh.spring09.vo.PageVO;
 
 @Controller
@@ -23,7 +26,8 @@ import com.kh.spring09.vo.PageVO;
 public class CourseController {
 	@Autowired
 	private CourseDao courseDao;
-	
+	@Autowired
+	private AttachService attachService;
 	//@RequestMapping(value="/insert", method = RequestMethod.GET)
  	@GetMapping("/insert")
 	public String insert() {
@@ -32,9 +36,21 @@ public class CourseController {
  	
 	//@RequestMapping(value="/insert", method = RequestMethod.POST)
  	@PostMapping("/insert")
- 	public String insert(@ModelAttribute CourseDto courseDto) {
+ 	public String insert(@ModelAttribute CourseDto courseDto,
+ 			//리퀘스트 파람에 밸류 적으면 수신 파라미터명과 변수명을 분리 할 수 있다.
+ 			@RequestParam(value="attach") List<MultipartFile> attachList) throws IllegalStateException, IOException {
  		
+ 		int courseNo = courseDao.sequence();
+ 		courseDto.setCourseNo(courseNo);
  		courseDao.insert(courseDto);
+ 		
+ 		for(MultipartFile attach : attachList) {
+ 			if(!attach.isEmpty()) {
+ 				int attachNo = attachService.save(attach);
+ 				courseDao.connect(courseNo,attachNo);
+ 			}
+ 		}
+ 		
  		return "redirect:./insertComplete";
  	}
 	

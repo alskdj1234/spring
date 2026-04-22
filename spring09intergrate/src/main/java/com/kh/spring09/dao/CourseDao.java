@@ -18,11 +18,17 @@ public class CourseDao {
 	@Autowired
 	private CourseMapper courseMapper;
 
+	public int sequence() {
+		String sql = "select seq_course.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	
+	
 	public void insert(CourseDto courseDto) {
 		String sql = "insert into course" + "(course_no, course_name, category, " + "lecture_time, fee, class_type "
-				+ ")values(seq_course.nextval,?,?,?,?,?)";
+				+ ")values(?,?,?,?,?,?)";
 
-		Object[] params = { courseDto.getCourseName(), courseDto.getCategory(), courseDto.getLectureTime(),
+		Object[] params = {courseDto.getCourseNo(), courseDto.getCourseName(), courseDto.getCategory(), courseDto.getLectureTime(),
 				courseDto.getFee(), courseDto.getClassType() };
 		jdbcTemplate.update(sql, params);
 
@@ -95,5 +101,11 @@ return jdbcTemplate.query(sql, courseMapper, params);
 					+ "where instr("+pageVO.getColumn()+", ?) > 0";
 		Object[] params = { pageVO.getKeyword() };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
+	}
+	
+	public void connect(int courseNo, int attachNo) {
+		String sql = "insert into course_image(course_no, attach_no) values(?, ?)";
+		Object[] params = {courseNo,attachNo};
+		jdbcTemplate.update(sql,params);
 	}
 }
