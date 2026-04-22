@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring09.dto.BoardDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.mapper.MemberHistoryMapper;
 
@@ -67,6 +68,8 @@ public class MemberHistoryDao {
 		return jdbcTemplate.query(sql,memberHistoryMapper,params);
 		
 	}
+	
+	
 
 
 

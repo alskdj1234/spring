@@ -78,9 +78,23 @@ public class BoardController {
 		}
 		//글 번호 생성을 먼저
 		long boardNo = boardDao.sequence();
-		//정보 취합 후
+		//정보 취합 후 필요 항목을 계산(새글이냐 답글이냐)후 등록 요청
 		boardDto.setBoardWriter(loginId);
 		boardDto.setBoardNo(boardNo);
+		if(boardDto.getBoardParent()==null){//새글
+			boardDto.setBoardGroup(boardNo);//그룹번호를 글 번호로 설정하세요
+		
+		}
+		
+		else {//답글이라면
+			BoardDto findBoardDto = boardDao.selectOne(boardDto.getBoardParent());
+			boardDto.setBoardGroup(findBoardDto.getBoardGroup());
+			
+			boardDto.setBoardParent(findBoardDto.getBoardNo());//생략 가능
+			boardDto.setBoardDepth(findBoardDto.getBoardDepth()+1);//원본글의 차수 +1
+		}
+			
+		
 		//등록하고
 		boardDao.insert(boardDto);
 		//상세 페이지로 리다이렉트

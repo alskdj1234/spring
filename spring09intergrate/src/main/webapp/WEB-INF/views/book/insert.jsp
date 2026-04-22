@@ -27,7 +27,7 @@
  페이지수<input type="text" name="bookPageCount"> <br><br>
  판매가<input type="text" name="bookPrice" required> <br><br>
  출간일<input type="date" name="bookPublicationDate"><br><br>
- 
+ 표지<input type="file" name="attach" accept="image/png, image/jpeg"><br><br>
  
  
  <button>등록하기</button>

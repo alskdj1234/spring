@@ -4,12 +4,13 @@
     <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
  <h1> 국가 정보 등록 페이지</h1>
  
- <form action="./insert" method="post">
+ <form action="./insert" method="post" enctype="multipart/form-data">
  
  대륙<input type="text" name="countryRegion"> <br><br>
  이름<input type="text" name="countryName"> <br><br>
  수도<input type="text" name="countryCapital"> <br><br>
  인구<input type="text" name="countryPopulation"> <br><br>
+ 국기<input type="file" name="attach" accept="image/png, image/jpeg"><br><br> 
  <button>등록하기</button>
  
  </form>

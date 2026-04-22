@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.CountryDao;
 import com.kh.spring09.dto.CountryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 import com.kh.spring09.vo.PageVO;
 
 @Controller
@@ -22,6 +25,8 @@ import com.kh.spring09.vo.PageVO;
 public class CountryController {
  @Autowired
  	private CountryDao countryDao;
+ @Autowired
+ private AttachService attachService;
  
  	//등록(화면과 처리 코드 결합)
  	// 입력 -> 처리 + 출력
@@ -31,9 +36,17 @@ public class CountryController {
  	}
  	
  	@PostMapping("/insert")
- 	public String insert(@ModelAttribute CountryDto countryDto) {
+ 	public String insert(@ModelAttribute CountryDto countryDto,@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
+ 		int countryNo=countryDao.sequence();
+ 		countryDto.setCountryNo(countryNo);
+
  		
  		countryDao.insert(countryDto);
+ 		if(!attach.isEmpty()) {//국기가 있을 경우
+ 			int attachNo = attachService.save(attach);//등록 처리
+ 			//국가 번호랑 파일번호 연결
+ 			countryDao.connect(countryNo, attachNo);
+ 		}
  		return "redirect:./insertComplete";
  	}
  	

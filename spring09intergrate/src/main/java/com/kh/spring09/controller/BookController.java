@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +11,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.BookDao;
 import com.kh.spring09.dto.BookDto;
-import com.kh.spring09.dto.CourseDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 
 
 @Controller
@@ -23,6 +25,9 @@ public class BookController {
 	@Autowired
 	private BookDao bookDao;
 
+	@Autowired
+	private AttachService attachService;
+	
 	@GetMapping("/insert")
 	public String insert() {
 
@@ -30,8 +35,16 @@ public class BookController {
 		return "book/insert";
 	}
 	@PostMapping("/insert")
-	public String insert(@ModelAttribute BookDto bookDto) {
+	public String insert(@ModelAttribute BookDto bookDto, @RequestParam MultipartFile attach ) throws IllegalStateException, IOException {
+		int bookId= bookDao.sequence();
+		bookDto.setBookId(bookId);
+		
 		bookDao.insert(bookDto);
+		
+		if(!attach.isEmpty()) {
+			int attachNo = attachService.save(attach);
+			bookDao.connect(bookId, attachNo);
+		}
 		
 		return "redirect:./insertComplete";
 	}

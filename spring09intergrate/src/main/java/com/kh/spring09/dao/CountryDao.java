@@ -19,10 +19,18 @@ public class CountryDao {
 	@Autowired // 주세요 해봐 (의존성 주입)
 	private CountryMapper countryMapper;
 
+	
+	public int sequence() {
+		String sql ="select country_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	
+	
+	
 	public void insert(CountryDto countryDto) {
 		String sql = "insert into country" + "(country_no, country_region, country_name, "
-				+ "country_capital, country_population" + ") values(country_seq.nextval,? ,? ,? ,?)";
-		Object[] params = { countryDto.getCountryRegion(), countryDto.getCountryName(), countryDto.getCountryCapital(),
+				+ "country_capital, country_population" + ") values(?, ? ,? ,? ,?)";
+		Object[] params = { countryDto.getCountryNo(), countryDto.getCountryRegion(), countryDto.getCountryName(), countryDto.getCountryCapital(),
 				countryDto.getCountryPopulation() };
 		jdbcTemplate.update(sql, params);
 
@@ -97,4 +105,12 @@ public class CountryDao {
 		Object[] params = { pageVO.getKeyword() };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
+	
+	//국기등록
+	public void connect(int countryNo, int attachNo) {
+		String sql = "insert into coutnry_flag(country_no, attach_no) values(?, ?)";
+		Object[] params = { countryNo, attachNo};
+		jdbcTemplate.update(sql,params);
+	}
+	
 }

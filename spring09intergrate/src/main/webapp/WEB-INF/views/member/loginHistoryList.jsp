@@ -10,7 +10,7 @@ ${param.beginDate}부터 ${param.endDate}까지의
 
 로그인 시각:${loginHistoryList.memberHistoryTime}
 
-
+<jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 
 

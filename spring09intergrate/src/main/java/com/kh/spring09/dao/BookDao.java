@@ -17,6 +17,12 @@ public class BookDao {
 	@Autowired
 	private BookMapper bookMapper;
 	
+	public int sequence() {
+		String sql = "select book_seq.nextval from dual";
+		return jdbcTemplate.queryForObject(sql, int.class);
+	}
+	
+	
 	public void insert (BookDto bookDto) {
 	 
 	    
@@ -24,10 +30,11 @@ public class BookDao {
 	    String sql = "INSERT INTO book ("
 	            + "book_id, book_title, book_author, book_publication_date, "
 	            + "book_price, book_publisher, book_page_count, book_genre"
-	            + ") VALUES (book_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)"; 
+	            + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)"; 
 
 	    
 	    Object[] params = {
+	    		bookDto.getBookId(),
 	        bookDto.getBookTitle(),            // 첫 번째 ?
 	        bookDto.getBookAuthor(),           // 두 번째 ?
 	        bookDto.getBookPublicationDate(),  // 세 번째 ?
@@ -91,4 +98,9 @@ public class BookDao {
 		return list.isEmpty()?null:list.get(0);
 	}
 
+	public void connect(int bookId, int attachNo) {
+		String sql = "insert into book_flag(book_id, attach_no) values(?, ?)";
+		Object [] params = {bookId,attachNo};
+		jdbcTemplate.update(sql,params);
+	}
 }

@@ -25,7 +25,9 @@ public class BoardDao {
 	public List<BoardDto> selectList(int page, int size) {
 		String sql = "select * from ("
 						+ "select rownum rn, TMP.* from ("
-							+ "select * from board_list order by board_no desc"
+							+ "select * from board_list connect by prior board_no=board_parent "
+							+ "start with board_parent is null "
+							+ "order siblings by board_group desc, board_no asc"
 						+ ") TMP"
 					+ ") where rn between ? and ?";
 		int beginRow = page * size - (size-1);
@@ -43,7 +45,9 @@ public class BoardDao {
 						+ "select rownum rn, TMP.* from ("
 							+ "select * from board_list "
 							+ "where instr("+pageVO.getColumn()+", ?) > 0 "
-							+ "order by board_no desc"
+							+ "connect by prior board_no=board_parent "
+							+ "start with board_parent is null "
+							+ "order siblings by board_group desc, board_no asc"
 						+ ") TMP"
 					+ ") where rn between ? and ?";
 		Object[] params = { 
@@ -100,13 +104,15 @@ public class BoardDao {
 	public void insert(BoardDto boardDto) {
 		String sql = "insert into board("
 						+ "board_no, board_writer, board_head, "
-						+ "board_title, board_content"
+						+ "board_title, board_content, "
+						+ "board_group, board_parent, board_depth"
 					+ ") "
-					+ "values(?, ?, ?, ?, ?)";
+					+ "values(?, ?, ?, ?, ?, ?, ?, ?)";
 		Object[] params = {
 			boardDto.getBoardNo(), boardDto.getBoardWriter(),
 			boardDto.getBoardHead(), boardDto.getBoardTitle(),
-			boardDto.getBoardContent()
+			boardDto.getBoardContent(),boardDto.getBoardGroup(),
+			boardDto.getBoardParent(),boardDto.getBoardDepth()
 		};
 		jdbcTemplate.update(sql, params);
 	}

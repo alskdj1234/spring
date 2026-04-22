@@ -43,6 +43,7 @@
 <hr>
 <c:if test="${sessionScope.loginId != null}">
 <a href="./write">글쓰기</a>
+<a href="./write?boardParent=${boardDto.boardNo}">답글쓰기</a>
 </c:if>
 <c:if test="${boardDto.boardWriter != null && boardDto.boardWriter == sessionScope.loginId}">
 <a href="./edit?boardNo=${boardDto.boardNo}">수정</a>

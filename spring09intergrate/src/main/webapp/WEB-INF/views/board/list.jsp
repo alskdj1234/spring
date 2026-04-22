@@ -25,6 +25,10 @@
 			<th>작성일</th>
 			<th>조회수</th>
 			<th>좋아요</th>
+			<th>no</th>
+			<th>group</th>
+			<th>parent</th>
+			<th>depth</th>
 		</tr>
 	</thead>
 	<tbody align="center">
@@ -34,6 +38,16 @@
 		<tr bgcolor="${stat.index < noticeCount ? '#ffeaa7':''}">
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
+<!-- 				답변 글인 경우 차수만큼 간격 벌리고 추가 표시 -->
+			<c:if test="${boardDto.boardDepth>0}">
+					<c:forEach var="i" begin="1" end="${boardDto.boardDepth}">
+					
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					</c:forEach>
+					
+					->
+			</c:if>
+			
 				<!-- 말머리가 있으면 표시 -->
 				<c:if test="${boardDto.boardHead != null}">
 				(${boardDto.boardHead})
@@ -63,7 +77,12 @@
 			<td>${boardDto.getBoardWtimeString()}</td>
 			<td>${boardDto.boardReadcount}</td>
 			<td>${boardDto.boardLikecount}</td>
-		</tr>
+					<td>${boardDto.boardNo}</td>
+			<td>${boardDto.boardGroup}</td>
+			<td>${boardDto.boardParent}</td>
+			<td>${boardDto.boardDepth}</td>
+			
+			</tr>
 		</c:forEach>
 	</tbody>
 </table>
