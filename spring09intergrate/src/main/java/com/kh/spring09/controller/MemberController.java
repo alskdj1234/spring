@@ -1,5 +1,6 @@
 package com.kh.spring09.controller;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring09.dao.BoardDao;
 import com.kh.spring09.dao.MemberDao;
@@ -23,6 +25,7 @@ import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
 import com.kh.spring09.exception.TargetNotfoundException;
+import com.kh.spring09.service.AttachService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -38,6 +41,8 @@ public class MemberController {
 	private MemberHistoryDao memberHistoryDao;
 	@Autowired
 	private BoardDao boardDao;
+	@Autowired
+	private AttachService attachService;
 	// 가입에 필요한 매핑들
 	@GetMapping("/join")
 	public String join() {
@@ -45,8 +50,16 @@ public class MemberController {
 	}
 
 	@PostMapping("/join")
-	public String join(@ModelAttribute MemberDto memberDto) {
+	public String join(@ModelAttribute MemberDto memberDto,
+			@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
 		memberDao.insert(memberDto);
+		
+		//프사가 있으면 추가 등록 및 연결
+		
+		if(attach.isEmpty()==false) {
+			int attachNo = attachService.save(attach);
+			memberDao.connect(memberDto.getMemberId(), attachNo);
+		}
 		return "redirect:./joinFinish";
 		// return "redirect:/member/joinFinish";
 	}

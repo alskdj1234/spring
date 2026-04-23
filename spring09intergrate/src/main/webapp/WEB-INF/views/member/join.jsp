@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
      <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 <h1>회원 가입</h1>
-<form action="./join" method="post">
+<form action="./join" method="post" enctype="multipart/form-data">
 Id <input type="text" name="memberId" required><br>
 
 Email <input type="text" name="memberEmail" required><br>
@@ -21,6 +21,7 @@ Email <input type="text" name="memberEmail" required><br>
 <textarea name ="memberMessage"></textarea>
 <br><br>
 
+프로필이미지<input type="file" name="attach" accept=".png, .jpg"><br><br>
 
 <button>등록하기</button>
 

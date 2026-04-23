@@ -149,6 +149,11 @@ public class MemberDao {
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 
+	public void connect(String memberId, int attachNo) {
+		String sql = "insert into memeber_profile(member_id, attach_no) values(?,?)";
+		Object[] params = { memberId,attachNo};
+		jdbcTemplate.update(sql,params);
+	}
 }
 
 
