@@ -103,4 +103,3 @@ ${pageVO.beginRownum}-${pageVO.endRownum} / 총 ${pageVO.count}개의 글
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
 
 
-
