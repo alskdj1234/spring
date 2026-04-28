@@ -16,11 +16,15 @@ public class AttachDao {
 	@Autowired
 	private AttachMapper attachMapper;
 
+<<<<<<< HEAD
 	//등록
+=======
+>>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 	public int sequence() {
 		String sql = "select attach_seq.nextval from dual";
 		return jdbcTemplate.queryForObject(sql, int.class);
 	}
+
 	public void insert(AttachDto attachDto) {
 		String sql = "insert into attach("
 						+ "attach_no, attach_name, "
@@ -30,6 +34,7 @@ public class AttachDao {
 			attachDto.getAttachNo(), attachDto.getAttachName(),
 			attachDto.getAttachType(), attachDto.getAttachSize()
 		};
+<<<<<<< HEAD
 		jdbcTemplate.update(sql, params);
 	}
 	
@@ -46,6 +51,17 @@ public class AttachDao {
 		String sql = "delete attach where attach_no = ?";
 		Object[] params = { attachNo };
 		return jdbcTemplate.update(sql, params) > 0;
+=======
+		jdbcTemplate.update(sql,params);
+	}
+	//상세
+	public AttachDto selectOne(int attachNo) {
+		String sql = "select * from attach where attach_no = ?";
+		Object [] params = {attachNo};
+		List<AttachDto> list = jdbcTemplate.query(sql, attachMapper, params);
+		return list.isEmpty() ? null : list.get(0);
+
+>>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 	}
 }
 

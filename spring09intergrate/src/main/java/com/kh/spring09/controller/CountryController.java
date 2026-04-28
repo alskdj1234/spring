@@ -82,6 +82,7 @@ public class CountryController {
 		}
 		model.addAttribute("countryDto", countryDto);
 		
+<<<<<<< HEAD
 		return "country/detail";
 	}
 	
@@ -148,6 +149,44 @@ public class CountryController {
 			//Plan B - 이미지가 존재하지 않는 경우
 			return "redirect:/images/no_image.png";
 		}
+=======
+		//국기에 대한 파일번호를 찾아서 첨부한다면..?
+		try {
+			int attachNo = countryDao.searchFlag(countryNo);
+			model.addAttribute("attachNo", attachNo);
+		}
+		catch(Exception e) {}
+		
+		return "country/detail";
+	}
+	
+	//삭제 매핑
+	@RequestMapping("/delete")
+	public String delete(@RequestParam int countryNo) {
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
+		
+		countryDao.delete(countryNo);
+		return "redirect:./list";//상대경로
+		//return "redirect:/country/list";//절대경로
+	}
+	
+	//수정 매핑
+	//- GET은 상세와 동일한 작업을 수행함 (보여주는 페이지가 다름)
+	@GetMapping("/edit")
+	public String edit(@RequestParam int countryNo, Model model) {
+		CountryDto countryDto = countryDao.selectOne(countryNo);
+		if(countryDto == null) throw new TargetNotfoundException("존재하지 않는 국가");
+		
+		model.addAttribute("countryDto", countryDto);
+		return "country/edit";
+	}
+	
+	@PostMapping("/edit")
+	public String edit(@ModelAttribute CountryDto countryDto) {
+		countryDao.update(countryDto);
+		return "redirect:./detail?countryNo="+countryDto.getCountryNo();
+>>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 	}
 	
 }
@@ -161,4 +200,7 @@ public class CountryController {
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
