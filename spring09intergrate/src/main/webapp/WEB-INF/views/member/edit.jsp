@@ -6,7 +6,7 @@
 
 <h1>내 정보 변경</h1>
 
-<form action="./edit" method="post">
+<form action="./edit" method="post" enctype="multipart/form-data">
 	
 	<h2>변경할 정보 입력</h2>
 	이메일 <input type="text" inputmode="email" name="memberEmail" value="${memberDto.memberEmail}" required> <br><br>
@@ -22,6 +22,12 @@
 	상태메세지 <br>
 	<input type="text" name="memberMessage" value="${memberDto.memberMessage}" size="80">
 <%-- 	<textarea name="memberMessage" rows="5" cols="80">${memberDto.memberMessage}</textarea> --%>
+	<br><br>
+
+	프로필 이미지 <input type="file" name="attach" accept=".png, .jpg">
+	<br>
+	기존 프로필 <img src="./profile?memberId=${memberDto.memberId}" width="100">
+	<br><br>
 	
 	<h2>비밀번호 확인</h2>
 	<input type="password" name="memberPassword" required> <br><br>
@@ -34,6 +40,7 @@
 </form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
 
 
 

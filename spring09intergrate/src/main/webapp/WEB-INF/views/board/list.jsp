@@ -16,7 +16,8 @@
 </c:if>
 
 <!-- 게시글 목록 출력 -->
-<table border="1" width="1000">
+${pageVO.beginRownum}-${pageVO.endRownum} / 총 ${pageVO.count}개의 글
+<table border="1" width="1300">
 	<thead>
 		<tr>
 			<th>번호</th>
@@ -25,6 +26,7 @@
 			<th>작성일</th>
 			<th>조회수</th>
 			<th>좋아요</th>
+			<!-- 확인용 컬럼(나중에 삭제할 예정) -->
 			<th>no</th>
 			<th>group</th>
 			<th>parent</th>
@@ -38,15 +40,13 @@
 		<tr bgcolor="${stat.index < noticeCount ? '#ffeaa7':''}">
 			<td>${boardDto.boardNo}</td>
 			<td align="left">
-<!-- 				답변 글인 경우 차수만큼 간격 벌리고 추가 표시 -->
-			<c:if test="${boardDto.boardDepth>0}">
-					<c:forEach var="i" begin="1" end="${boardDto.boardDepth}">
-					
+				<!-- 답변글인 경우 차수만큼 간격을 벌리고 추가 표시 -->
+				<c:if test="${boardDto.boardDepth > 0}">
+					<c:forEach var="i" begin="1" end="${boardDto.boardDepth}" step="1">
 						&nbsp;&nbsp;&nbsp;&nbsp;
-					</c:forEach>
-					
-					->
-			</c:if>
+					</c:forEach> 
+					→
+				</c:if>
 			
 				<!-- 말머리가 있으면 표시 -->
 				<c:if test="${boardDto.boardHead != null}">
@@ -54,7 +54,7 @@
 				</c:if>
 			
 				<!-- 게시글 제목 -->
-				<a href="./detail?boardNo=${boardDto.boardNo}">
+				<a href="./detail?boardNo=${boardDto.boardNo}&page=${pageVO.page}&${pageVO.searchParams}">
 				${boardDto.boardTitle}
 				</a>
 				
@@ -77,16 +77,17 @@
 			<td>${boardDto.getBoardWtimeString()}</td>
 			<td>${boardDto.boardReadcount}</td>
 			<td>${boardDto.boardLikecount}</td>
-					<td>${boardDto.boardNo}</td>
+			<!-- 확인용(나중에 삭제) -->
+			<td>${boardDto.boardNo}</td>
 			<td>${boardDto.boardGroup}</td>
 			<td>${boardDto.boardParent}</td>
 			<td>${boardDto.boardDepth}</td>
-			
-			</tr>
+		</tr>
 		</c:forEach>
 	</tbody>
 </table>
 
+<!-- 페이지네이션 -->
 <jsp:include page="/WEB-INF/views/template/pagination.jsp"></jsp:include>
 
 <!-- 검색창 -->
@@ -100,5 +101,6 @@
 </form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
 
 

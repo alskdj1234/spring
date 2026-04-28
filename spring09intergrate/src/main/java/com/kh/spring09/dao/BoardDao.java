@@ -25,7 +25,8 @@ public class BoardDao {
 	public List<BoardDto> selectList(int page, int size) {
 		String sql = "select * from ("
 						+ "select rownum rn, TMP.* from ("
-							+ "select * from board_list connect by prior board_no=board_parent "
+							+ "select * from board_list "
+							+ "connect by prior board_no=board_parent "
 							+ "start with board_parent is null "
 							+ "order siblings by board_group desc, board_no asc"
 						+ ") TMP"
@@ -111,8 +112,8 @@ public class BoardDao {
 		Object[] params = {
 			boardDto.getBoardNo(), boardDto.getBoardWriter(),
 			boardDto.getBoardHead(), boardDto.getBoardTitle(),
-			boardDto.getBoardContent(),boardDto.getBoardGroup(),
-			boardDto.getBoardParent(),boardDto.getBoardDepth()
+			boardDto.getBoardContent(), boardDto.getBoardGroup(),
+			boardDto.getBoardParent(), boardDto.getBoardDepth()
 		};
 		jdbcTemplate.update(sql, params);
 	}
@@ -165,12 +166,14 @@ public class BoardDao {
 	public int count(PageVO pageVO) {
 		if(pageVO.isList()) return count();
 		if(!allowColumns.contains(pageVO.getColumn())) return count();
+		
 		String sql = "select count(*) from board "
 					+ "where instr("+pageVO.getColumn()+", ?) > 0";
 		Object[] params = { pageVO.getKeyword() };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 }
+
 
 
 

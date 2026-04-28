@@ -1,4 +1,5 @@
 package com.kh.spring09.aop;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -43,4 +44,6 @@ public class MemberOnlyInterceptor implements HandlerInterceptor{
 		return true;//통과!
 	}
 }
+
+
 

@@ -2,6 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<!-- 디자인을 불러오는 코드 -->
+<link rel="stylesheet" type="text/css" href="/css/commons.css">
+
 <!-- 여러 가지 정보들을 출력 -->
 세션ID : ${pageContext.session.id} , 
 loginId : ${sessionScope.loginId} ,
@@ -21,7 +24,7 @@ loginLevel : ${sessionScope.loginLevel}
 	<!-- 비회원 메뉴 -->
 	<a href="/">HOME</a>
 	<a href="/country/list">국가정보</a>
-	<a href="/course/list">강좌정보</a>
+	<a href="/lecture/list">강좌정보</a>
 	<a href="/board/list">자유게시판</a>
 	<a href="/member/join">회원가입</a>
 	<a href="/member/login">로그인</a>

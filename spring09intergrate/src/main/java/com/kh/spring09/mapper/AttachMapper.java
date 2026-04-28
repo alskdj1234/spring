@@ -9,16 +9,14 @@ import org.springframework.stereotype.Component;
 import com.kh.spring09.dto.AttachDto;
 
 @Component
-public class AttachMapper implements RowMapper {
-
+public class AttachMapper implements RowMapper<AttachDto>{
 	@Override
-	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+	public AttachDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 		AttachDto attachDto = new AttachDto();
 		attachDto.setAttachNo(rs.getInt("attach_no"));
 		attachDto.setAttachName(rs.getString("attach_name"));
 		attachDto.setAttachType(rs.getString("attach_type"));
 		attachDto.setAttachSize(rs.getLong("attach_size"));
 		return attachDto;
-	
 	}
 }

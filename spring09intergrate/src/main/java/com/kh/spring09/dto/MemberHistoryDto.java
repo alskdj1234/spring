@@ -6,9 +6,9 @@ import lombok.Data;
 
 @Data
 public class MemberHistoryDto {
- private int memberHistoryNo;
- private Timestamp memberHistoryTime;
- private String memberHistoryOrigin;
- private String memberHistoryAddress;
- private String memberHistoryAgent;
+	private int memberHistoryNo;
+	private Timestamp memberHistoryTime;
+	private String memberHistoryOrigin;
+	private String memberHistoryAddress;
+	private String memberHistoryAgent;
 }

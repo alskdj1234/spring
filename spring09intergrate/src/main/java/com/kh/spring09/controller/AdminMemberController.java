@@ -17,80 +17,76 @@ import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
-import com.kh.spring09.vo.PageVO;
-
+import com.kh.spring09.exception.GetOutException;
+import com.kh.spring09.exception.TargetNotfoundException;
 
 @Controller
 @RequestMapping("/admin/member")
 public class AdminMemberController {
-
 	@Autowired
 	private MemberDao memberDao;
 	@Autowired
 	private MemberExitDao memberExitDao;
 	@Autowired
 	private MemberHistoryDao memberHistoryDao;
-
+	
 	@RequestMapping("/list")
-	public String list(Model model,@ModelAttribute PageVO pageVO) {
+	public String list(Model model, 
+			@RequestParam(required = false) String column,
+			@RequestParam(required = false) String keyword) {
 		
-		int totalCount = memberDao.count();
-		model.addAttribute("totalCount",totalCount);
-		List<MemberDto> list = memberDao.selectList(pageVO);
+		List<MemberDto> list = memberDao.selectList(column, keyword);
 		model.addAttribute("list", list);
 		
-		//페이징을 위해 추가로 전달할 값이 있다면 전달해야 한다
-			int count = memberDao.count(pageVO);
-				pageVO.setCount(count);//데이터 개수 설정
-				model.addAttribute("pageVO", pageVO);
-				
-		return "admin/list";
+		return "admin/member/list";
 	}
-
+	//@RequestMapping("/detail/{memberId}")
+	//public String detail(@PathVariable String memberId, Model model) {
 	@RequestMapping("/detail")
-	public String detail(Model model,String memberId) {
-	
-	List<MemberHistoryDto> personalHistory = memberHistoryDao.selectList(memberId,1,10);
-	
-	model.addAttribute("personalHistory", personalHistory);
-	
-	MemberExitDto everyInfo = memberExitDao.selectOne(memberId);
-	
-	
-	model.addAttribute("everyInfo", everyInfo);
-	
-	return"admin/detail";
+	public String detail(@RequestParam String memberId, Model model) {
+		MemberExitDto memberDto = memberExitDao.selectOne(memberId);
+		model.addAttribute("memberDto", memberDto);
 		
+		List<MemberHistoryDto> loginHistory = memberHistoryDao.selectList(memberId, 1, 10);
+		model.addAttribute("loginHistory", loginHistory);
+		
+		return "admin/member/detail";
 	}
 	
 	@RequestMapping("/block")
 	public String block(@RequestParam String memberId) {
 		MemberDto memberDto = memberDao.selectOne(memberId);
-	
 		
-		String current = memberDto.getMemberBlock();
-		
-		String future = current.equals("Y")?"N":"Y";
-		
+		String current = memberDto.getMemberBlock();//현재 상태를 불러온다
+		String future = current.equals("Y") ? "N" : "Y";
 		memberDto.setMemberBlock(future);
-		memberDao.updateMemberBlock(memberDto);
+		memberDao.updateMemberBlock(memberDto);//객체로 아이디와 차단상태를 전달
+		//memberDao.updateMemberBlock(memberId, future);//문자열 두개로 아이디와 차단상태를 전달
 		
-		return "redirect:./detail?memberId="+memberId;
+		return "redirect:./detail?memberId="+memberId; 
 	}
 	
-	@GetMapping("edit")
-	public String edit(@RequestParam String memberId, Model model ) {
+	//정보 변경
+	@GetMapping("/edit")
+	public String edit(@RequestParam String memberId, Model model) {
 		MemberDto memberDto = memberDao.selectOne(memberId);
-	
 		model.addAttribute("memberDto", memberDto);
-		return"/admin/edit";
+		return "admin/member/edit";
 	}
 	
-	@PostMapping("edit")
+	@PostMapping("/edit")
 	public String edit(@ModelAttribute MemberDto memberDto) {
-		
-		
+		//memberDao.update(memberDto);//쓰면 안됨(등급과 포인트가 수정되지 않음)
 		memberDao.updateByMaster(memberDto);
 		return "redirect:./detail?memberId="+memberDto.getMemberId();
 	}
 }
+
+
+
+
+
+
+
+
+

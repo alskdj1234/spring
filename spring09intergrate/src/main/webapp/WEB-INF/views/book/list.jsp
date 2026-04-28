@@ -1,9 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>도서 목록</h1>
+
+<h2><a href="./insert">신규 등록</a></h2>
 
 <form action="./list" method="get">
 	<input type="text" name="keyword" placeholder="검색어 입력" value="${param.keyword}">
@@ -15,7 +18,8 @@
 	
 	<c:forEach var="bookDto" items="${listByBookTitle}">
 	<div>
-		<img src="https://www.dummyimage.com/100x150?text=Book">
+<!-- 		<img src="https://www.dummyimage.com/100x150?text=Book"> -->
+		<img src="./cover?bookId=${bookDto.bookId}" width="80">
 		<h2>
 			<a href="./detail?bookId=${bookDto.bookId}">
 				${bookDto.bookTitle}
@@ -36,7 +40,7 @@
 	
 	<c:forEach var="bookDto" items="${listByBookAuthor}">
 	<div>
-		<img src="https://www.dummyimage.com/100x150?text=Book">
+		<img src="./cover?bookId=${bookDto.bookId}" width="80">
 		<h2>${bookDto.bookTitle}</h2>
 		지은이 : ${bookDto.bookAuthor} <br>
 		출판사 : ${bookDto.bookPublisher} <br>
@@ -53,7 +57,7 @@
 	
 	<c:forEach var="bookDto" items="${listByBookPublisher}">
 	<div>
-		<img src="https://www.dummyimage.com/100x150?text=Book">
+		<img src="./cover?bookId=${bookDto.bookId}" width="80">
 		<h2>${bookDto.bookTitle}</h2>
 		지은이 : ${bookDto.bookAuthor} <br>
 		출판사 : ${bookDto.bookPublisher} <br>
@@ -70,7 +74,7 @@
 	
 	<c:forEach var="bookDto" items="${listByBookPublicationDate}">
 	<div>
-		<img src="https://www.dummyimage.com/100x150?text=Book">
+		<img src="./cover?bookId=${bookDto.bookId}" width="80">
 		<h2>${bookDto.bookTitle}</h2>
 		지은이 : ${bookDto.bookAuthor} <br>
 		출판사 : ${bookDto.bookPublisher} <br>
@@ -87,7 +91,7 @@
 	
 	<c:forEach var="bookDto" items="${listByBookGenre}">
 	<div>
-		<img src="https://www.dummyimage.com/100x150?text=Book">
+		<img src="./cover?bookId=${bookDto.bookId}" width="80">
 		<h2>${bookDto.bookTitle}</h2>
 		지은이 : ${bookDto.bookAuthor} <br>
 		출판사 : ${bookDto.bookPublisher} <br>
@@ -99,4 +103,8 @@
 	<hr>
 </c:if>
 
+
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
+
+

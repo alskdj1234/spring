@@ -6,23 +6,29 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <h1>
-<!-- 	 말머리 -->
+	<!-- 말머리가 있으면 표시 -->
 	<c:if test="${boardDto.boardHead != null}">
 	(${boardDto.boardHead})
 	</c:if>
-<!-- 	제목 -->
+	<!-- 제목 -->
 	${boardDto.boardTitle}
-<!-- 	수정 됨 표시 -->
-<c:if test="${boardDto.boardEtime != null}">
-
-
-(수정됨)
-</c:if>
+	<!-- 수정되었다면 추가 표시 -->
+	<c:if test="${boardDto.boardEtime != null}">
+	(수정됨)
+	</c:if>	
 </h1>
 
-<!-- 이름 누르면 상세로 -->
-<a href="/member/detail?memberId=${boardDto.boardWriter}">${boardDto.boardWriter}</a>
- <br><br>
+<!-- 목록과 동일하게 사용자 아이디 출력 -->
+<c:if test="${boardDto.boardWriter == null}">
+	(탈퇴한사용자)
+</c:if>
+<c:if test="${boardDto.boardWriter != null}">
+	<!-- 누르면 이동하도록 링크 구현 -->
+	<a href="/member/detail?memberId=${boardDto.boardWriter}">
+		${boardDto.boardWriter}
+	</a>
+</c:if>
+<br><br>
 <fmt:formatDate value="${boardDto.boardWtime}" pattern="yyyy-MM-dd HH:mm"></fmt:formatDate>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                    
 조회수 ${boardDto.boardReadcount}
@@ -45,10 +51,14 @@
 <a href="./write">글쓰기</a>
 <a href="./write?boardParent=${boardDto.boardNo}">답글쓰기</a>
 </c:if>
+
 <c:if test="${boardDto.boardWriter != null && boardDto.boardWriter == sessionScope.loginId}">
 <a href="./edit?boardNo=${boardDto.boardNo}">수정</a>
 <a href="./delete?boardNo=${boardDto.boardNo}">삭제</a>
 </c:if>
+
 <a href="./list">목록으로</a>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
+

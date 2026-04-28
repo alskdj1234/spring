@@ -27,9 +27,13 @@ public class BoardMapper implements RowMapper<BoardDto>{
 		boardDto.setBoardReadcount(rs.getLong("board_readcount"));
 		boardDto.setBoardLikecount(rs.getLong("board_likecount"));
 		boardDto.setBoardReplycount(rs.getLong("board_replycount"));
+		
 		boardDto.setBoardGroup(rs.getLong("board_group"));
-		boardDto.setBoardParent(rs.getObject("board_parent",Long.class));
+		boardDto.setBoardParent(rs.getObject("board_parent", Long.class));
 		boardDto.setBoardDepth(rs.getLong("board_depth"));
+		
 		return boardDto;
 	}
 }
+
+
