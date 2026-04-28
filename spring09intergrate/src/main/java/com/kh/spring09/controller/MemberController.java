@@ -43,41 +43,24 @@ public class MemberController {
 	private BoardDao boardDao;
 	@Autowired
 	private AttachService attachService;
-<<<<<<< HEAD
 	
 	//가입에 필요한 매핑들
-=======
-	// 가입에 필요한 매핑들
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 	@GetMapping("/join")
 	public String join() {
 		return "member/join";
 	}
 	@PostMapping("/join")
 	public String join(@ModelAttribute MemberDto memberDto,
-<<<<<<< HEAD
 						@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
 		//가입은 프로필과 관계없이 일단 진행하고
-=======
-			@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 		memberDao.insert(memberDto);
 		
-<<<<<<< HEAD
 		//프로필이 있으면 추가 등록 및 연결
 		if(!attach.isEmpty()) {
 			int attachNo = attachService.save(attach);
 			memberDao.connect(memberDto.getMemberId(), attachNo);
 		}
 		
-=======
-		//프사가 있으면 추가 등록 및 연결
-		
-		if(attach.isEmpty()==false) {
-			int attachNo = attachService.save(attach);
-			memberDao.connect(memberDto.getMemberId(), attachNo);
-		}
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
 		return "redirect:./joinFinish";
 		//return "redirect:/member/joinFinish";
 	}
@@ -366,7 +349,6 @@ public class MemberController {
 	}
 		
 }
-
 
 
 

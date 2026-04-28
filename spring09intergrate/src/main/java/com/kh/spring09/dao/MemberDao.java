@@ -145,16 +145,10 @@ public class MemberDao {
 		Object[] params = { memberId };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
-<<<<<<< HEAD
-	
-=======
 
-	public void connect(String memberId, int attachNo) {
-		String sql = "insert into memeber_profile(member_id, attach_no) values(?,?)";
-		Object[] params = { memberId,attachNo};
-		jdbcTemplate.update(sql,params);
-	}
->>>>>>> branch 'main' of https://github.com/alskdj1234/spring.git
+
+
+
 }
 
 
