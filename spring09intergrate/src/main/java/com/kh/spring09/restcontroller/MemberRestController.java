@@ -2,6 +2,7 @@ package com.kh.spring09.restcontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +22,17 @@ public class MemberRestController {
 	public boolean validId(@RequestParam String memberId) {
 		MemberDto memberDto = memberDao.selectOne(memberId);
 		return memberDto == null;
+	}
+	
+	@PostMapping("/validNickname")
+	public boolean validNickname(@RequestParam String memberNickname) {
+		MemberDto memberDto = memberDao.selectOnebyNickname(memberNickname);
+		return memberDto == null;
+	}
+	
+	@RequestMapping("/validEmail")
+	public boolean validEmail(@RequestParam String memberEmail) {
+		MemberDto memberDto = memberDao.selectOnebyEmail(memberEmail);
+		return memberDto == null; 
 	}
 }
