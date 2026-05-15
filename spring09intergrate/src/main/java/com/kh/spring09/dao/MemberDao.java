@@ -60,7 +60,7 @@ public class MemberDao {
 	}
 	
 	
-	//이메일 조회
+	//이메일 조회(not null unique인 경우에만 가능하다)
 		public MemberDto selectOnebyEmail(String memberEmail) {
 			String sql = "select * from member where member_email = ?";
 			Object[] params = { memberEmail };

@@ -30,7 +30,7 @@ public class MemberRestController {
 		return memberDto == null;
 	}
 	
-	@RequestMapping("/validEmail")
+	@PostMapping("/validEmail")
 	public boolean validEmail(@RequestParam String memberEmail) {
 		MemberDto memberDto = memberDao.selectOnebyEmail(memberEmail);
 		return memberDto == null; 
