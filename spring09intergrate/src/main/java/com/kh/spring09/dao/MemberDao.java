@@ -51,6 +51,14 @@ public class MemberDao {
 		return list.isEmpty() ? null : list.get(0);
 	}
 	
+	//닉네임 조회
+	public MemberDto selectOnebyNickname(String memberNickname) {
+		String sql = "select * from member where member_nickname = ?";
+		Object[] params = { memberNickname };
+		List<MemberDto> list = jdbcTemplate.query(sql, memberMapper, params);
+		return list.isEmpty() ? null : list.get(0);
+	}
+	
 	//수정 메소드
 	public boolean updateMemberLogin(String memberId) {
 		String sql = "update member set member_login=systimestamp where member_id=?";
