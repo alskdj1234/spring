@@ -5,7 +5,7 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<div class="container w-1200 mt-50 mb-50">
+<div class="container w-950 mt-50 mb-50">
     <div class="cell center mb-0">
         <h1 class="mb-0">자유 게시판</h1>
     </div>

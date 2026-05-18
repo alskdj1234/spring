@@ -5,6 +5,45 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
+<script type="text/javascript">
+	//좋아요 확인
+	$(function(){
+		var params = new URLSearchParams(location.search);
+		var memberTarget = params.get("memberId");
+		$.ajax({
+			url:"/rest/member/like-check",
+			method:"post",
+			data: {memberTarget : memberTarget},
+			success : function(response){
+				$(".fa-heart").removeClass("fa-solid fa-regular")
+							.addClass(response.action ? "fa-solid" : "fa-regular");
+				$(".heart-count").text(response.count);
+			}
+		});
+	});
+</script>
+
+<c:if test="${sessionScope.loginId != null && sessionScope.loginId != params.memberId}">
+<script type="text/javascript">
+	//좋아요 처리
+	$(function(){
+		var params = new URLSearchParams(location.search);
+		var memberTarget = params.get("memberId");
+		$(".fa-heart").on("click", function(){
+			$.ajax({
+				url:"/rest/member/like-action",
+				method:"post",
+				data: { memberTarget : memberTarget },
+				success : function(response){
+					$(".fa-heart").removeClass("fa-solid fa-regular")
+								.addClass(response.action ? "fa-solid" : "fa-regular");
+					$(".heart-count").text(response.count);
+				}
+			});
+		});
+	});
+</script>
+</c:if>
 
 
 <h1>${memberDto.memberNickname}님의 개인 정보</h1>
@@ -12,76 +51,10 @@
 <img src="./profile?memberId=${memberDto.memberId}" width="100" height="100"
 		style="border-radius:50%; box-shadow:0 0 1px 0 black">
 
-
-<script type="text/javascript">
-$(function(){
-	
-	var params= new URLSearchParams(location.search);
-	var memberTarget= params.get("memberId");
-	
-	$.ajax({
-		url:"/rest/member/like-check",
-		method:"post",
-		data:{memberTarget : memberTarget},
-		success: function(response){
-			$(".fa-heart").removeClass("fa-regular fa-solid")
-				.addClass(response.action ? "fa-solid" : "fa-regular");
-			
-			
-			$(".heart-count").text(response.count);
-			
-			
-		}
-		
-		
-		
-	});
-	
-	
-});
-
-</script>
-
-<c:if test="${sessionScope.loginId !=null && sessionScope.loginId != param.memberId}">
-<!-- 좋아요 토글 자바스크립트(회원만 가능) -->
-<script type="text/javascript">
- $(function(){
-	//주소창에 있는 파라미터 중 boardNo를 꺼내는 코드
-		var params = new URLSearchParams(window.location.search);
-		var memberTarget = params.get("memberId");
-	 
-	 //하트 클릭시 좋아요 토글이 발생하도록 처리
-	 $(".fa-heart").on("click",function(){
-		 $.ajax({
-			 url:"/rest/member/like-action",
-			 method:"post",
-			 data:{memberTarget : memberTarget},
-			 success:function(response){
-				 $(".fa-heart").removeClass("fa-regular fa-solid")
-					.addClass(response.action ? "fa-solid" : "fa-regular");
-		
-				$(".heart-count").text(response.count);
-				 
-			 }
-			 
-		 });
-		 
-	 });
- });
-
-</script>
-</c:if>
-
-
 <div class="mt-10">
-<i class="fa-solid fa-heart red"></i>
-<span class="heart-count">0</span>
-
-
+	<i class="fa-solid fa-heart red"></i>
+	<span class="heart-count">0</span>
 </div>
-
-
-
 
 <ul>
 	<li>아이디 : ${memberDto.memberId}</li>
