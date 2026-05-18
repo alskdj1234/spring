@@ -24,7 +24,7 @@ $(function(){
 						.addClass(response.action ? "fa-solid" : "fa-regular");
 			
 			$(".fa-heart").next(".heart-count").text(response.count);
-		}
+		};
 		
 	});
 	
@@ -32,6 +32,35 @@ $(function(){
 
 </script>
 
+<c:if test="${sessionScope.loginId !=null}">
+<!-- 좋아요 토글 자바스크립트(회원만 가능) -->
+<script type="text/javascript">
+ $(function(){
+	//주소창에 있는 파라미터 중 boardNo를 꺼내는 코드
+		var params = new URLSearchParams(window.location.search);
+		var boardNo = params.get("boardNo";)
+	 
+	 //하트 클릭시 좋아요 토글이 발생하도록 처리
+	 $(".fa-heart").on("click",function(){
+		 $.ajax({
+			 url:"/rest/board/like-action",
+			 method:"post",
+			 data:{boardNo : boardNo},
+			 success:function(response){
+				 $(".fa-heart").removeClass("fa-regular fa-solid")
+					.addClass(response.action ? "fa-solid" : "fa-regular");
+		
+				$(".fa-heart").next(".heart-count").text(response.count);
+				 
+			 }
+			 
+		 });
+		 
+	 });
+ });
+
+</script>
+</c:if>
 <div class="container w-950 mt-50 mb-50">
 	<div class="cell">
 		<div class="flex-area" style="align-items: end">

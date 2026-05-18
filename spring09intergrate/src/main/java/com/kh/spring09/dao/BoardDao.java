@@ -172,6 +172,14 @@ public class BoardDao {
 		Object[] params = { pageVO.getKeyword() };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
+	
+	public boolean updateBoardLikecount(int boardNo) {
+		String sql = "update board set board_likecount = ("
+				+ "select count(*) from board_like where board_no=?"
+				+ ") where board_no=?";
+		Object[] params = {boardNo,boardNo};
+		return jdbcTemplate.update(sql,params)>0;
+	}
 }
 
 

@@ -35,4 +35,6 @@ public class BoardLikeDao {
 		Object[] params = { boardNo};
 		return jdbcTemplate.queryForObject(sql, int.class,params);
 	}
+	
+	
 }
