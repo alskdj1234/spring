@@ -46,8 +46,8 @@ public long sequence() {
     }
     
     
-    public List<ReplyDto> select(long replyOrigin){
-    	String sql ="select * from reply where reply_origin=?";
+    public List<ReplyDto> selectList(long replyOrigin){
+    	String sql ="select * from reply where reply_origin=? order by reply_no asc";
     	Object[] params = {replyOrigin};
     	return jdbcTemplate.query(sql,replyMapper,params);
     }

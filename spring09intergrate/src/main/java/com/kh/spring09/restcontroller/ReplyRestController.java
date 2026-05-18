@@ -1,14 +1,16 @@
 package com.kh.spring09.restcontroller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring09.dao.ReplyDao;
 import com.kh.spring09.dto.ReplyDto;
-
 import com.kh.spring09.vo.ReplyVO;
 
 import jakarta.servlet.http.HttpSession;
@@ -34,5 +36,8 @@ public class ReplyRestController {
 
 	}
 	
-	
+	@PostMapping("/list")
+	public List<ReplyDto> list(@RequestParam long replyOrigin){
+		return replyDao.selectList(replyOrigin);
+	}
 }

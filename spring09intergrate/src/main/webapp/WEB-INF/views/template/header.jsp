@@ -19,6 +19,13 @@
         /* div { box-shadow: 0 0 0 1px gray ;} */
     </style>
     
+     <!-- lightpick cdn -->
+    <link href="https://cdn.jsdelivr.net/npm/lightpick@1.6.2/css/lightpick.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lightpick@1.6.2/lightpick.min.js"></script>
+    <!-- [수정] moment.js 공식 한국어(ko) 로케일 전용 정상 주소로 교체 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/locale/ko.min.js"></script>
+
     <!-- jQuery CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     
