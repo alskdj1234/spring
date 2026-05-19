@@ -31,3 +31,13 @@ public class MemberLikeDao {
 		return jdbcTemplate.queryForObject(sql, int.class, params);
 	}
 }
+
+
+
+
+
+
+
+
+
+

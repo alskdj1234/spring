@@ -20,7 +20,6 @@ public class CountryDto {
 	private String countryName;
 	private String countryCapital;
 	private long countryPopulation;
-	
 }
 
 

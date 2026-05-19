@@ -6,56 +6,105 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 
-<h1>${memberDto.memberNickname}님의 개인 정보</h1>
-
-<img src="./profile?memberId=${memberDto.memberId}" width="100" height="100"
-		style="border-radius:50%; box-shadow:0 0 1px 0 black">
-
-<ul>
-	<li>아이디 : ${memberDto.memberId}</li>
-	<li>이메일 : ${memberDto.memberEmail}</li>
-	<li>닉네임 : ${memberDto.memberNickname}</li>
-	<li>생년월일 : ${memberDto.memberBirth}</li>
-	<li>연락처 : ${memberDto.memberContact}</li>
-	<li>주소 : ${memberDto.memberPost} ${memberDto.memberAddress1} ${memberDto.memberAddress2}</li>
-	<li>등급 : ${memberDto.memberLevel}</li>
-	<li>상태메세지 : ${memberDto.memberMessage}</li>
-	<li>포인트 : <fmt:formatNumber value="${memberDto.memberPoint}" pattern="#,##0"/></li>
-	<li>가입일 : <fmt:formatDate value="${memberDto.memberJoin}" pattern="y년 M월 d일 E a h시 m분"/></li>
-	<li>최종로그인 : <fmt:formatDate value="${memberDto.memberLogin}" pattern="y년 M월 d일 E a h시 m분"/></li>
-<%-- 	<li>최종변경일 : <fmt:formatDate value="${memberDto.memberChange}" pattern="y년 M월 d일 E a h시 m분"/></li> --%>
-</ul>
-
-<hr>
-
-<h1>최근 로그인 이력 <a href="./history">더보기</a></h1>
-
-<table>
-	<thead>
-		<tr>
-			<th>일시</th>
-			<th>접속주소</th>
-			<th>에이전트</th>
-		</tr>
-	</thead>
-	<tbody>
-		<c:forEach var="memberHistoryDto" items="${loginHistory}">
-		<tr>
-			<td>${memberHistoryDto.memberHistoryTime}</td>
-			<td>${memberHistoryDto.memberHistoryAddress}</td>
-			<td>${memberHistoryDto.memberHistoryAgent}</td>
-		</tr>
-		</c:forEach>
-	</tbody>
-</table>
-
-
-<!-- <h2><a href="/member/password">비밀번호 변경하기</a></h2> -->
-<h2><a href="./password">비밀번호 변경하기</a></h2>
-<h2><a href="./edit">개인정보 변경하기</a></h2>
-<h2><a href="./goodbye">회원 탈퇴하기</a></h2>
+<div class="container w-950 mt-50 mb-50">
+	<div class="cell">
+		<h1>${memberDto.memberNickname}님의 개인 정보</h1>
+	</div>
+	
+	<div class="cell">
+		<div class="flex-area">
+			<div class="w-25">아이디</div>
+			<div class="w-75 blue">${memberDto.memberId}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">이메일</div>
+			<div class="w-75 blue">${memberDto.memberEmail}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">닉네임</div>
+			<div class="w-75 blue">${memberDto.memberNickname}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">생년월일</div>
+			<div class="w-75 blue">${memberDto.memberBirth}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">연락처</div>
+			<div class="w-75 blue">${memberDto.memberContact}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">주소</div>
+			<div class="w-75 blue">${memberDto.memberPost} ${memberDto.memberAddress1} ${memberDto.memberAddress2}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">회원등급</div>
+			<div class="w-75 blue">${memberDto.memberLevel}</div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">상태메세지</div>
+			<div class="w-75 blue"><pre>${memberDto.memberMessage}</pre></div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">포인트</div>
+			<div class="w-75 blue"><fmt:formatNumber value="${memberDto.memberPoint}" pattern="#,##0"/></div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">가입일</div>
+			<div class="w-75 blue"><fmt:formatDate value="${memberDto.memberJoin}" pattern="y년 M월 d일 E a h시 m분"/></div>
+		</div>
+		<div class="flex-area mt-10">
+			<div class="w-25">최종 로그인</div>
+			<div class="w-75 blue"><fmt:formatDate value="${memberDto.memberLogin}" pattern="y년 M월 d일 E a h시 m분"/></pre></div>
+		</div>
+	</div>
+	
+	<hr class="mt-50 mb-50">
+	
+	<div class="cell">
+		<div class="flex-area" style="align-items:end;">
+			<h1 class="mt-0 mb-0">최근 로그인 이력</h1>
+			<a class="link ms-20" href="./history">더보기 <i class="fa-solid fa-arrow-right"></i></a></h1>
+		</div>
+	</div>
+	<div class="cell">
+		<table class="table">
+			<thead>
+				<tr>
+					<th class="w-40">일시</th>
+					<th>접속주소</th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="memberHistoryDto" items="${loginHistory}">
+				<tr>
+					<td>
+						<fmt:formatDate value="${memberHistoryDto.memberHistoryTime}" pattern="y년 M월 d일 H시 m분"/>
+					</td>
+					<td>${memberHistoryDto.memberHistoryAddress}</td>
+				</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</div>
+	
+	<hr class="mt-50 mb-50">
+	
+	<div class="cell red">
+		<h1>계정 관리</h1>
+	</div>
+	<div class="cell mt-50">
+		<a href="./password" class="btn btn-negative w-100">비밀번호 변경하기</a>
+	</div>
+	<div class="cell mt-20">
+		<a href="./edit" class="btn btn-negative w-100">개인정보 변경하기</a>
+	</div>
+	<div class="cell mt-20">
+		<a href="./goodbye" class="btn btn-negative w-100">회원 탈퇴하기</a>
+	</div>
+</div>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
 
 
 

@@ -71,3 +71,9 @@ public class MemberRestController {
 		return LikeVO.builder().action(!current).count(count).build();
 	}
 }
+
+
+
+
+
+

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 //예외만 전담하여 처리하는 도구
 //- ControllerAdvice로 등록해서 Controller에게 간섭할 수 있도록 처리
 //- 컨트롤러가 일하기 전과 후에 추가할 코드를 구현할 수 있다
-@ControllerAdvice(annotations = {Controller.class})
-//@ControllerAdvice(basePackages = {"com.kh.spring09.controller"})
+//@ControllerAdvice(annotations = {Controller.class})
+@ControllerAdvice(basePackages = {"com.kh.spring09.controller"})
 public class ErrorController {
 	
 	//컨트롤러에서 예외가 생기면 그 예외에 대한 처리를 수행하는 매핑

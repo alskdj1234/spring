@@ -5,26 +5,33 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<h1>회원 관리</h1>
-
-<form action="./list" method="get">
-	<select name="column">
-		<option value="member_id" ${param.column == 'member_id' ? 'selected' : ''}>아이디</option>
-		<option value="member_email" ${param.column == 'member_email' ? 'selected' : ''}>이메일</option>
-		<option value="member_nickname" ${param.column == 'member_nickname' ? 'selected' : ''}>닉네임</option>
-		<option value="member_contact" ${param.column == 'member_contact' ? 'selected' : ''}>연락처</option>
-	</select>
-	<input type="text" name="keyword" value="${param.keyword}" required>
-	<button>검색</button>
-</form>
-
-<c:if test="${param.column != null && param.keyword != null}">
-
-	<h3>총 ${list.size()}명의 회원이 검색되었습니다</h3>
-
+<div class="container w-950 mt-50 mb-50">
+	<div class="cell">
+		<div class="flex-area" style="align-items:end;">
+			<h1 class="mt-0 mb-0">회원 관리</h1>
+			<form action="./list" method="get" style="margin-left:auto;">
+				<select name="column" class="field">
+					<option value="member_id" ${param.column == 'member_id' ? 'selected' : ''}>아이디</option>
+					<option value="member_email" ${param.column == 'member_email' ? 'selected' : ''}>이메일</option>
+					<option value="member_nickname" ${param.column == 'member_nickname' ? 'selected' : ''}>닉네임</option>
+					<option value="member_contact" ${param.column == 'member_contact' ? 'selected' : ''}>연락처</option>
+				</select>
+				<input type="text" name="keyword" class="field" value="${param.keyword}" required>
+				<button class="btn btn-positive">
+					<i class="fa-solid fa-magnifying-glass"></i>
+					<span>검색</span>
+				</button>
+			</form>
+		</div>
+	</div>
+	<c:if test="${param.column != null && param.keyword != null}">
+	<div class="cell">
+		<h3>총 <span class="red">${list.size()}</span>명의 회원이 검색되었습니다</h3>
+	</div>
+	
 	<c:if test="${list.size() > 0}">
-		
-		<table border="1" width="1000">
+	<div class="cell">
+		<table class="table">
 			<thead>
 				<tr>
 					<th>아이디</th>
@@ -48,15 +55,17 @@
 					<td>${memberDto.memberLevel}</td>
 					<td>${memberDto.memberBlock}</td>
 					<td>
-						<a href="./detail?memberId=${memberDto.memberId}">이동</a>
+						<a href="./detail?memberId=${memberDto.memberId}" class="link">이동</a>
 					</td>
 				</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-	
+	</div>
 	</c:if>
-</c:if>
+		
+	</c:if>
+</div>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
 

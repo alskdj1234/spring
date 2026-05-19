@@ -4,30 +4,58 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<h1>게시글 수정</h1>
-
 <form action="./edit" method="post">
-	<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
+<input type="hidden" name="boardNo" value="${boardDto.boardNo}">
+
+
+<div class="container w-950 mt-50 mb-50">
+	<div class="cell">
+		<h1 class="mt-0 mb-0">게시글 수정</h1>
+	</div>
+	<div class="cell">
+		타인에 대한 무분별한 비방글은 경고 없이 삭제될 수 있습니다
+	</div>
 	
-	제목 <input type="text" name="boardTitle" value="${boardDto.boardTitle}" required> <br><br>
-	구분
-	<select name="boardHead">
-		<option value="">선택 안함</option>
-		
-		<c:if test="${sessionScope.loginLevel == '마스터'}">
-		<!-- 공지는 관리자에게만 보이도록 해야함 -->
-		<option ${boardDto.boardHead == '공지' ? 'selected':''}>공지</option>
-		</c:if>
-		
-		<option ${boardDto.boardHead == '유머' ? 'selected':''}>유머</option>
-		<option ${boardDto.boardHead == '자유' ? 'selected':''}>자유</option>
-		<option ${boardDto.boardHead == '정보' ? 'selected':''}>정보</option>
-	</select>
-	<br><br>
-	내용 <textarea name="boardContent" rows="10" cols="80" 
-					required>${boardDto.boardContent}</textarea> <br><br>
-	<button type="submit">수정하기</button>
-	<a href="./list">목록으로 돌아가기</a>
+	<div class="cell mt-40">
+		<label>제목 <i class="fa-solid fa-asterisk red"></i></label>
+		<input type="text" name="boardTitle" required class="field w-100"
+				value="${boardDto.boardTitle}">
+	</div>
+	<div class="cell mb-0">
+		<label>구분</label>
+	</div>
+	<div class="cell mt-0">
+		<select name="boardHead" class="field">
+			<option value="">선택 안함</option>
+			
+			<c:if test="${sessionScope.loginLevel == '마스터'}">
+			<!-- 공지는 관리자에게만 보이도록 해야함 -->
+			<option ${boardDto.boardHead == '공지' ? 'selected':''}>공지</option>
+			</c:if>
+			
+			<option ${boardDto.boardHead == '유머' ? 'selected':''}>유머</option>
+			<option ${boardDto.boardHead == '자유' ? 'selected':''}>자유</option>
+			<option ${boardDto.boardHead == '정보' ? 'selected':''}>정보</option>
+		</select>
+	</div>
+	
+	<div class="cell">
+		<label>내용 <i class="fa-solid fa-asterisk red"></i></label>
+		<textarea name="boardContent" rows="10" required class="field w-100">${boardDto.boardContent}</textarea>
+	</div>
+	
+	<div class="cell mt-50 right">
+		<a href="./list" class="btn btn-neutral">
+			<i class="fa-solid fa-list"></i>
+			<span>목록으로 이동</span>
+		</a>
+		<button type="submit" class="btn btn-positive">
+			<i class="fa-solid fa-floppy-disk"></i>
+			<span>글 수정하기</span>
+		</button>
+	</div>
+</div>
+	
 </form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

@@ -6,19 +6,25 @@
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
 <style>
-	.reply-wrapper {
+	.reply-viewer, .reply-editor {
 		display:flex;
 		padding:15px;
 		box-shadow: 0 0 0 1px lightgray;
 	}
-	.reply-wrapper > .profile-wrapper {
+	.reply-viewer > .profile-wrapper ,
+	.reply-editor > .profile-wrapper
+	{
 		width:100px;
 	}
-	.reply-wrapper > .profile-wrapper > img {
+	.reply-viewer > .profile-wrapper > img ,
+	.reply-editor > .profile-wrapper > img
+	{
 		width:100%;
 		aspect-ratio:1/1;
 	}
-	.reply-wrapper > .content-wrapper {
+	.reply-viewer > .content-wrapper ,
+	.reply-editor > .content-wrapper
+	{
 		flex-grow: 1;
 	}
 </style>
@@ -92,7 +98,7 @@
 					//response는 백엔드에서의 List<ReplyDto>이다
 					//반복을 통해 템플릿을 배치하고 정보를 갈아끼운다
 					for(var i=0; i < response.length; i++) {
-						var template = $("#reply-template").text();//템플릿 불러와서 
+						var template = $("#reply-viewer-template").text();//템플릿 불러와서 
 						var html = $.parseHTML(template);//HTML로 변환하고
 						
 						//html에서 필요한 정보를 찾아서 변경
@@ -112,6 +118,16 @@
 						//var diff = moment().diff(replyWtime, 'minutes');
 						//var wtime = diff >= 60 ? replyWtime.format("YYYY-MM-DD HH:mm") : replyWtime.fromNow();
 						$(html).find(".reply-wtime").text(wtime);
+						
+						//상황에 따른 화면 제거
+						//[1] owner가 false면 수정삭제 버튼 영역을 지운다
+						if(response[i].owner == false) {//소유자가 아닐 때
+							$(html).find(".button-wrapper").remove();
+						}
+						//[2] writer가 false면 작성자라는 글자 영역을 지운다
+						if(response[i].writer == false) {
+							$(html).find(".board-writer").remove();
+						}
 						
 						$(".reply-area").append(html);//화면에 추가
 					}
@@ -149,7 +165,7 @@
 			if(choice == false) return;
 			
 			//댓글 영역 최상단에 data-key라는 이름으로 작성된 번호를 가져온다
-			var replyNo = $(this).closest(".reply-wrapper").data("key");
+			var replyNo = $(this).closest(".reply-viewer").data("key");
 			
 			$.ajax({
 				url: "/rest/reply/delete",
@@ -160,17 +176,78 @@
 				}
 			});
 		});
+		
+		//목표 : 수정버튼을 누르면 수정화면을 보여주도록 처리
+		//$(".btn-reply-edit").on("click", function(){});//작동하지 않음(시기가 안맞음)
+		$(".reply-area").on("click", ".btn-reply-edit", function(){//영역 감시
+// 			기존에 열려있는 모든 댓글 수정화면을 제거
+			$(".reply-editor").prev(".reply-viewer").show();
+			$(".reply-editor").remove();
+			
+// 			기존 reply-viewer의 정보를 불러온다
+			var replyViewer = $(this).closest(".reply-viewer");
+			var key = replyViewer.data("key");
+			var src = replyViewer.find(".image-profile").attr("src");
+			var replyWriter = replyViewer.find(".reply-writer").text();
+			var replyContent = replyViewer.find(".reply-content").text();
+			var replyWtime = replyViewer.find(".reply-wtime").text();
+			
+// 			현재 수정하려는 댓글 화면에 대한 처리			
+			var template = $("#reply-editor-template").text();//수정용 템플릿 글자 불러오기
+			var html = $.parseHTML(template);//HTML로 변환해서
+// 			필요한 정보를 설정하고(프로필, 작성자, 내용, 작성시각, + 댓글번호)
+			$(html).attr("data-key", key);
+			$(html).find(".image-profile").attr("src", src);
+			$(html).find(".reply-writer").text(replyWriter);
+			$(html).find(".field-reply-edit").val(replyContent);
+			$(html).find(".reply-wtime").text(replyWtime);
+			
+// 			$(this).closest(".reply-viewer").before(html);
+// 			$(this).closest(".reply-viewer").prepend(html);
+// 			$(this).closest(".reply-viewer").append(html); 
+// 			$(this).closest(".reply-viewer").after(html);
+			$(this).closest(".reply-viewer").hide().after(html);
+		});
+		
+		//목표 : 수정취소버튼을 누르면 수정화면을 삭제하고 표시화면을 출력
+		$(".reply-area").on("click", ".btn-reply-cancel", function(){
+			$(this).closest(".reply-editor").prev(".reply-viewer").show();
+			$(this).closest(".reply-editor").remove();
+		});
+		
+		//목표 : 수정완료버튼을 누르면 ajax통신을 이용해 수정요청을 한 뒤 목록 갱신
+		$(".reply-area").on("click", ".btn-reply-save", function(){
+			var replyNo = $(this).closest(".reply-editor").data("key");
+			var replyContent = $(this).closest(".reply-editor")
+										.find(".field-reply-edit").val();
+			if(replyContent.length == 0) return;
+			
+			$.ajax({
+				url:"/rest/reply/edit",
+				method:"post",
+				data: { 
+					replyNo : replyNo,
+					replyContent: replyContent
+				},
+				success: function(){
+					loadList();//목록 갱신
+				}
+			});
+		});
 	});
 </script>
-<script type="text/template" id="reply-template">
-	<div class="reply-wrapper">
+<script type="text/template" id="reply-viewer-template">
+	<div class="reply-viewer">
 		<div class="profile-wrapper">
 			<img src="https://picsum.photos/500" class="image-circle image-profile">
 		</div>
 		<div class="content-wrapper ms-20">
-			<h3 class="mt-0 mb-0 reply-writer">작성자</h3>
+			<h3 class="mt-0 mb-0">
+				<span class="reply-writer">아이디</span>
+				<span class="board-writer red">(작성자)</span>
+			</h3>
 			<pre class="mt-10 mb-0 reply-content">내용 샘플</pre>
-			<div class="mt-20 flex-area">
+			<div class="mt-20 flex-area"> 
 				<div class="w-50">
 					<span class="gray reply-wtime">yyyy-MM-dd HH:mm</span>
 				</div>
@@ -182,7 +259,26 @@
 		</div>
 	</div>
 </script>
-
+<script type="text/template" id="reply-editor-template">
+	<div class="reply-editor">
+		<div class="profile-wrapper">
+			<img src="https://picsum.photos/500" class="image-circle image-profile">
+		</div>
+		<div class="content-wrapper ms-20">
+			<h3 class="mt-0 mb-10 reply-writer">작성자</h3>
+			<textarea class="field w-100 field-reply-edit" rows="3">내용 샘플</textarea>
+			<div class="mt-10 flex-area">
+				<div class="w-50">
+					<span class="gray reply-wtime">yyyy-MM-dd HH:mm</span>
+				</div>
+				<div class="button-wrapper right w-50">
+					<i class="fa-solid fa-xmark red btn-reply-cancel"></i>
+					<i class="fa-solid fa-check blue btn-reply-save"></i>
+				</div>
+			</div>
+		</div>
+	</div>
+</script>
 <div class="container w-950 mt-50 mb-50">
 	<div class="cell">
 		<div class="flex-area" style="align-items:end">
@@ -246,18 +342,45 @@
 	
 	<!-- 댓글 관련 정보가 표시될 자리 -->
 	<div class="cell reply-area">
-<!-- 		<div class="reply-wrapper"> -->
-<!-- 			<div class="profile-wrapper"> -->
-<!-- 				<img src="https://picsum.photos/500" class="image-circle"> -->
-<!-- 			</div> -->
-<!-- 			<div class="content-wrapper ms-20"> -->
-<!-- 				<h3 class="mt-0 mb-0">작성자</h3> -->
-<!-- 				<pre class="mt-10 mb-0">내용 샘플</pre> -->
-<!-- 				<div class="mt-20"> -->
-<!-- 					<span class="gray">yyyy-MM-dd HH:mm</span> -->
-<!-- 				</div> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
+<!-- 		표시용 더미 화면 -->
+		<div class="reply-viewer">
+			<div class="profile-wrapper">
+				<img src="https://picsum.photos/500" class="image-circle image-profile">
+			</div>
+			<div class="content-wrapper ms-20">
+				<h3 class="mt-0 mb-0 reply-writer">작성자</h3>
+				<pre class="mt-10 mb-0 reply-content">내용 샘플</pre>
+				<div class="mt-20 flex-area">
+					<div class="w-50">
+						<span class="gray reply-wtime">yyyy-MM-dd HH:mm</span>
+					</div>
+					<div class="button-wrapper right w-50">
+						<i class="fa-solid fa-edit orange btn-reply-edit"></i>
+						<i class="fa-solid fa-trash red btn-reply-delete"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+<!-- 		수정용 더미화면 -->
+		<div class="reply-editor">
+			<div class="profile-wrapper">
+				<img src="https://picsum.photos/500" class="image-circle image-profile">
+			</div>
+			<div class="content-wrapper ms-20">
+				<h3 class="mt-0 mb-10 reply-writer">작성자</h3>
+				<textarea class="field w-100 field-reply-edit" rows="3">내용 샘플</textarea>
+				<div class="mt-10 flex-area">
+					<div class="w-50">
+						<span class="gray reply-wtime">yyyy-MM-dd HH:mm</span>
+					</div>
+					<div class="button-wrapper right w-50">
+						<i class="fa-solid fa-xmark red btn-reply-cancel"></i>
+						<i class="fa-solid fa-check blue btn-reply-save"></i>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	
 	<c:if test="${sessionScope.loginId != null}">
@@ -306,4 +429,5 @@
 
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>
+
 

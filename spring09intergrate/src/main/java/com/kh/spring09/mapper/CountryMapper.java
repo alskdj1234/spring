@@ -19,7 +19,6 @@ public class CountryMapper implements RowMapper<CountryDto>{
 		countryDto.setCountryName(rs.getString("country_name"));
 		countryDto.setCountryCapital(rs.getString("country_capital"));
 		countryDto.setCountryPopulation(rs.getLong("country_population"));
-		
 		return countryDto;
 	}
 }

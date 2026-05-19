@@ -4,38 +4,65 @@
 
 <jsp:include page="/WEB-INF/views/template/header.jsp"></jsp:include>
 
-<!-- 제목을 답글일 때와 새글일 때로 나눠서 처리 -->
-<c:if test="${param.boardParent == null}">
-<h1>신규 글 작성</h1>
-</c:if>
-<c:if test="${param.boardParent != null}">
-<h1>답변 글 작성</h1>
-</c:if>
-
-타인에 대한 무분별한 비방글은 경고 없이 삭제될 수 있습니다
-
 <form action="./write" method="post">
-	<c:if test="${param.boardParent != null}">
-		<input type="hidden" name="boardParent" value="${param.boardParent}">
-	</c:if>
-	
-	제목 <input type="text" name="boardTitle" required> <br><br>
-	구분
-	<select name="boardHead">
-		<option value="">선택 안함</option>
-		
-		<c:if test="${sessionScope.loginLevel == '마스터'}">
-		<!-- 공지는 관리자에게만 보이도록 해야함 -->
-		<option>공지</option>
+<c:if test="${param.boardParent != null}">
+	<input type="hidden" name="boardParent" value="${param.boardParent}">
+</c:if>
+
+
+<div class="container w-950 mt-50 mb-50">
+	<div class="cell">
+		<!-- 제목을 답글일 때와 새글일 때로 나눠서 처리 -->
+		<c:if test="${param.boardParent == null}">
+		<h1 class="mt-0 mb-0">신규 글 작성</h1>
 		</c:if>
-		
-		<option>정보</option>
-		<option>유머</option>	
-		<option>자유</option>		
-	</select>
-	<br><br>
-	내용 <textarea name="boardContent" rows="10" cols="80"></textarea> <br><br>
-	<button>글 등록하기</button>
+		<c:if test="${param.boardParent != null}">
+		<h1 class="mt-0 mb-0">답변 글 작성</h1>
+		</c:if>
+	</div>
+	<div class="cell">
+		타인에 대한 무분별한 비방글은 경고 없이 삭제될 수 있습니다
+	</div>
+	
+	<div class="cell mt-40">
+		<label>제목 <i class="fa-solid fa-asterisk red"></i></label>
+		<input type="text" name="boardTitle" required class="field w-100">
+	</div>
+	<div class="cell mb-0">
+		<label>구분</label>
+	</div>
+	<div class="cell mt-0">
+		<select name="boardHead" class="field">
+			<option value="">선택 안함</option>
+			
+			<c:if test="${sessionScope.loginLevel == '마스터'}">
+			<!-- 공지는 관리자에게만 보이도록 해야함 -->
+			<option>공지</option>
+			</c:if>
+			
+			<option>정보</option>
+			<option>유머</option>	
+			<option>자유</option>		
+		</select>
+	</div>
+	
+	<div class="cell">
+		<label>내용 <i class="fa-solid fa-asterisk red"></i></label>
+		<textarea name="boardContent" rows="10" required class="field w-100"></textarea>
+	</div>
+	
+	<div class="cell mt-50 right">
+		<a href="./list" class="btn btn-neutral">
+			<i class="fa-solid fa-list"></i>
+			<span>목록으로 이동</span>
+		</a>
+		<button type="submit" class="btn btn-positive">
+			<i class="fa-solid fa-floppy-disk"></i>
+			<span>글 등록하기</span>
+		</button>
+	</div>
+</div>
+	
 </form>
 
 <jsp:include page="/WEB-INF/views/template/footer.jsp"></jsp:include>

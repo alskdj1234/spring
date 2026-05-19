@@ -34,6 +34,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 	private BoardReadInterceptor3 boardReadInterceptor3;//세션사용
 	@Autowired
 	private BoardReadInterceptor4 boardReadInterceptor4;//DB사용
+	
+	@Autowired
+	private ReplyOwnerInterceptor replyOwnerInterceptor;//댓글 소유자 검사용
 
 	//가져온 인터셉터를 특정 주소에서 일하도록 설정
 	@Override
@@ -66,10 +69,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 					,"/member/**"//member 전체
 					,"/admin/**"//admin 전체
 					,"/board/write"//게시글 등록 페이지
-					,"/rest/*/like-action"//게시글 좋아요 처리 매핑
-					,"rest/reply/write"
-						
-						)
+					,"/rest/**/like-action"//좋아요 처리 매핑
+					,"/rest/reply/write"//댓글 등록 매핑
+				)
 				.excludePathPatterns(
 					"/lecture/list"
 					,"/lecture/detail"
@@ -99,6 +101,13 @@ public class InterceptorConfiguration implements WebMvcConfigurer{
 		//조회수 증가 처리를 하는 인터셉터 설정
 		registry.addInterceptor(boardReadInterceptor4)
 				.addPathPatterns("/board/detail");
+		
+		//댓글 소유자만 수정 삭제가 가능하도록 설정
+		registry.addInterceptor(replyOwnerInterceptor)
+				.addPathPatterns(
+					"/rest/reply/edit"
+					,"/rest/reply/delete"
+				);
 	}
 	
 }
