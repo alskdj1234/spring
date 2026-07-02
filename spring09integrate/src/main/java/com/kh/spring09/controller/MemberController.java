@@ -15,15 +15,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.kh.spring09.Spring09integrateApplication;
 import com.kh.spring09.dao.BoardDao;
+import com.kh.spring09.dao.CertDao;
 import com.kh.spring09.dao.MemberDao;
 import com.kh.spring09.dao.MemberExitDao;
 import com.kh.spring09.dao.MemberHistoryDao;
 import com.kh.spring09.dto.BoardDto;
+import com.kh.spring09.dto.CertDto;
 import com.kh.spring09.dto.MemberDto;
 import com.kh.spring09.dto.MemberExitDto;
 import com.kh.spring09.dto.MemberHistoryDto;
+import com.kh.spring09.exception.GetOutException;
 import com.kh.spring09.exception.TargetNotfoundException;
 import com.kh.spring09.service.AttachService;
 import com.kh.spring09.service.EmailService;
@@ -48,6 +52,8 @@ public class MemberController {
 	private AttachService attachService;
 	@Autowired
 	private EmailService emailService;
+	@Autowired
+	private CertDao certDao;
 
     MemberController(Spring09integrateApplication spring09integrateApplication) {
         this.spring09integrateApplication = spring09integrateApplication;
@@ -61,6 +67,11 @@ public class MemberController {
 	@PostMapping("/join")
 	public String join(@ModelAttribute MemberDto memberDto,
 						@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
+		//이메일 인증내역이 정상적으로 존재하는지 검사해서 아닌 경우를 차단
+		CertDto certDto = certDao.selectOne(memberDto.getMemberEmail());
+		if(certDto == null) throw new GetOutException();//인증기록 없으면 내보내기
+		if(!certDto.isComplete()) throw new GetOutException();//인증 완료 안됐으면 내보내기
+		certDao.delete(certDto.getCertEmail());//인증내역 지우기
 		//가입은 프로필과 관계없이 일단 진행하고
 		memberDao.insert(memberDto);
 		

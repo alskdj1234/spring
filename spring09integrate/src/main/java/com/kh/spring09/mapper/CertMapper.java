@@ -16,7 +16,8 @@ public class CertMapper implements RowMapper<CertDto>{
 					.certEmail(rs.getString("cert_email"))
 					.certNumber(rs.getString("cert_number"))
 					.certTime(rs.getTimestamp("cert_time"))
-				.build();
+					.certYn(rs.getString("cert_yn"))
+					.build();
 	}
 }
 

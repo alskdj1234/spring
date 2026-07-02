@@ -12,4 +12,9 @@ public class CertDto {
 	private String certEmail;
 	private String certNumber;
 	private Timestamp certTime;
+	private String certYn;
+	
+	public boolean isComplete() {
+		return certYn != null && certYn.equals("Y");
+	}
 }
