@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="mapper.book">
+  	<insert id ="add">
+  		insert into country(
+  		country_no, country_name, country.region, country_capital, country_population
+  		)
+  		values(
+  		<!-- 마이바티스는 ?가 아니라 네이밍 홀더를 사용한다  -->
+  		
+  		#{countryNo}, #{countryName}, #{countryRegion}, #{countryRegion}, #{countryCapital,#{countryPopulation)
+  	</insert>
+  	<!-- 조회는 등ㄹ고과 다르게 결과물의 형태를 알려줘야 한다
+  		 결과물의 형태는 반드시 설정에서 등록된 패키지 내부에 있어야 함 -->
+  	<select id = "list" resultType="CountryDto">
+  		select * from country order by country_no asc
+  	</select>
+  	
+  	<select id = "find" resultType="CountryDto">
+  		select * from country where countryNo=#{countryNo}
+  	</select>
+  </mapper>
