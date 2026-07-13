@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ListRequestVO {
-	private int lastNo = 0;
+	private Integer lastNo;
 	private int size = 10;
 }

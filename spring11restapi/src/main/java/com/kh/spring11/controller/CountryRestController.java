@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.spring11.dao.CountryDao;
 import com.kh.spring11.dto.CountryDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.CountryComplexRequestVO;
 import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
 
@@ -25,6 +26,8 @@ import com.kh.spring11.vo.ListVO;
 @RequestMapping("/api/country")
 public class CountryRestController {
 	
+	//인터페이스를 Autowired하면 상속받은 클래스 중 등록된 클래스의 객체가 주입된다
+	//(주의) 등록은 반드시 하나만 되어 있어야 한다 (여러개를 두고 선택하려면 추가 작업이 필요)
 	@Autowired
 	private CountryDao countryDao;
 	
@@ -63,9 +66,8 @@ public class CountryRestController {
 	
 	@PostMapping("/list-more")
 	public ListVO listForReact(@RequestBody ListRequestVO vo) {
-		List list = countryDao.selectListForReact(
-								vo.getLastNo(), vo.getSize());
-		int count = countryDao.countForReact(vo.getLastNo());
+		List list = countryDao.selectList(vo.getLastNo(), vo.getSize());
+		int count = countryDao.count(vo.getLastNo());
 		
 		return ListVO.builder()
 			.list(list)
@@ -130,15 +132,21 @@ public class CountryRestController {
 		
 		return findCountryDto;
 	}
+	
+	@GetMapping("/countryName/{keyword}")
+	public List<CountryDto> searchByKeyword(@PathVariable String keyword) {
+		return countryDao.searchByCountryName(keyword);
+	}
+	
+	@PostMapping("/complexSearch")
+	public ListVO complexSearch(@RequestBody CountryComplexRequestVO vo) {
+		int count = countryDao.complexSearchCount(vo);
+		boolean last = vo.getSize() == null ? true : count <= vo.getSize();
+		
+		return ListVO.builder()
+					.list(countryDao.complexSearch(vo))
+					.last(last)
+				.build();
+	}
+	
 }
-
-
-
-
-
-
-
-
-
-
-

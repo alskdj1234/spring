@@ -21,6 +21,8 @@ import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.LectureInsertVO;
 import com.kh.spring11.vo.LectureUpdateAllVO;
 import com.kh.spring11.vo.LectureUpdateUnitVO;
+import com.kh.spring11.vo.ListRequestVO;
+import com.kh.spring11.vo.ListVO;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -96,7 +98,17 @@ public class LectureRestController {
 	
 	@GetMapping("/")
 	public List<LectureDto> list() {
-		return lectureDao.selectList(1, Integer.MAX_VALUE);
+		return lectureDao.selectList(null, 10);
+	}
+	
+	@PostMapping("/list-more")
+	public ListVO listMore(@RequestBody ListRequestVO vo) {
+		List list = lectureDao.selectList(vo.getLastNo(), vo.getSize());
+		int count = lectureDao.count(vo.getLastNo());
+		return ListVO.builder()
+					.list(list)
+					.last(vo.getSize() >= count)
+				.build();
 	}
 	
 	@Operation(

@@ -1,25 +1,280 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
-  <mapper namespace="mapper.book">
-  	<insert id ="add">
-  		insert into country(
-  		country_no, country_name, country.region, country_capital, country_population
-  		)
-  		values(
-  		<!-- 마이바티스는 ?가 아니라 네이밍 홀더를 사용한다  -->
-  		
-  		#{countryNo}, #{countryName}, #{countryRegion}, #{countryRegion}, #{countryCapital,#{countryPopulation)
-  	</insert>
-  	<!-- 조회는 등ㄹ고과 다르게 결과물의 형태를 알려줘야 한다
-  		 결과물의 형태는 반드시 설정에서 등록된 패키지 내부에 있어야 함 -->
-  	<select id = "list" resultType="CountryDto">
-  		select * from country order by country_no asc
-  	</select>
-  	
-  	<select id = "find" resultType="CountryDto">
-  		select * from country where countryNo=#{countryNo}
-  	</select>
-  </mapper>
+<mapper namespace="mapper.country">
+	
+	<select id="sequence" resultType="int">
+		select country_seq.nextval from dual
+	</select>
+	<insert id="add">
+		insert into country(
+			country_no, country_name, country_region,
+			country_capital, country_population
+		)
+		values(
+			<!-- 마이바티스는 위치 홀더(?)가 아니라 네이밍 홀더를 사용한다 -->
+			#{countryNo}, #{countryName}, #{countryRegion}, 
+			#{countryCapital}, #{countryPopulation}
+		)
+	</insert>
+	
+	<!-- 
+		조회는 등록과 다르게 결과물의 형태를 알려줘야 한다(그래야 자동으로 변환함)
+		결과물의 형태는 반드시 설정에서 등록된 패키지 내부에 있어야 함 
+	-->
+	<select id="list" resultType="CountryDto">
+		select * from country order by country_no asc
+	</select>
+	
+	<select id="find" resultType="CountryDto">
+		select * from country where country_no = #{countryNo}
+	</select>
+	
+	<!-- 
+		수정
+		1. 전체수정 (PUT매핑 대응)
+		2. 부분수정 (PATCH매핑 대응) 
+	-->
+	<update id="updateAll">
+		update country 
+		set country_name = #{countryName}, 
+			country_region = #{countryRegion},
+			country_capital = #{countryCapital}, 
+			country_population = #{countryPopulation}
+		where country_no = #{countryNo}
+	</update>
+	<update id="updateUnit">
+		update country
+		<!-- 
+			mybatis에서 제공하는 선택적 수정 기능
+			<set> 내부에 <if>로 각 데이터가 수정되야 하는 상황을 명시
+			단, 자바코드와 유사하지만 다음 기호는 쓸 수 없다
+			1. && 대신 and라고 사용
+			2. || 대신 or이라고 사용 
+			
+			메소드 등도 호출 가능 (권장하진 않음)
+			
+			JSTL의 c태그 기능 대부분이 존재
+			<if>, <choose>+<when>+<otherwise>, <forEach>
+		--> 
+		<set> 
+			<if test="countryName != null">
+			country_name = #{countryName},
+			</if> 
+			<if test="countryRegion != null">
+			country_region = #{countryRegion},
+			</if>
+			<if test="countryCapital != null">
+			country_capital = #{countryCapital},
+			</if> 
+			<if test="countryPopulation > 0">
+			country_population = #{countryPopulation},
+			</if>
+		</set>
+		where country_no = #{countryNo}
+	</update>		
+	
+	<!-- 삭제 -->
+	<delete id="delete">
+		delete country where country_no = #{countryNo}
+	</delete>
+	
+	<!-- 더보기 방식의 조회와 개수세기 -->
+	<select id="listMore" resultType="CountryDto">
+		select * from (
+			select rownum rn, TMP.* from (
+				select * from country 
+				<if test="lastCountryNo != null and lastCountryNo > 0">
+				where country_no > #{lastCountryNo}
+				</if> 
+				order by country_no asc
+			)TMP
+		) where rn between 1 and #{size}
+	</select>
+	<select id="countMore" resultType="int">
+		select count(*) from country where country_no > #{countryNo}
+	</select>
+	
+	<!-- 시작검색 (검색창 연관검색어에 활용) -->
+	<select id="searchByKeyword" resultType="CountryDto">
+		select * from country
+<!-- 		where instr(country_name, #{keyword}) = 1 -->
+		where country_name like #{keyword} || '%'
+		order by country_name asc, country_no asc
+	</select>
+	
+	
+	<!-- 복합 검색 -->
+	<select id="complexSearch" resultType="CountryDto">
+	with temp_list as (
+		select rownum rn, TMP.* from (
+	
+			select * from country
+			
+	<!-- 	값이 존재할 경우 where구문이 생기도록 처리 -->
+			<where>
+			
+			<!-- 대륙명은 일치하는 경우만 검색 -->
+			<!-- 
+			<if test="countryRegion != null">
+			and country_region = #{countryRegion}
+			</if>
+			-->
+			
+			<!-- 대륙명을 리스트형태로 받아서 처리 -->
+			<if test="countryRegions != null and countryRegions.size() > 0">
+			and country_region in
+			<!-- item(변수명), collection(저장소), seperator(구분자),
+				open(최초출력값), close(최종출력값) -->
+			<foreach item="countryRegion" collection="countryRegions"
+					separator="," open="(" close=")">
+				#{countryRegion}
+			</foreach>
+			</if>
+			
+			<!-- 국가명은 시작 부분을 검색 -->
+			<if test="countryName != null">
+			and country_name like #{countryName} || '%'
+			</if>
+			<!-- 수도명은 포함 검색 -->
+			<if test="countryCapital != null">
+			and instr(country_capital, #{countryCapital}) > 0
+			</if>
+			<!-- 인구수는 범위 검색 -->
+			<choose>
+				<when test="minCountryPopulation != null and maxCountryPopulation != null">
+					and country_population between 
+					#{minCountryPopulation} and #{maxCountryPopulation}
+				</when>
+				<when test="minCountryPopulation != null">
+					<![CDATA[
+					and country_population >= #{minCountryPopulation}
+					]]>
+				</when>
+				<when test="maxCountryPopulation != null">
+					<![CDATA[
+					and country_population <= #{maxCountryPopulation}
+					]]>
+				</when>
+	<!-- 			<otherwise></otherwise> -->
+			</choose>
+			</where>
+			
+			<!-- 
+				정렬 처리 : orders 항목에 의해 작성
+				- orders가 없으면 PK 정렬만 수행 (order by country_no asc)
+				- orders가 있으면 PK 정렬 앞에 작성 
+				- #으로 쓰면 데이터에 맞게 따옴표 추가 또는 글자 변환등을 자동으로 수행(동적 홀더)
+				- $로 쓰면 아무런 추가 작업 없이 있는 그대로의 값을 구문에 출력(정적 홀더)
+			-->
+			order by 
+			<if test="orders != null">
+				<foreach item="order" collection="orders">
+				${order},
+				</foreach>
+			</if>
+			country_no asc
+		
+			)TMP
+		)
+		select * from (
+			select * from temp_list 
+			<if test="lastCountryNo != null">
+			<![CDATA[
+			where rn > (
+				select rn from temp_list 
+				where country_no=#{lastCountryNo}
+			)
+			]]>
+			</if>
+		) 
+		<if test="size != null">
+		<![CDATA[
+		where rownum <= #{size}
+		]]>
+		</if>
+		
+	</select>
+	
+	<!-- 복합 검색 카운트 -->
+	<select id="complexSearchCount" resultType="int">
+	with temp_list as (
+		select rownum rn, TMP.* from (
+	
+			select * from country
+			
+			<where>
+			<!-- 대륙명을 리스트형태로 받아서 처리 -->
+			<if test="countryRegions != null and countryRegions.size() > 0">
+			and country_region in
+			<!-- item(변수명), collection(저장소), seperator(구분자),
+				open(최초출력값), close(최종출력값) -->
+			<foreach item="countryRegion" collection="countryRegions"
+					separator="," open="(" close=")">
+				#{countryRegion}
+			</foreach>
+			</if>
+			
+			<!-- 국가명은 시작 부분을 검색 -->
+			<if test="countryName != null">
+			and country_name like #{countryName} || '%'
+			</if>
+			<!-- 수도명은 포함 검색 -->
+			<if test="countryCapital != null">
+			and instr(country_capital, #{countryCapital}) > 0
+			</if>
+			<!-- 인구수는 범위 검색 -->
+			<choose>
+				<when test="minCountryPopulation != null and maxCountryPopulation != null">
+					and country_population between 
+					#{minCountryPopulation} and #{maxCountryPopulation}
+				</when>
+				<when test="minCountryPopulation != null">
+					<![CDATA[
+					and country_population >= #{minCountryPopulation}
+					]]>
+				</when>
+				<when test="maxCountryPopulation != null">
+					<![CDATA[
+					and country_population <= #{maxCountryPopulation}
+					]]>
+				</when>
+	<!-- 			<otherwise></otherwise> -->
+			</choose>
+			</where>
+			
+			<!-- 
+				정렬 처리 : orders 항목에 의해 작성
+				- orders가 없으면 PK 정렬만 수행 (order by country_no asc)
+				- orders가 있으면 PK 정렬 앞에 작성 
+				- #으로 쓰면 데이터에 맞게 따옴표 추가 또는 글자 변환등을 자동으로 수행(동적 홀더)
+				- $로 쓰면 아무런 추가 작업 없이 있는 그대로의 값을 구문에 출력(정적 홀더)
+			-->
+			order by 
+			<if test="orders != null">
+				<foreach item="order" collection="orders">
+				${order},
+				</foreach>
+			</if>
+			country_no asc
+		
+			)TMP
+		)
+		select count(*) from (
+			select * from temp_list 
+			<if test="lastCountryNo != null">
+			<![CDATA[
+			where rn > (
+				select rn from temp_list 
+				where country_no=#{lastCountryNo}
+			)
+			]]>
+			</if>
+		) 
+		
+	</select>
+	
+</mapper>

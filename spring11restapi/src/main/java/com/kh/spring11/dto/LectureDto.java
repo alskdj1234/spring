@@ -7,7 +7,7 @@ public class LectureDto {
 	private int lectureNo;
 	private String lectureTitle;
 	private String lectureCategory;
-	private int lectureDuration;
-	private int lecturePrice;
+	private Integer lectureDuration;
+	private Integer lecturePrice;
 	private String lectureType;
 }

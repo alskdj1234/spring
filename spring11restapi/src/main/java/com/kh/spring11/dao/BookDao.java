@@ -129,6 +129,10 @@ public class BookDao {
 	}
 	
 	public int countForReact(int lastBookId) {
+		if(lastBookId == 0) {
+			lastBookId = Integer.MAX_VALUE;
+		}
+		
 		String sql = "select count(*) from book where book_id < ?";
 		Object[] params = { lastBookId };
 		return jdbcTemplate.queryForObject(sql, int.class, params);
@@ -138,3 +142,14 @@ public class BookDao {
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+

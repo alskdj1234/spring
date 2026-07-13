@@ -1,34 +1,26 @@
 package com.kh.spring11.mybatis;
 
-import java.util.List;
-
 import org.apache.ibatis.session.SqlSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.kh.spring11.dto.CountryDto;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @SpringBootTest
-public class Test02국가조회 {
+public class Test05국가삭제 {
 	@Autowired
 	private SqlSession sqlSession;
 	
 	@Test
 	public void test() {
-		List<CountryDto> list = sqlSession.selectList("mapper.country.list");
-		System.out.println(list.size());
-		for(CountryDto countryDto : list) {
-			System.out.println(countryDto);
-		}
+		int countryNo = 1235;
+		int rows = sqlSession.delete("mapper.country.delete", countryNo);
+		
+		log.debug("결과 : {}", rows > 0);
 	}
 }
-
-
-
-
-
-
 
 
 

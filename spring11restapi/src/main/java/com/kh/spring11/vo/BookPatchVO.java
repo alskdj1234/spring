@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class BookPatchVO {
-	
 	private String bookTitle;
 	private String bookAuthor;
 	private String bookPublicationDate;

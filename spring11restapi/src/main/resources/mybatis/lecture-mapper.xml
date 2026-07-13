@@ -1,8 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-  <mapper namespace="mapper.country">
-  	
-  </mapper>
+
+<mapper namespace="mapper.lecture">
+	
+	<!-- 등록 -->
+	<select id="sequence" resultType="int">
+		select lecture_seq.nextval from dual
+	</select>
+	<insert id="add">
+		insert into lecture (
+			lecture_no, lecture_title, lecture_category,
+			lecture_duration, lecture_price, lecture_type
+		)
+		values(
+			#{lectureNo}, #{lectureTitle}, #{lectureCategory},
+			#{lectureDuration}, #{lecturePrice}, #{lectureType}
+		)
+	</insert>
+	
+	<update id="update">
+	 	update lecture
+		set 	lecture_title = #{lectureTitle}, 
+				lecture_category = #{lectureCategory},
+				lecture_duration = #{lectureDuration}, 
+				lecture_price = #{lecturePrice}, 
+				lecture_type = #{lectureType} 
+		where 	lecture_no = #{lectureNo}
+	</update>
+	
+	<update id="updateUnit">
+		update lecture
+		<set>
+			<if test="lectureTitle != null">
+				lecture_title = #{lectureTitle},
+			</if>
+			<if test="lectureCategory != null">
+				lecture_category = #{lectureCategory},
+			</if>
+			<if test="lectureDuration != null">
+				lecture_duration = #{lectureDuration},
+			</if>
+			<if test="lecturePrice != null">
+				lecture_price = #{lecturePrice},
+			</if>
+			<if test="lectureType != null">
+				lecture_type = #{lectureType},
+			</if>
+		</set>
+		where lecture_no = #{lectureNo}
+	</update>
+	
+	<delete id="delete">
+		delete lecture where lecture_no = #{lectureNo}
+	</delete>
+	
+	<select id="find" resultType="lectureDto">
+		select * from lecture where lecture_no = #{lectureNo}
+	</select>
+	<select id="list" resultType="lectureDto">
+		select * from (
+			select rownum rn, TMP.* from (
+				select * from lecture
+				<!--
+					xml에서 < 를 쓸 수 없음 (태그 시작기호로 오해함)
+					[해결책]
+					1. 순서를 바꾼다  (> 는 사용 가능)
+					2. < 대신 &lt;를 쓴다 (HTML 특수문자)
+					3. CDATA 구문을 사용한다
+				 -->
+				<if test="lastLectureNo != null">
+				<![CDATA[
+				where lecture_no < #{lastLectureNo}
+				]]>
+				</if>
+				order by lecture_no desc
+			)TMP
+		) where rn between 1 and #{size}
+	</select>
+	
+	<select id="count" resultType="int">
+		select count(*) from lecture
+		<if test="lastLectureNo != null">
+		<![CDATA[
+		where lecture_no < #{lastLectureNo}
+		]]>
+		</if>
+	</select>
+</mapper>
+
+
+
+
+
+
+
