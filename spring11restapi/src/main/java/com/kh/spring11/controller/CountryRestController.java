@@ -140,13 +140,21 @@ public class CountryRestController {
 	
 	@PostMapping("/complexSearch")
 	public ListVO complexSearch(@RequestBody CountryComplexRequestVO vo) {
-		int count = countryDao.complexSearchCount(vo);
-		boolean last = vo.getSize() == null ? true : count <= vo.getSize();
-		
 		return ListVO.builder()
 					.list(countryDao.complexSearch(vo))
-					.last(last)
+					.last(false)
 				.build();
 	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
