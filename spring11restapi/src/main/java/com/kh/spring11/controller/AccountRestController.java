@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,12 +44,20 @@ public class AccountRestController {
 		return response;
 	}
 	
-	//아이디 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
-		//@GetMapping("/check-id/{accountId}")
-		
-		//닉네임 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
-		//@GetMapping("/check-nickname/{accountNickname}")
-		
-		//이메일 중복검사 - 사용 가능하면 true, 불가능하면 false를 반환
-		//@GetMapping("/check-email/{accountEmail}")
+	//아이디 중복
+	@GetMapping(value="/check-id/{accountId}")
+	public boolean checkId(@PathVariable String accountId) {
+		return accountDao.checkAvailableId(accountId);
+	}
+	
+	//닉네임 중복
+	@GetMapping(value="/check-nickname/{accountNickname}")
+	public boolean checkNickname(@PathVariable String accountNickname) {
+		return accountDao.checkAvailableNickname(accountNickname);
+	}
+	//이메일 중복
+	@GetMapping(value="/check-email/{accountEmail}")
+	public boolean checkEmail(@PathVariable String accountEmail) {
+		return accountDao.checkAvailableEmail(accountEmail);
+	}
 }
