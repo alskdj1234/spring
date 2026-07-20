@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
+import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 
@@ -59,5 +61,17 @@ public class AccountRestController {
 	@GetMapping("/check-email/{accountEmail}")
 	public boolean checkAccountEmail(@PathVariable String accountEmail) {
 		return accountDao.checkAvailableEmail(accountEmail);
+	}
+	
+	//회원 정보 반환 매핑 이지만 내 정보 아님
+	@ApiResponse(responseCode= "200", description = "조회 성공")
+	@GetMapping(value="/{accountId}", produces ="application/json")
+	public AccountFindResponseVO find(@PathVariable String accountId) {
+		AccountDto accountDto = accountDao.selectOne(accountId);
+		if(accountDto == null) throw new TargetNotfoundException();
+		
+		AccountFindResponseVO response = new AccountFindResponseVO();
+		BeanUtils.copyProperties(accountDto, response);//가능한 항목 복사
+		return response;
 	}
 }

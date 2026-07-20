@@ -3,12 +3,13 @@ package com.kh.spring11.account;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootTest
-public class Test03단방향암호화테스트 {
+public class Test03단방향암호화테스트2 {
 
 	@Test
 	public void test() {
@@ -20,11 +21,14 @@ public class Test03단방향암호화테스트 {
 		
 		String origin = "Testuser1!";
 		
-		String hash = DigestUtils.sha256Hex(origin);
-		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		log.debug("origin = {}", origin);
-		log.debug("hash = {}", hash);
-		log.debug("hash size = {}", hash.length());
+		
+		for(int i=0; i < 5; i++) {
+			String hash = encoder.encode(origin);
+			log.debug("hash = {}", hash);
+			//log.debug("hash size = {}", hash.length());
+		}
 	}
 	
 }

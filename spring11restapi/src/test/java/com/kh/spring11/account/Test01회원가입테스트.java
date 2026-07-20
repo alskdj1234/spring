@@ -9,17 +9,20 @@ import com.kh.spring11.dto.AccountDto;
 
 @SpringBootTest
 public class Test01회원가입테스트 {
+
 	@Autowired
 	private SqlSession sqlSession;
 	
 	@Test
-	public void insert() {
+	public void test() {
 		AccountDto accountDto = AccountDto.builder()
 					.accountId("testuser1")
 					.accountEmail("testuser1@kh.com")
 					.accountPassword("Testuser1!")
 					.accountNickname("테스트유저1")
-					.build();
-		sqlSession.insert("mapper.account.join",accountDto);
+				.build();
+		
+		sqlSession.insert("mapper.account.join", accountDto);
 	}
+	
 }

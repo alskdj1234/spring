@@ -4,7 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-//우선 시큐리티를 제외하도록 설정
+//우선 Security를 제외하도록 설정
+//@SpringBootApplication
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class Spring11restapiApplication {
 

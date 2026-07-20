@@ -65,5 +65,10 @@ public class CountryDaoMybatis implements CountryDao{
 	public List<CountryDto> complexSearch(CountryComplexRequestVO vo) {
 		return sqlSession.selectList("mapper.country.complexSearch", vo);
 	}
+
+	@Override
+	public int complexSearchCount(CountryComplexRequestVO vo) {
+		return sqlSession.selectOne("mapper.country.complexSearchCount", vo);
+	}
 	
 }

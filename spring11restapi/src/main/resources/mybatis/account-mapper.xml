@@ -5,49 +5,54 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="mapper.account">
-        <!-- 회원가입 -->
-        <insert id="join">
-            insert into account(
-                account_id,
-                account_email,
-                account_password,
-                account_nickname,
-                account_birth,
-                account_contact,
-                account_post,
-                account_address1,
-                account_address2,
-                account_message
-            )
-            values(
-                #{accountId},
-                #{accountEmail},
-                #{accountPassword},
-                #{accountNickname},
-                #{accountBirth},
-                #{accountContact},
-                #{accountPost},
-                #{accountAddress1},
-                #{accountAddress2},
-                #{accountMessage}
-            )
-        </insert>
-
-<!--회원 상세  -->
-		<select id="find" resultType="AccoutnDto">
-			select * from account where account_id= #{accountId}
-		</select>
-		
-<!--존재유무 판단  -->
-	<select id="countAccountId" resultType="boolean">
+	
+	<!-- 회원가입 -->
+	<insert id="join">
+		insert into account(
+			account_id,
+			account_email,
+			account_password,
+			account_nickname,
+			account_birth,
+			account_contact,
+			account_post,
+			account_address1,
+			account_address2,
+			account_message
+		)
+		values(
+			#{accountId},
+			#{accountEmail},
+			#{accountPassword},
+			#{accountNickname},
+			#{accountBirth},
+			#{accountContact},
+			#{accountPost},
+			#{accountAddress1},
+			#{accountAddress2},
+			#{accountMessage}
+		)
+	</insert>
+	
+	<!-- 회원상세 -->
+	<select id="find" resultType="AccountDto">
+		select * from account where account_id = #{accountId}
+	</select>
+	
+	<!-- 존재유무 판단(아이디, 닉네임, 이메일) -->
+	<select id="countAccountId" resultType="int">
 		select count(*) from account where account_id = #{accountId}
 	</select>
-	<select id="countAccountNickname" resultType="boolean">
-		select count(*) from account where account_nickname = #{accountNickName}
-	</select>		
-	<select id="countAccountEmail" resultType="boolean">
+	<select id="countAccountNickname" resultType="int">
+		select count(*) from account where account_nickname = #{accountNickname}
+	</select>
+	<select id="countAccountEmail" resultType="int">
 		select count(*) from account where account_email = #{accountEmail}
-	</select>				
-		
-
+	</select>
+	
 </mapper>
+
+
+
+
+

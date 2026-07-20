@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//회원가입시 줄 정보들(응답용)
+//회원가입 응답용 VO
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class AccountJoinResponseVO {
 	private String accountId;

@@ -116,6 +116,11 @@ public class CountryDaoSpringJDBC  implements CountryDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public int complexSearchCount(CountryComplexRequestVO vo) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
 
 

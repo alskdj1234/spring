@@ -15,4 +15,5 @@ public interface CountryDao {
 	int count(Integer lastCountryNo);//개수
 	List<CountryDto> searchByCountryName(String keyword);
 	List<CountryDto> complexSearch(CountryComplexRequestVO vo);
+	int complexSearchCount(CountryComplexRequestVO vo);
 }

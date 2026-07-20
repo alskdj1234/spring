@@ -1,20 +1,22 @@
 package com.kh.spring11.vo.account;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-//회원가입시 요청할 정보들
-// 스프링에서 fe 요청객체(json)를 자동으로 수신하여 자바 클래스 형태로 복원 시켜놓음
-//jackson databind가 이를 처리 (스프링부트에 내장 , 레거시엔 없음)
-//클래스의 모든 필드를 채우려고 노력하며, 못 채우면 에러가 발생함
-//@JsonIgnore를 필드에 붙이면 해당 필드는 없어도 통과됨
-@Schema(name="회원가입 정보 객체")
+//회원가입 요청용 VO
+//- 스프링에서 FE의 요청객체(JSON)를 자동으로 수신하여 자바 클래스 형태로 복원시켜놓음
+//- jackson-databind가 이를 처리(스프링부트에 내장되어 있음, 레거시엔 없음)
+//- 클래스의 모든 필드를 채우려고 노력하며, 못채우면 에러가 발생함
+//- @JsonIgnore를 필드에 붙이면 해당 필드는 없어도 통과됨
+//- 클래스 레벨에 @JsonIgnoreProperties(ignoreUnknown = true) 표시할 수 있음
+//- 주로 RequestBody를 수신할 때 자주 사용 (또는 ObjectMapper를 이용한 수동변환 시)
+
+@Schema(name = "회원가입 정보객체")
 @Data
-//클래스 단위로는 JsonIgnoreProperties=> 이 클래스 항목들이 다 안 차도 넘어가세요 
-//(ignoreUnknown = true=>없는 애들이 오면 무시하세요)
-//리퀘스트 바디, 오브젝트 매퍼를 이용한 수동 변환  쓸 때 씀(100프로는 아님)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountJoinRequestVO {
 	private String accountId;
 	private String accountEmail;
