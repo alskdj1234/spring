@@ -4,11 +4,12 @@ import java.sql.Timestamp;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Schema(name= "회원 조회 응답용 데이터")
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class AccountFindResponseVO {
 	private String accountId;
 	private String accountEmail;
