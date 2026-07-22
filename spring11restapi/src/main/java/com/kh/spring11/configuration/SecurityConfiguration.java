@@ -42,7 +42,7 @@ public class SecurityConfiguration {
 		JwtAuthenticationConverter jwtAuthenticationConverter//직접 만든 권한 변환기
 			) throws Exception {
 		//http에 홈페이지 운영 규칙을 모두 설정하고 Build해서 반환
-		http
+		http  
 			//csrf 비활성화
 			.csrf(csrf ->csrf.disable() )
 			//cors 설정 : 별도로 등록한 CorsConfigurationSource 의 설정을 따르겠다(없으면 기본값)
