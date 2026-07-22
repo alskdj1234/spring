@@ -21,11 +21,14 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 public class JwtConfiguration {
 	
 	@Autowired
-	
 	private JwtProperties jwtProperties;
+	
 	@Bean
 	public SecretKey secretKey() {
-		return new SecretKeySpec(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8),"HmacSHA256");
+		return new SecretKeySpec(
+			jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8), 
+			"HmacSHA256"
+		);
 	}
 	
 	@Bean
@@ -36,11 +39,17 @@ public class JwtConfiguration {
 	@Bean
 	public JwtDecoder jwtDecoder(SecretKey key) {
 		return NimbusJwtDecoder.withSecretKey(key)
-				.macAlgorithm(MacAlgorithm.HS256).build();
+					.macAlgorithm(MacAlgorithm.HS256).build();
 	}
 	
 	@Bean
 	public JwsHeader jwsHeader() {
 		return JwsHeader.with(MacAlgorithm.HS256).build();
 	}
+	
 }
+
+
+
+
+

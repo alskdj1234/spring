@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "custom.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "A description for 'custom.jwt.issuer'"
+  },
+  {
+    "name": "custom.jwt.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'custom.jwt.secret'"
+  }
+]}

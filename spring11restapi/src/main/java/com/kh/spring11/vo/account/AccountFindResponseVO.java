@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(name= "회원 조회 응답용 데이터")
+@Schema(name = "회원 조회 응답용 데이터")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class AccountFindResponseVO {
 	private String accountId;

@@ -16,26 +16,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @SpringBootTest
 public class Test02토큰해석2 {
+	
 	@Autowired
 	private JwtDecoder jwtDecoder;
 	
-	
 	@Test
 	public void test() {
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlcjEiLCJhY2NvdW50SWQiOiJ0ZXN0dXNlcjEiLCJpc3MiOiJodHRwczovL3d3dy5raGFjYWRlbXkuY28ua3IvIiwiYWNjb3VudE5pY2tuYW1lIjoi7YWM7Iqk7Yq47Jyg7KCAMSIsImV4cCI6MTc4NDUzMzgyMywiYWNjb3VudExldmVsIjoi67iM66Gg7KaIIiwiaWF0IjoxNzg0NTMzNzYzfQ.f6JKZvDdg0LVRPkVeiiEr28gbYm3pu-Tr5VFC8dGR3Q";
 		
-		//1
-		String token ="";
-
-		Jwt jwt = jwtDecoder.decode(token);//토큰 변조 만료 다 체크 됨(예외발생)
-	
-		//기본 정보 출력:iss,iat,exp,sub
-		log.debug("iss ={)",jwt.getIssuer());
-		log.debug("iat ={}", jwt.getIssuedAt());
-		log.debug("sub ={)",jwt.getSubject());
-		log.debug("exp ={)",jwt.getExpiresAt());
-		//커스텀 정보 출력 : accountId, accountNickname, accountLevel
-		log.debug("accountId ={}",jwt.getClaimAsString("accountId"));
-		log.debug("accountNickname ={}",jwt.getClaimAsString("accountNickname"));
-		log.debug("accountLevel ={}",jwt.getClaimAsString("accountLevel"));
+		Jwt jwt = jwtDecoder.decode(token);
+		
+		//- 기본 정보 출력 : iss, iat, exp, sub
+		log.debug("iss = {}", jwt.getIssuer());
+		log.debug("iat = {}", jwt.getIssuedAt());
+		log.debug("exp = {}", jwt.getExpiresAt());
+		log.debug("sub = {}", jwt.getSubject());
+		//- 커스텀 정보 출력 : accountId, accountNickname, accountLevel
+		log.debug("accountId = {}", jwt.getClaimAsString("accountId"));
+		log.debug("accountNickname = {}", jwt.getClaimAsString("accountNickname"));
+		log.debug("accountLevel = {}", jwt.getClaimAsString("accountLevel"));
 	}
 }
