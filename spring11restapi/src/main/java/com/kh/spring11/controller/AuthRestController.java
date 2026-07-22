@@ -37,7 +37,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Tag(name = "인증 처리 서비스", description = "stateless 서버의 인증 처리 로직 구현")
 @CommonsApiResponse
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+
 @RestController
 @RequestMapping("/service/auth")
 public class AuthRestController {
