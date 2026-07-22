@@ -6,5 +6,5 @@ import lombok.Data;
 public class AccountChangePasswordVO {
 	private String accountPassword;
 	private String accountEmail;
-	private String accountId;
+	private String accountId;   
 }
