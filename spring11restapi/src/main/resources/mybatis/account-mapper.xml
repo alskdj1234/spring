@@ -51,7 +51,12 @@
 	</select>
 	
 	
-	
+		<!-- 회원정보수정 -->
+	<update id="updateAccountLogin">
+		update account 
+		set account_login = systimestamp
+		where account_id = #{accountId}
+	</update>
 </mapper>
 
 

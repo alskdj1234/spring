@@ -107,8 +107,8 @@ public class AuthRestController {
 			.build()
 		);
 		
-		//(+추가) account_login 정보 갱신
-		
+	
+				accountDao.updateAccountLogin(response.getAccountId());
 		//결과 반환
 		return ResponseEntity.ok()
 				//쿠키를 추가하는 설정
