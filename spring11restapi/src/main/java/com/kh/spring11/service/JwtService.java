@@ -45,12 +45,12 @@ public class JwtService {
 					.claim("accountId", request.getAccountId())
 					.claim("accountLevel", request.getAccountLevel())
 					.claim("accountNickname", request.getAccountNickname())
-					//spring security 검사를 위한 항목을 추가
-					//이름은 authorities 고정 => 반드시 hasAuthority()로 검사
-					//이름이 roles면 hasRoles()로 검사 (ROLE_ 필요)
+					//Spring Security 검사를 위한 항목을 추가
+					//- 이름은 authorities 고정 → hasAuthority()로 검사
+					//- 이름은 roles로 설정하면 → hasRoles()로 검사 (ROLE_접두사 필요)
 					.claim("authorities", List.of(
-							request.getAccountLevel()
-							))
+						request.getAccountLevel()
+					))
 				.build();
 		
 		//토큰 최종 생성 및 결과 반환
@@ -63,6 +63,14 @@ public class JwtService {
 	public TokenParseResponseVO parseAccessToken(String token) throws JwtValidationException {
 		//오류검사 후 정보추출 (문제가 생기면 JwtValidationException 발생)
 		Jwt jwt = jwtDecoder.decode(token);
+		return TokenParseResponseVO.builder()
+				.accountId(jwt.getClaimAsString("accountId"))
+				.accountNickname(jwt.getClaimAsString("accountNickname"))
+				.accountLevel(jwt.getClaimAsString("accountLevel"))
+			.build();
+	}
+	//액세스 토큰 해석 메소드
+	public TokenParseResponseVO parseAccessToken(Jwt jwt) {
 		return TokenParseResponseVO.builder()
 				.accountId(jwt.getClaimAsString("accountId"))
 				.accountNickname(jwt.getClaimAsString("accountNickname"))

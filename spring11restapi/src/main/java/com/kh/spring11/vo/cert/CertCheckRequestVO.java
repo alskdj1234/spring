@@ -5,7 +5,5 @@ import lombok.Data;
 
 @Data @Builder
 public class CertCheckRequestVO {
-	private String certEmail;
-	private String certNumber;
-	
+	private String certEmail, certNumber;
 }

@@ -35,7 +35,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 //문서에 표시되기 위한 정보들도 Annotation 형태로 설정한다 (혼동되지 않도록 주의)
 @Tag(name = "강좌API", description = "강좌 CRUD를 위한 API 입니다")
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/lecture")
 @CommonsApiResponse

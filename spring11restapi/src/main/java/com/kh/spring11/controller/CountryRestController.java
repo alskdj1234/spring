@@ -21,7 +21,6 @@ import com.kh.spring11.vo.CountryComplexRequestVO;
 import com.kh.spring11.vo.ListRequestVO;
 import com.kh.spring11.vo.ListVO;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/country")
 public class CountryRestController {

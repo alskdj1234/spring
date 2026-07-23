@@ -26,7 +26,6 @@ import jakarta.mail.MessagingException;
 @Tag(name = "이메일 발송 서비스")
 @CommonsApiResponse
 
-@CrossOrigin
 @RestController
 @RequestMapping("/service/cert")
 public class CertRestController {
