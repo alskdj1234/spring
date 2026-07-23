@@ -12,6 +12,7 @@ import lombok.Data;
 //- @RequestBody와 함께 @Valid라고 붙여서 검증하겠다는 의사표시를 해야한다
 
 //주요 Annotation
+//- @Null : 반드시 null 이어야함.
 //- @NotNull : null 불가 (필수)
 //- @NotEmpty : null 불가 + 비어있는것 불가
 //- @NotBlank : null 불가 + 비어있는것 불가 + 공백만 있는것도 불가

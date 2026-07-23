@@ -65,6 +65,19 @@
   		where account_id=#{accountId}
   </update>
   
+  <update id="updateAll">
+  	update account
+  	set account_nickname=#{accountNickname},
+  		account_email=#{accountEmail},
+  		account_birth=#{accountBirth},
+  		account_contact=#{accountContact},
+  		account_post=#{accountPost},
+  		account_address1=#{accountAddress1},
+  		account_address2=#{accountAddress2},
+  		account_message=#{accountMessage},
+    where account_id=#{accountId}
+  </update>
+  
 </mapper>
 
 

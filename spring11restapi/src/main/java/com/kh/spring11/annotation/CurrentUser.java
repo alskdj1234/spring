@@ -13,8 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 @Documented
 
 @AuthenticationPrincipal(
-	expression = "@jwtService.parseAccessToken(#this.tokenValue)"
-)
+	expression = "@jwtService.parseAccessToken(#this.tokenValue)",
+	errorOnInvalidType = true
+		)
 public @interface CurrentUser {
 
 }

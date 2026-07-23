@@ -12,4 +12,5 @@ public interface AccountDao {
 	boolean checkAvailableEmail(String accountEmail);
 	boolean updateAccountLogin(String accountId);
 	boolean updateAccountPassword(AccountDto accountDto);
+	boolean updateAll(AccountDto accountDto);
 }
