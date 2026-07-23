@@ -1,13 +1,10 @@
 package com.kh.spring11.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,23 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.spring11.annotation.CommonsApiResponse;
+import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
-import com.kh.spring11.error.WhoAreYouException;
-import com.kh.spring11.service.ChangeInfoService;
 import com.kh.spring11.service.JwtService;
-import com.kh.spring11.vo.account.AccountChangePasswordResponseVO;
-import com.kh.spring11.vo.account.AccountChangePasswordVO;
 import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
+import com.kh.spring11.vo.account.ChangePasswordRequestVO;
+import com.kh.spring11.vo.account.ChangePasswordResponseVO;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 
 @Tag(name = "회원 정보 관리 서비스")
 @CommonsApiResponse
@@ -43,8 +39,10 @@ public class AccountRestController {
 	private AccountDao accountDao;
 	@Autowired
 	private JwtService jwtService;
+//	@Autowired
+//	private ChangeInfoService changeInfoService;
 	@Autowired
-	private ChangeInfoService changeInfoService;
+	private PasswordEncoder passwordEncoder;
 	
 	//회원가입
 	@ApiResponse(responseCode = "200", description = "가입 성공")
@@ -96,14 +94,25 @@ public class AccountRestController {
 	@ApiResponse(responseCode = "200", description = "조회 성공")
 	@GetMapping(value = "/me", produces = "application/json")
 	public AccountMeResponseVO me(
-		@CookieValue(name = "accessToken", required = false) String accessToken
-	) {
-		if(accessToken == null) {
-			throw new WhoAreYouException();
-		}
+//		accessToken이라는 쿠키를 읽는 명령 (+나의 해석 및 검증이 필요)
+//		@CookieValue(value = "accessToken") String accessToken
 		
-		//토큰 해석
-		TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
+//		Spring Security가 해석해낸 JWT를 가져오는 명령 (+이미 해석되어 있음)
+//		@AuthenticationPrincipal Jwt jwt
+			
+//		아예 무슨 명령을 써야 변환되는지까지 알려주고 최종형태를 달라고 해보자!
+//		@AuthenticationPrincipal(
+//			expression = "@jwtService.parseAccessToken(#this.tokenValue)"
+//		)
+		@CurrentUser
+		TokenParseResponseVO parseVO
+	) {
+		//토큰 해석 + 유효성 검증 = @CookieValue로 읽었을 때
+		//TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
+		
+		//@AutenticationPrincipal과 같이 쓰는 명령
+		//토큰을 내가 원하는 형태로 변환만 (+유효성 검증은 하지 않음, JwtDecoder 사용하지 않음)
+		//TokenParseResponseVO parseVO = jwtService.parseAccessToken(jwt);
 		
 		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
 		if(accountDto == null) throw new TargetNotfoundException();
@@ -112,31 +121,86 @@ public class AccountRestController {
 		BeanUtils.copyProperties(accountDto, response);//가능한 항목 복사
 		return response;
 	}
+	
+//	@ApiResponse(responseCode = "200", description = "비번 수정 성공")
+//	@PostMapping(value = "/password", produces = "application/json")
+//	public AccountChangePasswordResponseVO changePassword(@CookieValue(name = "accessToken", required = false) String accessToken, // 1. 쿠키에서 토큰 받기
+//	        @RequestBody AccountChangePasswordVO passwordVO
+//			) throws MessagingException, IOException {
+//
+//			    // 2. 토큰 없으면 인증 에러 던지기
+//			    if (accessToken == null) {
+//			        throw new WhoAreYouException();
+//			    }
+//
+//			    // 3. 이미 만들어둔 jwtService로 토큰 해석해서 아이디 추출
+//			    TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
+//			    
+//			    // 4. 추출한 아이디를 VO에 세팅 (프론트가 넘긴 아이디 차단)
+//			    passwordVO.setAccountId(parseVO.getAccountId());
+//
+//			    // 5. 서비스 호출해서 비밀번호 변경 실행
+//			    String changed = changeInfoService.changePassword(passwordVO);
+//			    
+//			    AccountChangePasswordResponseVO vo = new AccountChangePasswordResponseVO();
+//			    vo.setAccountPassword(changed);
+//			    return vo;
+//		
+//	}
+	
+	
 
-	@ApiResponse(responseCode = "200", description = "비번 수정 성공")
-	@PostMapping(value = "/password", produces = "application/json")
-	public AccountChangePasswordResponseVO changePassword(@CookieValue(name = "accessToken", required = false) String accessToken, // 1. 쿠키에서 토큰 받기
-	        @RequestBody AccountChangePasswordVO passwordVO
-			) throws MessagingException, IOException {
-
-			    // 2. 토큰 없으면 인증 에러 던지기
-			    if (accessToken == null) {
-			        throw new WhoAreYouException();
-			    }
-
-			    // 3. 이미 만들어둔 jwtService로 토큰 해석해서 아이디 추출
-			    TokenParseResponseVO parseVO = jwtService.parseAccessToken(accessToken);
-			    
-			    // 4. 추출한 아이디를 VO에 세팅 (프론트가 넘긴 아이디 차단)
-			    passwordVO.setAccountId(parseVO.getAccountId());
-
-			    // 5. 서비스 호출해서 비밀번호 변경 실행
-			    String changed = changeInfoService.changePassword(passwordVO);
-			    
-			    AccountChangePasswordResponseVO vo = new AccountChangePasswordResponseVO();
-			    vo.setAccountPassword(changed);
-			    return vo;
+	
+	
+	@PatchMapping("/password")
+	public ChangePasswordResponseVO password(@Valid @RequestBody ChangePasswordRequestVO request, @CurrentUser TokenParseResponseVO parseVO){
+		AccountDto accountDto = accountDao.selectOne(parseVO.getAccountId());
+		if(accountDto == null) throw new TargetNotfoundException();
 		
+		String db = accountDto.getAccountPassword();
+		String input = request.getPrevAccountPassword();
+		boolean valid = passwordEncoder.matches(input, db);//Bcrypt 비교
+		if(valid == false) {
+			return ChangePasswordResponseVO.builder()
+					.result(false)
+					.message("비밀번호가 일치하지 않아요")
+					.build();
+		}
+		
+		boolean same = request.getPrevAccountPassword().equals(request.getNewAccountPassword());
+		if(same) {
+			return ChangePasswordResponseVO.builder()
+					.result(false)
+					.message("이미 설정한 비밀번호에요")
+					.build();
+		}
+		
+		//[4] 형식 검사
+				String regex = "^(?=.*?[A-Z]+)(?=.*?[a-z]+)(?=.*?[0-9]+)(?=.*?[\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\[\\]\\{\\}\\'\\\"\\`\\~\\<\\>\\.\\,\\/\\?\\\\\\|]+)[A-Za-z0-9\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\[\\]\\{\\}\\'\\\"\\`\\~\\<\\>\\.\\,\\/\\?\\\\\\|]{8,16}$";
+				if(request.getNewAccountPassword().matches(regex) == false) {
+					return ChangePasswordResponseVO.builder()
+						.result(false)
+						.message("비밀번호는 대문자, 소문자, 숫자, 특수문자를 반드시 포함하여 8~16자로 작성하세요")
+					.build();
+				}
+		
+		accountDao.updateAccountPassword(accountDto.builder()
+					.accountId(parseVO.getAccountId())
+					.accountPassword(request.getNewAccountPassword())
+					.build()
+				);
+		
+		return ChangePasswordResponseVO.builder()
+				.result(true)
+				.message("변경 완")
+				.build();
 	}
-
 }
+
+
+
+
+
+
+
+

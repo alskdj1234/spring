@@ -57,6 +57,14 @@
 		set account_login = systimestamp
 		where account_id = #{accountId}
 	</update>
+	
+	  <update id="updateAccountPassword">
+  		update account
+  		set account_password =#{accountPassword},
+  			account_change = systimestamp
+  		where account_id=#{accountId}
+  </update>
+  
 </mapper>
 
 

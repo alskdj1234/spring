@@ -11,7 +11,8 @@
   
   <update id="changePassword">
   		update account
-  		set accountPassword =#{accountPassword}
+  		set account_password =#{accountPassword},
+  			account_change = systimestamp
   		where account_id=#{accountId}
   </update>
   

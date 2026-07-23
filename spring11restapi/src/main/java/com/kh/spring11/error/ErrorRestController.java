@@ -2,6 +2,7 @@ package com.kh.spring11.error;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtValidationException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,7 +37,13 @@ public class ErrorRestController {
 		return ResponseEntity.status(403).body("need permission");
 	}
 	
-}
+	@ExceptionHandler(value= {
+			MethodArgumentNotValidException.class
+	})
+	public ResponseEntity<String> badRequest(){
+		return ResponseEntity.status(400).body("requirement missmatch");
+	}
+}	
 
 
 
