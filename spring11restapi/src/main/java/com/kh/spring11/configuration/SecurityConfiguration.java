@@ -89,6 +89,7 @@ public class SecurityConfiguration {
 						,"/service/auth/refresh"//로그인 갱신 페이지
 					).permitAll()
 					
+					
 					//cert service
 					.requestMatchers("/service/cert/**").permitAll()
 					

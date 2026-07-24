@@ -1,5 +1,7 @@
 package com.kh.spring11.controller;
 
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,9 @@ import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
+import com.kh.spring11.vo.account.AccountSearchRequestVO;
+import com.kh.spring11.vo.account.AccountSearchResponseVO;
+import com.kh.spring11.vo.account.AccountSearchResultVO;
 import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
@@ -212,6 +217,23 @@ public class AccountRestController {
 		return ChangeAccountResponseVO.builder()
 				.status(true)
 				.message("정보 변경 완")
+				.build();
+	}
+
+	@PostMapping("/search")
+	public AccountSearchResponseVO search(
+		/*@Valid*/@RequestBody AccountSearchRequestVO request
+	) {
+		//목록 조회
+		List<AccountSearchResultVO> list = accountDao.search(request);
+		
+		//카운트 조회//
+		//int count = accountDao.count(request);
+		
+		//최종 응답
+		return AccountSearchResponseVO.builder()
+					.list(list)
+					//.last(count <= list.size())
 				.build();
 	}
 }

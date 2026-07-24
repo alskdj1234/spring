@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.adminSearch">
+
+	<!-- 관리자 회원 복합 검색 parameterType: 검색 조건을 전달하는 요청 VO resultType: 실제 회원 검색 
+		결과 VO의 전체 경로로 변경할 것 -->
+	<select id="complexSearch"
+		parameterType="AdminComplSearchRequestVO"
+		resultType="AdminComplSearchResponseVO">
+
+		SELECT *
+		FROM (
+		SELECT
+		INNER_QUERY.*,
+		ROWNUM AS RN
+		FROM (
+		SELECT
+		A.ACCOUNT_ID,
+		A.ACCOUNT_NICKNAME,
+		A.ACCOUNT_EMAIL,
+		A.ACCOUNT_CONTACT,
+		A.ACCOUNT_POST,
+		A.ACCOUNT_ADDRESS1,
+		A.ACCOUNT_ADDRESS2,
+		A.ACCOUNT_JOIN,
+		A.ACCOUNT_LOGIN,
+		A.ACCOUNT_POINT,
+		A.ACCOUNT_LEVEL,
+		A.ACCOUNT_BLOCK
+		FROM ACCOUNT A
+
+		<where>
+
+			<if test="accountId != null and accountId.trim() != ''">
+				AND A.ACCOUNT_ID = #{accountId}
+			</if>
+
+			<if
+				test="accountNickname != null and accountNickname.trim() != ''">
+				AND A.ACCOUNT_NICKNAME = #{accountNickname}
+			</if>
+
+			<if
+				test="accountEmailExact != null and accountEmailExact.trim() != ''">
+				AND A.ACCOUNT_EMAIL = #{accountEmailExact}
+			</if>
+
+			<if test="accountContact != null and accountContact.trim() != ''">
+				AND A.ACCOUNT_CONTACT = #{accountContact}
+			</if>
+
+			<if
+				test="accountEmailLike != null and accountEmailLike.trim() != ''">
+				AND UPPER(A.ACCOUNT_EMAIL)
+				LIKE '%' || UPPER(#{accountEmailLike}) || '%'
+			</if>
+
+			<if test="accountAddress != null and accountAddress.trim() != ''">
+				AND (
+				A.ACCOUNT_POST
+				LIKE '%' || #{accountAddress} || '%'
+				OR UPPER(A.ACCOUNT_ADDRESS1)
+				LIKE '%' || UPPER(#{accountAddress}) || '%'
+				OR UPPER(A.ACCOUNT_ADDRESS2)
+				LIKE '%' || UPPER(#{accountAddress}) || '%'
+				)
+			</if>
+
+			<if test="accountJoinBegin != null">
+				AND A.ACCOUNT_JOIN <![CDATA[ >= ]]>
+				#{accountJoinBegin}
+			</if>
+
+			<if test="accountJoinEnd != null">
+				AND A.ACCOUNT_JOIN <![CDATA[ < ]]>
+				#{accountJoinEnd} + 1
+			</if>
+
+			<if test="accountLoginBegin != null">
+				AND A.ACCOUNT_LOGIN <![CDATA[ >= ]]>
+				#{accountLoginBegin}
+			</if>
+
+			<if test="accountLoginEnd != null">
+				AND A.ACCOUNT_LOGIN <![CDATA[ < ]]>
+				#{accountLoginEnd} + 1
+			</if>
+
+			<if test="accountPointMin != null">
+				AND A.ACCOUNT_POINT <![CDATA[ >= ]]>
+				#{accountPointMin}
+			</if>
+
+			<if test="accountPointMax != null">
+				AND A.ACCOUNT_POINT <![CDATA[ <= ]]>
+				#{accountPointMax}
+			</if>
+
+			<if test="accountLevels != null and accountLevels.size() > 0">
+				AND A.ACCOUNT_LEVEL IN
+				<foreach collection="accountLevels" item="accountLevel"
+					open="(" separator="," close=")">
+					#{accountLevel}
+				</foreach>
+			</if>
+
+			<if
+				test="
+                        accountBlock != null
+                        and accountBlock != ''
+                        and (accountBlock == 'Y' or accountBlock == 'N')
+                    ">
+				AND A.ACCOUNT_BLOCK = #{accountBlock}
+			</if>
+
+		</where>
+
+		ORDER BY
+
+		<choose>
+			<when test="sortField == 'accountId'">
+				A.ACCOUNT_ID
+			</when>
+			<when test="sortField == 'accountNickname'">
+				A.ACCOUNT_NICKNAME
+			</when>
+			<when test="sortField == 'accountEmail'">
+				A.ACCOUNT_EMAIL
+			</when>
+			<when test="sortField == 'accountLogin'">
+				A.ACCOUNT_LOGIN
+			</when>
+			<when test="sortField == 'accountPoint'">
+				A.ACCOUNT_POINT
+			</when>
+			<when test="sortField == 'accountLevel'">
+				A.ACCOUNT_LEVEL
+			</when>
+			<otherwise>
+				A.ACCOUNT_JOIN
+			</otherwise>
+		</choose>
+
+		<choose>
+			<when test="sortDirection == 'ASC'">
+				ASC
+			</when>
+			<otherwise>
+				DESC
+			</otherwise>
+		</choose>
+
+		, A.ACCOUNT_ID DESC
+
+		) INNER_QUERY
+		WHERE ROWNUM <![CDATA[ <= ]]>
+		#{offset} + #{size}
+		)
+		WHERE RN <![CDATA[ > ]]>
+		#{offset}
+
+	</select>
+
+</mapper>
