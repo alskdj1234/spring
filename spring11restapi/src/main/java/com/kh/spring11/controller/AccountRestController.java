@@ -236,6 +236,11 @@ public class AccountRestController {
 					.last(count <= list.size())
 				.build();
 	}
+
+	@PatchMapping("/remindMeLater/{accountId}")
+	public void remindMeLater(@PathVariable String accountId) { 
+		accountDao.updateAccountChange(accountId);
+	}
 }
 
 

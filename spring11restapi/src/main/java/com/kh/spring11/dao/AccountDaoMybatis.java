@@ -83,6 +83,12 @@ public class AccountDaoMybatis implements AccountDao{
 
 		return sqlSession.update("mapper.account.block",accountDto)>0;
 	}
+
+	@Override
+	public boolean updateAccountChange(String accountId) {
+		
+		return sqlSession.update("mapper.account.remindMeLater",accountId) >0;
+	}
 }
 
 

@@ -23,6 +23,8 @@ public interface AccountDao {
 	int count(AccountSearchRequestVO request);
 	
 	boolean updateAccountBlock(AccountDto accountDto);
+
+	boolean updateAccountChange(String accountId);
 }
 
 
