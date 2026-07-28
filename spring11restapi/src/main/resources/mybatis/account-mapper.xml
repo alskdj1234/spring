@@ -1,46 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="mapper.account">
-
+	
 	<!-- 회원가입 -->
 	<insert id="join">
 		insert into account(
-		account_id,
-		account_email,
-		account_password,
-		account_nickname,
-		account_birth,
-		account_contact,
-		account_post,
-		account_address1,
-		account_address2,
-		account_message
+			account_id,
+			account_email,
+			account_password,
+			account_nickname,
+			account_birth,
+			account_contact,
+			account_post,
+			account_address1,
+			account_address2,
+			account_message
 		)
 		values(
-		#{accountId},
-		#{accountEmail},
-		#{accountPassword},
-		#{accountNickname},
-		#{accountBirth},
-		#{accountContact},
-		#{accountPost},
-		#{accountAddress1},
-		#{accountAddress2},
-		#{accountMessage}
+			#{accountId},
+			#{accountEmail},
+			#{accountPassword},
+			#{accountNickname},
+			#{accountBirth},
+			#{accountContact},
+			#{accountPost},
+			#{accountAddress1},
+			#{accountAddress2},
+			#{accountMessage}
 		)
 	</insert>
-
+	
 	<!-- 회원상세 -->
 	<select id="find" resultType="AccountDto">
 		select * from account where account_id = #{accountId}
 	</select>
-
+	
 	<!-- 존재유무 판단(아이디, 닉네임, 이메일) -->
 	<select id="countAccountId" resultType="int">
 		select count(*) from account where account_id = #{accountId}
@@ -51,41 +49,43 @@
 	<select id="countAccountEmail" resultType="int">
 		select count(*) from account where account_email = #{accountEmail}
 	</select>
-
+	
 	<!-- 회원정보수정 -->
 	<update id="updateAccountLogin">
-		update account
+		update account 
 		set account_login = systimestamp
 		where account_id = #{accountId}
 	</update>
 	<update id="updateAccountPassword">
-		update account
-		set account_password = #{accountPassword},
-		account_change = systimestamp
-		where account_id = #{accountId}
+		update 	account
+		set 	account_password = #{accountPassword},
+				account_change = systimestamp
+		where 	account_id = #{accountId}		
 	</update>
 	<update id="updateAll">
-		update account
-		set account_nickname = #{accountNickname},
-		account_email = #{accountEmail},
-		account_birth = #{accountBirth},
-		account_contact = #{accountContact},
-		account_post = #{accountPost},
-		account_address1 = #{accountAddress1},
-		account_address2 = #{accountAddress2},
-		account_message = #{accountMessage}
-		where account_id = #{accountId}
+		update	account
+		set		account_nickname = #{accountNickname},
+				account_email = #{accountEmail},
+				account_birth = #{accountBirth},
+				account_contact = #{accountContact},
+				account_post = #{accountPost},
+				account_address1 = #{accountAddress1},
+				account_address2 = #{accountAddress2},
+				account_message = #{accountMessage}
+		where	account_id = #{accountId}
 	</update>
-
+	
 	<!-- 관리자 회원검색용 구문 -->
 	<select id="search" resultType="AccountSearchResultVO">
-		select
-		account_id, account_nickname,
-		account_email, account_birth,
-		account_contact, account_post,
-		account_address1, account_address2,
-		account_join, account_login, account_change,
-		account_level, account_point, account_block
+		<include refid="temp-header"></include>
+		
+		select 
+			account_id, account_nickname,
+			account_email, account_birth,
+			account_contact, account_post,
+			account_address1, account_address2,
+			account_join, account_login, account_change,
+			account_level, account_point, account_block
 		from account
 		<where>
 			<if test="accountId != null">
@@ -105,131 +105,357 @@
 			<if test="accountAddress != null">
 				and
 				(
-				instr(account_post, #{accountAddress}) > 0
-				or
-				instr(account_address1, #{accountAddress}) > 0
-				or
-				instr(account_address2, #{accountAddress}) > 0
+					instr(account_post, #{accountAddress}) > 0
+					or
+					instr(account_address1, #{accountAddress}) > 0
+					or
+				 	instr(account_address2, #{accountAddress}) > 0
 				)
 			</if>
-
+			
+			<!-- 생일 -->
 			<choose>
-				<when
-					test="accountBirthBegin != null and accountBirthEnd != null">
-					and
-					accountBirth
-					between
-					to_timestamp(#{accountBirthBegin},'yyyy-mm-dd')
-					and
-					to_timestamp(#{accountBirthEnd},'yyyy-mm-dd')
+				<when test="accountBirthBegin != null and accountBirthEnd != null">
+					and to_timestamp(account_birth, 'yyyy-mm-dd')
+					between 
+						to_timestamp(#{accountBirthBegin}, 'yyyy-mm-dd')
+						and 
+						to_timestamp(#{accountBirthEnd}, 'yyyy-mm-dd')
 				</when>
 				<when test="accountBirthBegin != null">
-									<![CDATA[
-									and to_timestamp(accountBirth, 'yyyy-mm-dd') >= to_timestamp(#{accountBirthBegin},'yyyy-mm-dd')
-								]]>
+					<![CDATA[
+					and to_timestamp(account_birth, 'yyyy-mm-dd') 
+						>= to_timestamp(#{accountBirthBegin}, 'yyyy-mm-dd')
+					]]>
 				</when>
 				<when test="accountBirthEnd != null">
-									<![CDATA[
-									and to_timestamp(accountBirth, 'yyyy-mm-dd') <= to_timestamp(#{accountBirthEnd},'yyyy-mm-dd')
-								]]>
+					<![CDATA[
+					and to_timestamp(account_birth, 'yyyy-mm-dd') 
+						<= to_timestamp(#{accountBirthEnd}, 'yyyy-mm-dd')
+					]]>
 				</when>
 			</choose>
-
-			<!--가입일 -->
+			
+			<!-- 가입일 -->
 			<choose>
-				<when
-					test="accountJoinBegin != null and accountJoinEnd != null">
-					and
-					accountJoin
-					between
-					to_timestamp(#{accountJoinBegin}||' ' ||'00:00:00.000','yyyy-mm-dd hh24:mi:ss.ff3')
-					and
-					to_timestamp(#{accountJoinEnd} || ' ' || '23:59:59:999','yyyy-mm-dd hh24:mi:ss.ff3')
+				<when test="accountJoinBegin != null and accountJoinEnd != null">
+					and account_join
+					between 
+						to_timestamp(
+							#{accountJoinBegin} || ' ' || '00:00:00.000', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+						and 
+						to_timestamp(
+							#{accountJoinEnd} || ' ' || '23:59:59.999', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
 				</when>
 				<when test="accountJoinBegin != null">
-									<![CDATA[
-									and to_timestamp(accountJoin, 'yyyy-mm-dd') >= to_timestamp(#{accountJoinBegin}||' ' ||'00:00:00.000','yyyy-mm-dd hh24:mi:ss.ff3')
-								]]>
+					<![CDATA[
+					and account_join 
+						>= to_timestamp(
+								#{accountJoinBegin} || ' ' || '00:00:00.000', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
 				</when>
 				<when test="accountJoinEnd != null">
-									<![CDATA[
-									and to_timestamp(accountJoin, 'yyyy-mm-dd') <=  to_timestamp(#{accountJoinEnd} || ' ' || '23:59:59:999','yyyy-mm-dd hh24:mi:ss.ff3')
-								]]>
+					<![CDATA[
+					and account_join
+						<= to_timestamp(
+								#{accountJoinEnd} || ' ' || '23:59:59.999', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
 				</when>
 			</choose>
-
-
-			<!--로그인 -->
+			
+			<!-- 로그인일자 -->
 			<choose>
-				<when
-					test="accountLoginBegin != null and accountLoginEnd != null">
-					and
-					accountLogin
-					between
-					to_timestamp(#{accountLoginBegin}||' ' ||'00:00:00.000','yyyy-mm-dd hh24:mi:ss.ff3')
-					and
-					to_timestamp(#{accountLoginEnd} || ' ' || '23:59:59:999','yyyy-mm-dd hh24:mi:ss.ff3')
+				<when test="accountLoginBegin != null and accountLoginEnd != null">
+					and account_login
+					between 
+						to_timestamp(
+							#{accountLoginBegin} || ' ' || '00:00:00.000', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+						and 
+						to_timestamp(
+							#{accountLoginEnd} || ' ' || '23:59:59.999', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
 				</when>
 				<when test="accountLoginBegin != null">
-									<![CDATA[
-									and to_timestamp(accountLogin, 'yyyy-mm-dd') >= to_timestamp(#{accountLoginBegin}||' ' ||'00:00:00.000','yyyy-mm-dd hh24:mi:ss.ff3')
-								]]>
+					<![CDATA[
+					and account_login
+						>= to_timestamp(
+								#{accountLoginBegin} || ' ' || '00:00:00.000', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
 				</when>
 				<when test="accountLoginEnd != null">
-									<![CDATA[
-									and to_timestamp(accountLogin, 'yyyy-mm-dd') <=  to_timestamp(#{accountLoginEnd} || ' ' || '23:59:59:999','yyyy-mm-dd hh24:mi:ss.ff3')
-								]]>
+					<![CDATA[
+					and account_login
+						<= to_timestamp(
+								#{accountLoginEnd} || ' ' || '23:59:59.999', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
 				</when>
 			</choose>
-
-	<!--차단  -->
-	<if test="accountBlock!=null">
-	and account_block = #{accountBlock}
-	</if>
-	
-	<!-- 등급 -->
-	<if test="accountLevels != null and accountLevels.size()>0">
-	and account_level in(
-	<foreach item="accountLevel" collection="accountLevels" separator=",">
-		#{accountLevel}
-	</foreach>
-	)
-	</if>
-	
-	<!-- 포인트 -->
-	
-	<choose>
-		<when test="accountPointMin!= null and accountPointMax!=null">
-		and account_point
-			between #{accountPointMin} and #{accountPointMax}
-		
-		</when>
-		<when test="accountPointMin!= null">
-		<![CDATA[
-			and account_point >= #{accountPointMin}
-			]]>
-		</when>
-		<when test="accountPointMax!= null">
-		
-			<![CDATA[
-			and account_point <= #{accountPointMax}
-			]]>
-		</when>
-		
-	</choose>
-
+			
+			<!-- 등급 -->
+			<if test="accountLevels != null and accountLevels.size() > 0">
+				and account_level in (
+				<foreach item="accountLevel" collection="accountLevels" separator=",">
+					#{accountLevel}
+				</foreach>
+				)
+			</if>
+			
+			<!-- 차단 -->
+			<if test="accountBlock != null">
+			and account_block = #{accountBlock}
+			</if>
+			
+			<!-- 포인트 -->
+			<choose>
+				<when test="accountPointMin != null and accountPointMax != null">
+					and account_point 
+						between #{accountPointMin} and #{accountPointMax}
+				</when>
+				<when test="accountPointMin != null">
+					<![CDATA[
+					and account_point >= #{accountPointMin}
+					]]>
+				</when>
+				<when test="accountPointMax != null">
+					<![CDATA[
+					and account_point <= #{accountPointMax}
+					]]>
+				</when>
+			</choose>
+			
 		</where>
+		
+		<include refid="temp-footer"></include>
+		
+		select * from (
+			select * from temp_list
+			<if test="lastAccountId != null">
+			where rn > (
+				<!-- 내가 마지막으로 보던 회원의 행번호를 구해라! -->
+				select rn from temp_list
+				where account_id = #{lastAccountId}
+			)
+			</if>
+		)
+		<if test="size != null">
+		<![CDATA[
+		where rownum <= #{size}
+		]]>
+		</if>
 	</select>
-
+	
+	<!-- 구문조각(SQL) -->
+	<sql id="temp-header">
+		with temp_list as (
+			select rownum rn, TMP.* from (
+	</sql>
+	<sql id="temp-footer">
+			)TMP
+		)
+	</sql>
+	
 	<select id="count" resultType="int">
-
+		<include refid="temp-header"></include>
+		
+		select 
+			account_id, account_nickname,
+			account_email, account_birth,
+			account_contact, account_post,
+			account_address1, account_address2,
+			account_join, account_login, account_change,
+			account_level, account_point, account_block
+		from account
+		<where>
+			<if test="accountId != null">
+				and account_id = #{accountId}
+			</if>
+			<if test="accountNickname != null">
+				and account_nickname = #{accountNickname}
+			</if>
+			<if test="accountContact != null">
+				and account_contact = #{accountContact}
+			</if>
+			<if test="accountEmail != null">
+				<![CDATA[
+				and instr(account_email, #{accountEmail}) > 0
+				]]>
+			</if>
+			<if test="accountAddress != null">
+				and
+				(
+					instr(account_post, #{accountAddress}) > 0
+					or
+					instr(account_address1, #{accountAddress}) > 0
+					or
+				 	instr(account_address2, #{accountAddress}) > 0
+				)
+			</if>
+			
+			<!-- 생일 -->
+			<choose>
+				<when test="accountBirthBegin != null and accountBirthEnd != null">
+					and to_timestamp(account_birth, 'yyyy-mm-dd')
+					between 
+						to_timestamp(#{accountBirthBegin}, 'yyyy-mm-dd')
+						and 
+						to_timestamp(#{accountBirthEnd}, 'yyyy-mm-dd')
+				</when>
+				<when test="accountBirthBegin != null">
+					<![CDATA[
+					and to_timestamp(account_birth, 'yyyy-mm-dd') 
+						>= to_timestamp(#{accountBirthBegin}, 'yyyy-mm-dd')
+					]]>
+				</when>
+				<when test="accountBirthEnd != null">
+					<![CDATA[
+					and to_timestamp(account_birth, 'yyyy-mm-dd') 
+						<= to_timestamp(#{accountBirthEnd}, 'yyyy-mm-dd')
+					]]>
+				</when>
+			</choose>
+			
+			<!-- 가입일 -->
+			<choose>
+				<when test="accountJoinBegin != null and accountJoinEnd != null">
+					and account_join
+					between 
+						to_timestamp(
+							#{accountJoinBegin} || ' ' || '00:00:00.000', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+						and 
+						to_timestamp(
+							#{accountJoinEnd} || ' ' || '23:59:59.999', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+				</when>
+				<when test="accountJoinBegin != null">
+					<![CDATA[
+					and account_join 
+						>= to_timestamp(
+								#{accountJoinBegin} || ' ' || '00:00:00.000', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
+				</when>
+				<when test="accountJoinEnd != null">
+					<![CDATA[
+					and account_join
+						<= to_timestamp(
+								#{accountJoinEnd} || ' ' || '23:59:59.999', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
+				</when>
+			</choose>
+			
+			<!-- 로그인일자 -->
+			<choose>
+				<when test="accountLoginBegin != null and accountLoginEnd != null">
+					and account_login
+					between 
+						to_timestamp(
+							#{accountLoginBegin} || ' ' || '00:00:00.000', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+						and 
+						to_timestamp(
+							#{accountLoginEnd} || ' ' || '23:59:59.999', 
+							'yyyy-mm-dd hh24:mi:ss.ff3'
+						)
+				</when>
+				<when test="accountLoginBegin != null">
+					<![CDATA[
+					and account_login
+						>= to_timestamp(
+								#{accountLoginBegin} || ' ' || '00:00:00.000', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
+				</when>
+				<when test="accountLoginEnd != null">
+					<![CDATA[
+					and account_login
+						<= to_timestamp(
+								#{accountLoginEnd} || ' ' || '23:59:59.999', 
+								'yyyy-mm-dd hh24:mi:ss.ff3'
+							)
+					]]>
+				</when>
+			</choose>
+			
+			<!-- 등급 -->
+			<if test="accountLevels != null and accountLevels.size() > 0">
+				and account_level in (
+				<foreach item="accountLevel" collection="accountLevels" separator=",">
+					#{accountLevel}
+				</foreach>
+				)
+			</if>
+			
+			<!-- 차단 -->
+			<if test="accountBlock != null">
+			and account_block = #{accountBlock}
+			</if>
+			
+			<!-- 포인트 -->
+			<choose>
+				<when test="accountPointMin != null and accountPointMax != null">
+					and account_point 
+						between #{accountPointMin} and #{accountPointMax}
+				</when>
+				<when test="accountPointMin != null">
+					<![CDATA[
+					and account_point >= #{accountPointMin}
+					]]>
+				</when>
+				<when test="accountPointMax != null">
+					<![CDATA[
+					and account_point <= #{accountPointMax}
+					]]>
+				</when>
+			</choose>
+			
+		</where>
+		
+		<include refid="temp-footer"></include>
+		
+		select count(*) from (
+			select * from temp_list
+			<if test="lastAccountId != null">
+			where rn > (
+				<!-- 내가 마지막으로 보던 회원의 행번호를 구해라! -->
+				select rn from temp_list
+				where account_id = #{lastAccountId}
+			)
+			</if>
+		)
 	</select>
+	
+		<!--차단 업데이트  -->
+		<update id="block">
+			update account 
+			set account_block = #{accountBlock}		
+			where account_id = #{accountId}	
+		</update>		
 
 </mapper>
 
-			
-
-	
 
 
 

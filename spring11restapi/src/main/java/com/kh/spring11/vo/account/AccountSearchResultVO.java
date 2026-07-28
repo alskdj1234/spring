@@ -2,15 +2,13 @@ package com.kh.spring11.vo.account;
 
 import java.sql.Timestamp;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+
+@Data
 public class AccountSearchResultVO {
 	private String accountId;
 	private String accountEmail;
-	
+//	private String accountPassword;
 	private String accountNickname;
 	private String accountBirth;
 	private String accountContact;

@@ -89,7 +89,6 @@ public class SecurityConfiguration {
 						,"/service/auth/refresh"//로그인 갱신 페이지
 					).permitAll()
 					
-					
 					//cert service
 					.requestMatchers("/service/cert/**").permitAll()
 					
@@ -107,7 +106,7 @@ public class SecurityConfiguration {
 					//account api - 조건부 허용(내가 만든 요소들)
 					.requestMatchers(
 						"/api/account/me"//내정보
-							,"/api/account/password"
+						,"/api/account/password"//비밀번호 변경
 					)
 					//.authenticated()//인증 필요
 					.hasAnyAuthority("브론즈","실버","골드","다이아","플래티넘")
@@ -116,8 +115,9 @@ public class SecurityConfiguration {
 					.requestMatchers(
 						"/api/admin/**"
 					).hasAuthority("마스터")
+					
 					//나머지 모두 허용
-					.anyRequest().permitAll()
+					.anyRequest().permitAll()//운영할 때 denyAll()로 변경
 			)
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
 			//→ BearerTokenResolver : AccessToken을 꺼내서 Jwt를 뽑아내는 도구
@@ -273,8 +273,3 @@ public class SecurityConfiguration {
 		return result;
 	}
 }
-
-
-
-
-

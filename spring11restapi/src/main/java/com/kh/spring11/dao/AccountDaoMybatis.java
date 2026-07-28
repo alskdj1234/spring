@@ -1,7 +1,5 @@
 package com.kh.spring11.dao;
 
-
-
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -50,7 +48,7 @@ public class AccountDaoMybatis implements AccountDao{
 		int count = sqlSession.selectOne("mapper.account.countAccountEmail", accountEmail);
 		return count == 0;
 	}
-	
+
 	@Override
 	public boolean updateAccountLogin(String accountId) {
 		return sqlSession.update("mapper.account.updateAccountLogin", accountId) > 0;
@@ -58,31 +56,33 @@ public class AccountDaoMybatis implements AccountDao{
 
 	@Override
 	public boolean updateAccountPassword(AccountDto accountDto) {
-		
+		//+비밀번호 암호화 처리 추가
 		String origin = accountDto.getAccountPassword();
 		String encrypt = passwordEncoder.encode(origin);
 		accountDto.setAccountPassword(encrypt);
 		return sqlSession.update("mapper.account.updateAccountPassword", accountDto) > 0;
 	}
-
+	
 	@Override
 	public boolean updateAll(AccountDto accountDto) {
-		return sqlSession.update("mapper.account.updateAll", accountDto)>0;
-	}
-
-	@Override
-	public List<AccountSearchResultVO> search(AccountSearchRequestVO request) {
-		
-		return sqlSession.selectList("mapper.account.search",request);
-	}
-
-	@Override
-	public int count(AccountSearchRequestVO request) {
-		return sqlSession.selectOne("mapper.account.count",request);
-		
+		return sqlSession.update("mapper.account.updateAll", accountDto) > 0;
 	}
 	
+	@Override
+	public List<AccountSearchResultVO> search(AccountSearchRequestVO request) {
+		return sqlSession.selectList("mapper.account.search", request);
+	}
+	
+	@Override
+	public int count(AccountSearchRequestVO request) {
+		return sqlSession.selectOne("mapper.account.count", request);
+	}
 
+	@Override
+	public boolean updateAccountBlock(AccountDto accountDto) {
+
+		return sqlSession.update("mapper.account.block",accountDto)>0;
+	}
 }
 
 

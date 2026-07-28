@@ -21,4 +21,5 @@ public class AccountFindResponseVO {
 	private Timestamp accountJoin, accountLogin, accountChange;
 	private int accountPoint;
 	private String accountMessage;
+	private String accountBlock;
 }

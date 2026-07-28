@@ -14,10 +14,21 @@ public interface AccountDao {
 	boolean checkAvailableId(String accountId);
 	boolean checkAvailableNickname(String accountNickname);
 	boolean checkAvailableEmail(String accountEmail);
+	
 	boolean updateAccountLogin(String accountId);
 	boolean updateAccountPassword(AccountDto accountDto);
 	boolean updateAll(AccountDto accountDto);
 	
 	List<AccountSearchResultVO> search(AccountSearchRequestVO request);
-	int count(AccountSearchRequestVO search);
+	int count(AccountSearchRequestVO request);
+	
+	boolean updateAccountBlock(AccountDto accountDto);
 }
+
+
+
+
+
+
+
+

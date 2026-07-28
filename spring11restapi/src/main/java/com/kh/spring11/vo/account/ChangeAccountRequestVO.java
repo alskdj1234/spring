@@ -8,27 +8,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-@Schema(name="본인정보 변경용 VO")
-@JsonIgnoreProperties(ignoreUnknown=true)
+
+@Schema(name = "본인정보 변경용 VO")
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class ChangeAccountRequestVO {
-	@NotNull @Pattern(regexp ="^[가-힣A-Za-z0-9]{1,10}$")
+	@NotNull @Pattern(regexp = "^[가-힣A-Za-z0-9]{1,10}$")	
 	private String accountNickname;
-	@NotNull @Email
+	@NotNull @Email	
 	private String accountEmail;
 	@NotNull
 	private String accountPassword;
-
 	private String accountBirth;
-
 	private String accountContact;
-	@Null @Pattern(regexp = "^[0-9]{5,6}$")
+	@Pattern(regexp = "^[0-9]{5,6}$")		
 	private String accountPost;
-
 	private String accountAddress1;
-
 	private String accountAddress2;
-
 	private String accountMessage;
-	
 }

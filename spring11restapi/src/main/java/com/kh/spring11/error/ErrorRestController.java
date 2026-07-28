@@ -6,6 +6,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 //@RestControllerAdvice(annotations = {RestController.class})
 @RestControllerAdvice(basePackages = {"com.kh.spring11.controller"})
 public class ErrorRestController {
@@ -37,13 +40,20 @@ public class ErrorRestController {
 		return ResponseEntity.status(403).body("need permission");
 	}
 	
-	@ExceptionHandler(value= {
-			MethodArgumentNotValidException.class
+	@ExceptionHandler(value = { 
+		MethodArgumentNotValidException.class 
 	})
-	public ResponseEntity<String> badRequest(){
-		return ResponseEntity.status(400).body("requirement missmatch");
+	public ResponseEntity<String> badRequest(
+		MethodArgumentNotValidException e) {
+		//log.debug("e = {}", e.getMessage());
+		log.debug("e = {}", e.getBindingResult()
+								.getFieldError()
+								.getDefaultMessage());
+		
+		return ResponseEntity.status(400).body("requirement mismatch");
 	}
-}	
+	
+}
 
 
 

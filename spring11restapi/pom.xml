@@ -124,13 +124,12 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!--데이터 검증 도구-->
-		<!-- Spring에서 제공하는 데이터 검증 도구 -->
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
 		
+		<!-- Spring에서 제공하는 데이터 검증 도구 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
