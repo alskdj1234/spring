@@ -10,10 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.spring11.dao.SaleDao;
+import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
+import com.kh.spring11.vo.sale.SaleDetailResponseVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +28,7 @@ public class SaleServiceImpl implements SaleService{
 	@Autowired
 	private AttachService attachService;
 	
-	@Transactional//이 메소드에서 발생하는 DB작업은 all or nothing 처리가 됨
+	@Transactional//이 메소드에서 발생하는 DB변경작업은 all or nothing 처리가 됨
 	@Override
 	public SaleAddResponseVO add(SaleAddRequestVO request) throws IllegalStateException, IOException {
 		//[1] 상품 번호 생성
@@ -57,6 +60,18 @@ public class SaleServiceImpl implements SaleService{
 		if(thumbnail.isEmpty() == false) {
 			int attachNo = attachService.save(thumbnail);
 			saleDao.connect(saleNo, attachNo);
+		}
+		
+		//(+추가) 상세이미지가 있으면 첨부파일 등록 후 상품정보와 연결
+		List<MultipartFile> detailImages = request.getDetailImages();
+		boolean exist = detailImages != null && detailImages.size() > 0;
+		if(exist) {//파라미터가 있으면
+			for(MultipartFile detail : detailImages) {//반복하며
+				if(detail.isEmpty() == false) {//비어있지 않은 이미지를
+					int attachNo = attachService.save(detail);//등록
+					saleDao.connectDetailImage(saleNo, attachNo);//연결
+				}
+			}
 		}
 		
 		return response;
@@ -94,7 +109,7 @@ public class SaleServiceImpl implements SaleService{
 		BeanUtils.copyProperties(resultDto, response);
 		
 		//(+추가) 썸네일이 있으면 첨부파일 등록 후 상품정보와 연결
-		if(thumbnail.isEmpty() == false) {
+		if(thumbnail != null && thumbnail.isEmpty() == false) {
 			int attachNo = attachService.save(thumbnail);
 			saleDao.connect(saleNo, attachNo);
 		}
@@ -111,5 +126,32 @@ public class SaleServiceImpl implements SaleService{
 		}
 		
 		return response;
+	}
+
+	@Override
+	public SaleDetailResponseVO findSaleDetail(int saleDetailNo) {
+		
+		
+	
+		SaleDto findSaleDto = saleDao.selectOne(saleDetailNo);
+		if(findSaleDto == null) throw new TargetNotfoundException();
+		findSaleDto.setSaleNo(saleDetailNo);
+		AttachDto findThumbnail = saleDao.selectThumbnail(findSaleDto.getSaleNo());
+		List<AttachDto> findDetails = saleDao.selectDetails(findSaleDto.getSaleNo());
+		
+		SaleDetailResponseVO.SaleDetailResponseVOBuilder builder =
+			    SaleDetailResponseVO.builder()
+			        .saleDto(findSaleDto);
+
+			if (findThumbnail != null) {
+			    builder.thumbnail(findThumbnail);
+			}
+
+			if (findDetails != null && !findDetails.isEmpty()) {
+			    builder.details(findDetails);
+			}
+
+			return builder.build();
+		
 	}
 }

@@ -8,12 +8,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
-
+import com.kh.spring11.vo.sale.SaleDetailRequestVO;
+import com.kh.spring11.vo.sale.SaleDetailResponseVO;
 public interface SaleService {
-	SaleAddResponseVO add(SaleAddRequestVO request) throws IllegalStateException, IOException;
-	SaleAddResponseVO add(
-		SaleAddRequestVO2 request,  
-		MultipartFile thumbnail,
-		List<MultipartFile> detailImages
-	) throws IllegalStateException, IOException;
+
+    SaleAddResponseVO add(SaleAddRequestVO request)
+            throws IllegalStateException, IOException;
+
+    SaleAddResponseVO add(
+            SaleAddRequestVO2 request,
+            MultipartFile thumbnail,
+            List<MultipartFile> detailImages)
+            throws IllegalStateException, IOException;
+
+    SaleDetailResponseVO findSaleDetail(int saleNo);
 }

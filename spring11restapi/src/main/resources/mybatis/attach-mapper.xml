@@ -31,5 +31,15 @@
 		delete attach where attach_no =#{attachNo}
 	</delete>
 	
+	<!-- 여러개 찾기 -->
+	<select id="findList" resultType="AttachDto">
+		select * from attach
+		where attach_no in (
+		<foreach item="attachNo" collection="list" separator=",">
+			#{attachNo}
+		</foreach>
+		)
+		order by attach_no asc
+	</select>
 	
 </mapper>

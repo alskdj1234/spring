@@ -1,0 +1,19 @@
+package com.kh.spring11.configuration;
+
+import java.io.File;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+import lombok.Data;
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "custom.storage")
+public class StorageProperties {
+	private String local;
+	
+	public File getLocalRoot() {
+		return new File(local);
+	}
+}
