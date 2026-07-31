@@ -118,9 +118,12 @@ public class SaleRestController {
 				)
 			)
 		)
-		@Valid @RequestPart(value = "sale") SaleEditRequestVO request
-	) {
-		saleService.edit(saleNo, request);
+		@Valid @RequestPart(value = "sale") SaleEditRequestVO request,
+		@RequestPart(value="detailImages", required= false)
+		List<MultipartFile> detailImages
+			) throws IllegalStateException, IOException {
+		
+		saleService.edit(saleNo, request, detailImages);
 	}
 	
 	//썸네일만 변경하는 매핑
@@ -134,6 +137,24 @@ public class SaleRestController {
 		//신규 이미지를 추가
 		//추가된 이미지의 정보를 반환
 		return saleService.changeThumbnail(saleNo, thumbnail);
+	}
+	@ApiResponse(responseCode = "200", description ="썸네일 삭제 성공")
+	@DeleteMapping("/thumbnail/{saleNo}")
+	public void deleteThumbnail(@PathVariable int saleNo) {
+		saleService.deleteThumbnail(saleNo);
+	}
+	@DeleteMapping("/detailImage/sale/{saleNo}/attach/{attachNo}")
+	public void deleteDetailImage(@PathVariable int saleNo, @PathVariable int attachNo) {
+	
+		saleService.deleteDetailImage(saleNo,attachNo);
+		
+	}
+	
+	//삭제여도 데이터를 많이 보내야 해서
+	@ApiResponse(responseCode ="200", description ="상세 이미지들 삭제 성공")
+	@PostMapping("/deleteDetailImages/{saleNo}")
+	public void deleteDetailImages(@PathVariable int saleNo, @RequestBody List<Integer>detailNumbers) {
+		
 	}
 }
 

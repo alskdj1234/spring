@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +26,8 @@ public class AttachServiceLocal implements AttachService{
 	@Autowired
 	private StorageProperties storageProperties;
 	
-	//파일 업로드는 [물리적인 저장] → [정보(메타데이터) 저장]
+	//파일 업로드는 [정보(메타데이터) 저장] → [물리적인 저장]
+	@Transactional
 	@Override
 	public int save(MultipartFile attach) throws IllegalStateException, IOException {
 		int attachNo = attachDao.sequence();
@@ -70,6 +72,7 @@ public class AttachServiceLocal implements AttachService{
 				.build();
 	}
 	
+	@Transactional
 	@Override
 	public void delete(Integer attachNo) {
 		if(attachNo == null) return;

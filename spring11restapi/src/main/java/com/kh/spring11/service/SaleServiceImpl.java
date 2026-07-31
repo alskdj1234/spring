@@ -13,6 +13,7 @@ import com.kh.spring11.dao.AttachDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
@@ -172,15 +173,28 @@ public class SaleServiceImpl implements SaleService{
 	}
 	
 	@Override
-	public void edit(int saleNo, SaleEditRequestVO request) {
+	public void edit(int saleNo, SaleEditRequestVO request,List<MultipartFile> detailImages) throws IllegalStateException, IOException {
 		//요청에 saleDiscountPrice가 없는 경우는 saleOriginalPrice와 동일하게 변경
 		if(request.getSaleDiscountPrice() == null)
 			request.setSaleDiscountPrice(request.getSaleOriginalPrice());
 		
+		
+		//기본 정보 변경
 		SaleDto saleDto = new SaleDto();
 		saleDto.setSaleNo(saleNo);//번호 복사
 		BeanUtils.copyProperties(request, saleDto);//나머지 전달된 데이터 복사
 		saleDao.update(saleDto);//정보 변경 요청
+		
+		//상세 이미지 추가등록
+		boolean exist = detailImages != null && detailImages.size() > 0;
+		if(exist) {//파라미터가 있으면
+			for(MultipartFile detail : detailImages) {//반복하며
+				if(detail.isEmpty() == false) {//비어있지 않은 이미지를
+					int attachNo = attachService.save(detail);//등록
+					saleDao.connectDetailImage(saleNo, attachNo);//연결
+				}
+			}
+		}
 	}
 	
 	@Transactional
@@ -200,6 +214,27 @@ public class SaleServiceImpl implements SaleService{
 					.attach(attachDto)
 				.build();
 	}
+
+	@Override
+	public void deleteThumbnail(int saleNo) {
+		Integer thumbnail = saleDao.findAttach(saleNo);
+		attachService.delete(thumbnail);
+		
+	}
+
+	@Override
+	public void deleteDetailImage(int saleNo, int attachNo) {
+		
+		//1 상세 이미지 번호만 조회
+		List<Integer> detailNumbers= saleDao.findDetails(saleNo);
+		//2 실제 지우려는 이미지가 포함 되어있는지 검사
+		if(!detailNumbers.contains(attachNo))
+			throw new GetOutException();//403
+		//3 정상적으로 포함된 이미지라면 삭제
+		attachService.delete(attachNo);
+		
+	}
+	
 	
 }
 
