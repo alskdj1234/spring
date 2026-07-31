@@ -8,9 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
-import com.kh.spring11.vo.sale.SaleDetailRequestVO;
 import com.kh.spring11.vo.sale.SaleListItemVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
 
@@ -29,8 +27,7 @@ public class SaleDaoMybatis implements SaleDao {
 	}
 	@Override
 	public SaleDto selectOne(int saleNo) {
-	
-		return sqlSession.selectOne("mapper.sale.find",saleNo);
+		return sqlSession.selectOne("mapper.sale.find", saleNo);
 	}
 	@Override
 	public void connect(int saleNo, int attachNo) {
@@ -47,17 +44,30 @@ public class SaleDaoMybatis implements SaleDao {
 		sqlSession.insert("mapper.sale.connectDetailImages", params);
 	}
 	@Override
-	public List<SaleListItemVO> selectList(SaleListRequestVO request) {
+	public List<SaleListItemVO> selecList(SaleListRequestVO request) {
 		return sqlSession.selectList("mapper.sale.list", request);
 	}
 	@Override
-	public AttachDto selectThumbnail(int saleNo) {
-		return sqlSession.selectOne("mapper.sale.selectThumbnail",saleNo);
+	public Integer findAttach(int saleNo) {
+		return sqlSession.selectOne("mapper.sale.findAttach", saleNo);
 	}
 	@Override
-	public List<AttachDto> selectDetails(int saleNo) {
-		return sqlSession.selectList("mapper.sale.selectDetails", saleNo);
+	public List<Integer> findDetails(int saleNo) {
+		return sqlSession.selectList("mapper.sale.findDetails", saleNo);
 	}
-	
-
+	@Override
+	public boolean delete(int saleNo) {
+		return sqlSession.delete("mapper.sale.delete", saleNo) > 0;
+	}
+	@Override
+	public boolean update(SaleDto saleDto) {
+		return sqlSession.update("mapper.sale.update", saleDto) > 0;
+	}
 }
+
+
+
+
+
+
+

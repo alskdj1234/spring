@@ -1,7 +1,5 @@
 package com.kh.spring11.controller;
 
-import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,13 +18,9 @@ import com.kh.spring11.dao.AccountDao;
 import com.kh.spring11.dto.AccountDto;
 import com.kh.spring11.error.TargetNotfoundException;
 import com.kh.spring11.service.JwtService;
-import com.kh.spring11.vo.account.AccountFindResponseVO;
 import com.kh.spring11.vo.account.AccountJoinRequestVO;
 import com.kh.spring11.vo.account.AccountJoinResponseVO;
 import com.kh.spring11.vo.account.AccountMeResponseVO;
-import com.kh.spring11.vo.account.AccountSearchRequestVO;
-import com.kh.spring11.vo.account.AccountSearchResponseVO;
-import com.kh.spring11.vo.account.AccountSearchResultVO;
 import com.kh.spring11.vo.account.ChangeAccountRequestVO;
 import com.kh.spring11.vo.account.ChangeAccountResponseVO;
 import com.kh.spring11.vo.account.ChangePasswordRequestVO;
@@ -80,18 +74,6 @@ public class AccountRestController {
 	@GetMapping("/check-email/{accountEmail}")
 	public boolean checkAccountEmail(@PathVariable String accountEmail) {
 		return accountDao.checkAvailableEmail(accountEmail);
-	}
-	
-	//회원 정보를 반환하는 매핑(주의 : 내정보 아님)
-	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value = "/{accountId}", produces = "application/json")
-	public AccountFindResponseVO find(@PathVariable String accountId) {
-		AccountDto accountDto = accountDao.selectOne(accountId);
-		if(accountDto == null) throw new TargetNotfoundException();
-		
-		AccountFindResponseVO response = new AccountFindResponseVO();
-		BeanUtils.copyProperties(accountDto, response);//가능한 항목 복사
-		return response;
 	}
 	
 	//내정보라는건 cookie에 포함된 loginId를 읽으면 된다(지금은...나중엔 변하겠지만)
@@ -220,27 +202,13 @@ public class AccountRestController {
 				.build();
 	}
 	
-	@PostMapping("/search")
-	public AccountSearchResponseVO search(
-		/*@Valid*/@RequestBody AccountSearchRequestVO request
-	) {
-		//목록 조회
-		List<AccountSearchResultVO> list = accountDao.search(request);
-		
-		//카운트 조회//
-		int count = accountDao.count(request);
-		
-		//최종 응답
-		return AccountSearchResponseVO.builder()
-					.list(list)
-					.last(count <= list.size())
-				.build();
-	}
-
+//	30일동안 비밀번호 변경 요청 안보기 처리(비밀번호 변경시간 갱신처리)
+	@ApiResponse(responseCode = "200", description = "갱신 처리 완료")
 	@PatchMapping("/remindMeLater/{accountId}")
-	public void remindMeLater(@PathVariable String accountId) { 
+	public void remindMeLater(@PathVariable String accountId) {
 		accountDao.updateAccountChange(accountId);
 	}
+	
 }
 
 

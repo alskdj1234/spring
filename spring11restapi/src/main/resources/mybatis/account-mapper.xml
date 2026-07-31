@@ -447,21 +447,20 @@
 		)
 	</select>
 	
-		<!--차단 업데이트  -->
-		<update id="block">
-			update account 
-			set account_block = #{accountBlock}		
-			where account_id = #{accountId}	
-		</update>	
-		
-			<!--변경일 업데이트  -->
-		<update id="remindMeLater">
-			update account 
-			set account_change =systimestamp		
-			where account_id = #{accountId}	
-		</update>	
-			
+	<!-- 차단 -->
+	<update id="block">
+		update account 
+		set account_block = #{accountBlock}
+		where account_id = #{accountId}
+	</update>
 
+	<!-- 30일간 변경요청 안보기 -->
+	<update id="remindMeLater">
+		update account
+		set account_change = systimestamp
+		where account_id = #{accountId}
+	</update>
+	
 </mapper>
 
 

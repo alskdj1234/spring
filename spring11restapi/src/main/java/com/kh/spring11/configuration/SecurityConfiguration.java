@@ -27,11 +27,6 @@ import jakarta.servlet.http.Cookie;
 @Configuration
 public class SecurityConfiguration {
 
-    private final BookMapper bookMapper;
-
-    SecurityConfiguration(BookMapper bookMapper) {
-        this.bookMapper = bookMapper;
-    }
 	//단방향 암호화를 위한 BCryptPasswordEncoder를 등록
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -91,9 +86,9 @@ public class SecurityConfiguration {
 					
 					//cert service
 					.requestMatchers(
-							"/service/cert/check"
-							,"/service/cert/send"
-							).permitAll()
+						"/service/cert/send",
+						"/service/cert/check"
+					).permitAll()
 					
 					//country api
 					.requestMatchers("/api/country/**").permitAll()
@@ -116,8 +111,18 @@ public class SecurityConfiguration {
 					
 					//관리자 기능 - Jwt에 authorities 클레임에 "마스터"가 포함되어 있어야함
 					.requestMatchers(
-						"/api/admin/**"
-							,"api/sale/add"
+						"/api/admin/**",
+						"/api/sale/add"
+					).hasAuthority("마스터")
+					
+					.requestMatchers(
+						HttpMethod.DELETE, "/api/sale/**"
+					).hasAuthority("마스터")
+					.requestMatchers(
+						HttpMethod.PUT, "/api/sale/**"
+					).hasAuthority("마스터")
+					.requestMatchers(
+						HttpMethod.PATCH, "/api/sale/thumbnail/**"
 					).hasAuthority("마스터")
 					
 					//나머지 모두 허용
@@ -277,3 +282,8 @@ public class SecurityConfiguration {
 		return result;
 	}
 }
+
+
+
+
+

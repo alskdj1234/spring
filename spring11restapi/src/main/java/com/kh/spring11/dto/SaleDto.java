@@ -20,3 +20,11 @@ public class SaleDto {
 	private String saleContent;
 	private int saleStock;
 }
+
+
+
+
+
+
+
+

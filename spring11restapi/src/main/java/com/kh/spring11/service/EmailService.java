@@ -118,7 +118,8 @@ public class EmailService {
 	//인증용 링크 발송 메소드
 	public void sendCertLink(String memberEmail) throws MessagingException {
 		MimeMessage message = sender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message, false, "UTF-8");
+		MimeMessageHelper helper = 
+						new MimeMessageHelper(message, false, "UTF-8");
 		
 		helper.setFrom(emailProperties.getFrom());
 		helper.setTo(memberEmail);
@@ -195,50 +196,53 @@ public class EmailService {
 		return document.toString();
 	}
 	
-	//임시 비밀번호 발송 서비스
+	//임시 비밀번호를 발송하는 서비스
 	public void sendTempPassword(String email, String tempPassword) throws MessagingException, IOException {
-//단문 메시지
+//		단문 메세지
 //		SimpleMailMessage message = new SimpleMailMessage();
 //		message.setFrom(emailProperties.getFrom());
 //		message.setTo(email);
-//		message.setSubject("[학원] 임시 비밀번호 안내");
-//		message.setText("임시 비밀번호는 {"+tempPassword+"}입니다.\n 외부에 노출되지 않도록 주의하세요");
-//		
-//		마임 메시지
-		ClassPathResource resource = new ClassPathResource("templates/temp-password-template.html");
+//		message.setSubject("[KH정보교육원] 임시 비밀번호 안내");
+//		message.setText("임시 비밀번호는 ["+tempPassword+"] 입니다.\n"
+//									+ "외부에 노출되지 않도록 주의하세요");
 		
+//		마임 메세지
+		ClassPathResource resource = new ClassPathResource(
+						"templates/temp-password-template.html");
 		File target = resource.getFile();
-		//BufferedReader reader = new BufferedReader(new FileReader(target));
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(
-						new FileInputStream(target), StandardCharsets.UTF_8
-						)
-				
-				);
-		String content = reader.lines()
-				.collect(		
-						Collectors.joining(
-									System.lineSeparator()
+		BufferedReader reader = new BufferedReader(new FileReader(target));
+//		BufferedReader reader = new BufferedReader(
+//			new InputStreamReader(
+//				new FileInputStream(target) , StandardCharsets.UTF_8
+//			)
+//		);
+		
+		//File → String
+		String content = reader.lines().collect(
+											Collectors.joining(
+												System.lineSeparator()
 											)
-								);
+										);
 		
 		reader.close();
-		//String -> html
+		
+		//String → HTML
 		Document document = Jsoup.parse(content);
 		Elements boxes = document.select(".password-text");//무조건 1개
 		Element element = boxes.getFirst();
-		element.text(tempPassword);	
+		element.text(tempPassword);
 		
-		//메시지 생성과 전송
+		//메세지 생성 및 전송
 		MimeMessage message = sender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message,false,"UTF-8");
+		MimeMessageHelper helper = 
+					new MimeMessageHelper(message, false, "UTF-8");
 		helper.setFrom(emailProperties.getFrom());
 		helper.setTo(email);
-		helper.setSubject("임시 비번 안내");
-		helper.setText(document.toString(), true);//html모드 킴
+		helper.setSubject("[KH정보교육원] 임시 비밀번호 안내");
+		helper.setText(document.toString(), true);//HTML모드 ON
+		
 		sender.send(message);
 	}
-	
 }
 
 

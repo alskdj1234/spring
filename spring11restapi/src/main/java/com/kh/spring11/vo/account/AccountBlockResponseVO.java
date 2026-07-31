@@ -7,12 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Schema(name ="계정 차단 결과 응답")
 
+@Schema(name = "계정 블럭 결과 응답")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
-
 public class AccountBlockResponseVO {
-	//private boolean result;//true 차단 false 차단해제
 	private String accountId;
 	private String accountEmail;
 	private String accountNickname;

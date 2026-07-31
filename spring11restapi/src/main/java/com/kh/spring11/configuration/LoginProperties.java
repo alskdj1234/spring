@@ -7,5 +7,5 @@ import lombok.Data;
 
 @Data @Component @ConfigurationProperties(prefix = "custom.login")
 public class LoginProperties {
- private int needUpdateTerm;
+	private int needUpdateTerm;
 }

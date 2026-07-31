@@ -16,3 +16,12 @@ public class SaleListItemVO {
 	private int saleDiscountPrice;
 	private Integer attachNo;//없을 수 있음
 }
+
+
+
+
+
+
+
+
+

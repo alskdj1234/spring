@@ -9,14 +9,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.spring11.dao.AttachDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
+import com.kh.spring11.vo.sale.SaleEditRequestVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +30,8 @@ public class SaleServiceImpl implements SaleService{
 	private SaleDao saleDao;
 	@Autowired
 	private AttachService attachService;
+	@Autowired
+	private AttachDao attachDao;
 	
 	@Transactional//이 메소드에서 발생하는 DB변경작업은 all or nothing 처리가 됨
 	@Override
@@ -127,31 +132,80 @@ public class SaleServiceImpl implements SaleService{
 		
 		return response;
 	}
-
-	@Override
-	public SaleDetailResponseVO findSaleDetail(int saleDetailNo) {
-		
-		
 	
-		SaleDto findSaleDto = saleDao.selectOne(saleDetailNo);
-		if(findSaleDto == null) throw new TargetNotfoundException();
-		findSaleDto.setSaleNo(saleDetailNo);
-		AttachDto findThumbnail = saleDao.selectThumbnail(findSaleDto.getSaleNo());
-		List<AttachDto> findDetails = saleDao.selectDetails(findSaleDto.getSaleNo());
+	@Override
+	public SaleDetailResponseVO findSaleDetail(int saleNo) {
+		//[1] SaleDto를 조회
+		SaleDto saleDto = saleDao.selectOne(saleNo);
+		if(saleDto == null) throw new TargetNotfoundException();
 		
-		SaleDetailResponseVO.SaleDetailResponseVOBuilder builder =
-			    SaleDetailResponseVO.builder()
-			        .saleDto(findSaleDto);
-
-			if (findThumbnail != null) {
-			    builder.thumbnail(findThumbnail);
-			}
-
-			if (findDetails != null && !findDetails.isEmpty()) {
-			    builder.details(findDetails);
-			}
-
-			return builder.build();
+		//[2] thumbnail을 조회 (없을 수도 있음)
+		Integer attachNo = saleDao.findAttach(saleNo);
+		AttachDto thumbnail = attachDao.selectOne(attachNo);
 		
+		//[3] details 조회
+		List<Integer> attachNumbers = saleDao.findDetails(saleNo);
+		List<AttachDto> details = attachDao.selectList(attachNumbers);
+		
+		return SaleDetailResponseVO.builder()
+					.saleDto(saleDto)
+					.thumbnail(thumbnail)
+					.details(details)
+				.build();
 	}
+	
+	@Transactional
+	@Override
+	public void deleteSale(int saleNo) {
+		//상품 정보 및 이미지 정보 + 실물파일까지 삭제
+		//[1] 썸네일과 상세이미지의 파일번호를 찾아야함
+		Integer thumbnailNo = saleDao.findAttach(saleNo);
+		List<Integer> detailNumbers = saleDao.findDetails(saleNo);
+		//[2] 다 지워진 뒤 상품정보를 삭제
+		saleDao.delete(saleNo);//상품 정보(마지막)
+		//[3] DB의 파일정보를 먼저 삭제하고 실물파일을 삭제하도록 처리 + @Transactional
+		//	→ 파일번호만 알면 AttachService에서 가능 (파일 1개에 대해서)
+		attachService.delete(thumbnailNo);//썸네일 삭제 지시
+		for(Integer attachNo : detailNumbers) {
+			attachService.delete(attachNo);//상세이미지 삭제 지시
+		}
+	}
+	
+	@Override
+	public void edit(int saleNo, SaleEditRequestVO request) {
+		//요청에 saleDiscountPrice가 없는 경우는 saleOriginalPrice와 동일하게 변경
+		if(request.getSaleDiscountPrice() == null)
+			request.setSaleDiscountPrice(request.getSaleOriginalPrice());
+		
+		SaleDto saleDto = new SaleDto();
+		saleDto.setSaleNo(saleNo);//번호 복사
+		BeanUtils.copyProperties(request, saleDto);//나머지 전달된 데이터 복사
+		saleDao.update(saleDto);//정보 변경 요청
+	}
+	
+	@Transactional
+	@Override
+	public ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws IllegalStateException, IOException {
+		//썸네일 변경을 위한 구체적인 코드
+		//[1] 기존 썸네일 번호를 조회
+		Integer thumbnailNo = saleDao.findAttach(saleNo);
+		//[2] 기존 썸네일이 있다면 제거
+		attachService.delete(thumbnailNo);//null은 알아서 제거됨
+		//[3] 신규 썸네일 추가
+		int newThumbnailNo = attachService.save(thumbnail);//저장
+		saleDao.connect(saleNo, newThumbnailNo);//연결
+		//[4] 신규 썸네일 정보 조회
+		AttachDto attachDto = attachDao.selectOne(newThumbnailNo);
+		return ChangeThumbnailResponseVO.builder()
+					.attach(attachDto)
+				.build();
+	}
+	
 }
+
+
+
+
+
+
+

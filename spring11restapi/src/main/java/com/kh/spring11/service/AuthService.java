@@ -38,32 +38,31 @@ public class AuthService {
 				accountDto.getAccountPassword()
 		);
 		if(valid == false) throw new TargetNotfoundException();
-		//차단된 회원이면..403반환
+		
+		//(+추가) 차단된 회원이라면? 403반환 (GetOutException)
 		if(accountDto.getAccountBlock().equals("Y")) {
-			throw new GetOutException("나아아아가");
+			throw new GetOutException("차단된 회원입니다");
 		}
-		//비밀번호 변경이 오래 됐는지 판정
-		//설정 파일의 need-update-term 보다 변경일이 오래되어야 함.(초과 됨)
 		
+		//비밀번호 변경이 오래되었는지 판정
+		//- 설정파일의 need-update-term 보다 변경일이 오래되어야 한다 (=초과)
 		Timestamp lastChange = accountDto.getAccountChange();
-		
-		
-		if(lastChange == null) {//한번도 바꾼적이 없는 경우(가입일이랑 비교)
+		if(lastChange == null) {//한번도 바꾼 적이 없는 경우(-> 가입일과 비교)
 			lastChange = accountDto.getAccountJoin();
 		}
-		LocalDateTime lastTime = lastChange.toLocalDateTime();
-		LocalDateTime current = LocalDateTime.now();
-	long days =	ChronoUnit.DAYS.between(lastTime, current);
-	boolean needUpdate = days > loginProperties.getNeedUpdateTerm();
-	
-	
-	//로그인 성공
+		LocalDateTime lastTime = lastChange.toLocalDateTime();//최종일자
+		LocalDateTime current = LocalDateTime.now();//현재
+		long days = ChronoUnit.DAYS.between(lastTime, current);//날짜차이추출
+		
+		boolean needUpdate = days > loginProperties.getNeedUpdateTerm();
+		
+		//로그인 성공
 		return AuthLoginResponseVO.builder()
 				.accountId(accountDto.getAccountId())//회원아이디
 				.accountLevel(accountDto.getAccountLevel())//회원레벨
 				.accountNickname(accountDto.getAccountNickname())//회원닉네임
-				.needUpdate(needUpdate)//비밀번호 변경이 필요함
-				.build();
+				.needUpdate(needUpdate)//비밀번호 변경이 필요함(오래됨)
+			.build();
 	}
 }
 

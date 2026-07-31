@@ -8,7 +8,7 @@ import com.kh.spring11.vo.attach.AttachInfoVO;
 
 public interface AttachService {
 	int save(MultipartFile attach) throws IllegalStateException, IOException;
-	void delete(int attachNo);
+	void delete(Integer attachNo);
 	
 	AttachInfoVO load(int attachNo) throws IOException;
 }

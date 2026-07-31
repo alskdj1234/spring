@@ -5,6 +5,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,16 +36,13 @@ import jakarta.mail.MessagingException;
 public class CertRestController {
 	@Autowired
 	private EmailService emailService;
-	
-	@Autowired
-	private CertDao certDao;
-	
 	@Autowired
 	private RandomService randomService;
-	
-	
+	@Autowired
+	private CertDao certDao;
 	@Autowired
 	private AccountDao accountDao;
+	
 	@ApiResponse(responseCode = "200", description = "이메일 발송 성공")
 	@PostMapping("/send")
 	public void send(@RequestBody CertSendRequestVO vo) throws MessagingException, IOException {
@@ -96,7 +94,6 @@ public class CertRestController {
 				.valid(true)
 			.build();
 	}
-	
 	
 }
 

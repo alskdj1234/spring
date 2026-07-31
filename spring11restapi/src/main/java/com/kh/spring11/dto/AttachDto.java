@@ -5,7 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Schema(name ="파일정보")
+
+@Schema(name = "파일 정보")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class AttachDto {
 	private int attachNo;

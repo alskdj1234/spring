@@ -21,7 +21,7 @@ public interface AccountDao {
 	
 	List<AccountSearchResultVO> search(AccountSearchRequestVO request);
 	int count(AccountSearchRequestVO request);
-	
+
 	boolean updateAccountBlock(AccountDto accountDto);
 
 	boolean updateAccountChange(String accountId);

@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(name ="상품 정보 등록용 데이터")
+@Schema(name = "상품 정보 등록용 데이터")
 @Data @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder @NoArgsConstructor @AllArgsConstructor
 public class SaleAddRequestVO {
@@ -25,11 +25,14 @@ public class SaleAddRequestVO {
 	private Integer saleOriginalPrice;
 	@PositiveOrZero
 	private Integer saleDiscountPrice;
-	
 	private String saleContent;
 	@NotNull @PositiveOrZero
 	private Integer saleStock;
+	
+	//썸네일
 	private MultipartFile thumbnail;
+	
 	//상세이미지
 	private List<MultipartFile> detailImages;
+	//private MultipartFile[] detailImages;
 }
