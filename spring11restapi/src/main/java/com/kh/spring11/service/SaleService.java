@@ -28,11 +28,7 @@ public interface SaleService {
 	void edit(int saleNo, SaleEditRequestVO request, List<MultipartFile> detailImages) throws IllegalStateException, IOException;
 	
 	ChangeThumbnailResponseVO changeThumbnail(int saleNo, MultipartFile thumbnail) throws IllegalStateException, IOException;
-	
 	void deleteThumbnail(int saleNo);
 	void deleteDetailImage(int saleNo, int attachNo);
+	void deleteDetailImages(int saleNo, List<Integer> detailNumbers);
 }
-
-
-
-

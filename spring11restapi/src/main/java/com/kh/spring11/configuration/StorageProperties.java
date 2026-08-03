@@ -12,6 +12,8 @@ import lombok.Data;
 @ConfigurationProperties(prefix = "custom.storage")
 public class StorageProperties {
 	private String local;
+	private String awsRegion, awsBucket,awsRoot;
+	private long presignedLimit;
 	
 	public File getLocalRoot() {
 		return new File(local);

@@ -173,19 +173,18 @@ public class SaleServiceImpl implements SaleService{
 	}
 	
 	@Override
-	public void edit(int saleNo, SaleEditRequestVO request,List<MultipartFile> detailImages) throws IllegalStateException, IOException {
+	public void edit(int saleNo, SaleEditRequestVO request, List<MultipartFile> detailImages) throws IllegalStateException, IOException {
 		//요청에 saleDiscountPrice가 없는 경우는 saleOriginalPrice와 동일하게 변경
 		if(request.getSaleDiscountPrice() == null)
 			request.setSaleDiscountPrice(request.getSaleOriginalPrice());
 		
-		
-		//기본 정보 변경
+		//기본정보 변경
 		SaleDto saleDto = new SaleDto();
 		saleDto.setSaleNo(saleNo);//번호 복사
 		BeanUtils.copyProperties(request, saleDto);//나머지 전달된 데이터 복사
 		saleDao.update(saleDto);//정보 변경 요청
 		
-		//상세 이미지 추가등록
+		//상세이미지 추가등록
 		boolean exist = detailImages != null && detailImages.size() > 0;
 		if(exist) {//파라미터가 있으면
 			for(MultipartFile detail : detailImages) {//반복하며
@@ -214,33 +213,34 @@ public class SaleServiceImpl implements SaleService{
 					.attach(attachDto)
 				.build();
 	}
-
+	
 	@Override
 	public void deleteThumbnail(int saleNo) {
-		Integer thumbnail = saleDao.findAttach(saleNo);
-		attachService.delete(thumbnail);
-		
+		//saleNo를 이용해서 썸네일의 attachNo를 구한 뒤 제거 처리
+		//[1] 기존 썸네일 번호를 조회
+		Integer thumbnailNo = saleDao.findAttach(saleNo);
+		//[2] 기존 썸네일이 있다면 제거
+		attachService.delete(thumbnailNo);//null은 알아서 제거됨
 	}
-
+	
 	@Override
 	public void deleteDetailImage(int saleNo, int attachNo) {
-		
-		//1 상세 이미지 번호만 조회
-		List<Integer> detailNumbers= saleDao.findDetails(saleNo);
-		//2 실제 지우려는 이미지가 포함 되어있는지 검사
+		//[1] 상세 이미지 번호만 조회
+		List<Integer> detailNumbers = saleDao.findDetails(saleNo);
+		//[2] 실제 지우려는 이미지가 포함되어있지 않은 경우 (즉, 다른상품 이미지라면) 차단
 		if(!detailNumbers.contains(attachNo))
 			throw new GetOutException();//403
-		//3 정상적으로 포함된 이미지라면 삭제
+		//[3] 포함된 정상적인 이미지라면 삭제
 		attachService.delete(attachNo);
-		
 	}
 	
+	@Transactional
+	@Override
+	public void deleteDetailImages(int saleNo, List<Integer> detailNumbers) {
+		//이미지가 적기 때문에 반복문으로 DB에 지속적으로 접근해서 처리
+		for(int number : detailNumbers) {
+			deleteDetailImage(saleNo, number);
+		}
+	}
 	
 }
-
-
-
-
-
-
-
