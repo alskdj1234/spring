@@ -26,7 +26,7 @@ public class AttachServiceLocal implements AttachService{
 	@Autowired
 	private StorageProperties storageProperties;
 	
-	//파일 업로드는 [정보(메타데이터) 저장] → [물리적인 저장]
+	//파일 업로드는 [정보(메타데이터) 저장] → [물리적인 저장] 
 	@Transactional
 	@Override
 	public int save(MultipartFile attach) throws IllegalStateException, IOException {

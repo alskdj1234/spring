@@ -170,7 +170,8 @@ public class SecurityConfiguration {
 		//CORS 설정 코드 작성
 		//[1] 허용되는 접근 대상을 지정 (allow origins or pattern)
 		config.setAllowedOrigins(List.of(
-			"http://localhost:5173"	
+			"http://localhost:5173"
+//			,"http://kh.sysout.co.kr:5173"
 		));
 		//[2] 허용할 HTTP 메소드 설정
 		config.setAllowedMethods(List.of(

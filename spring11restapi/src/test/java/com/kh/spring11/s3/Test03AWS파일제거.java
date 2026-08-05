@@ -15,23 +15,30 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectResponse;
 @SpringBootTest
 public class Test03AWS파일제거 {
 	@Autowired
-	private S3Client s3client;
+	private S3Client s3Client;
 	@Autowired
 	private StorageProperties storageProperties;
 	
 	@Test
 	public void test() {
-		//DeleteObjectRequest, DeleteObjectResponse로 처리
-		String objectKey = "uploads/test/dummy.txt";
+		//삭제 요청은 DeleteObjectRequest, DeleteObjectReponse로 처리
+		String objectKey = "uploads/test/dummy.txt";//지울 대상의 경로
 		
 		DeleteObjectRequest request = DeleteObjectRequest.builder()
-				.bucket(storageProperties.getAwsBucket())
-				.key(objectKey)
+					.bucket(storageProperties.getAwsBucket())
+					.key(objectKey)
 				.build();
-		DeleteObjectResponse response = s3client.deleteObject(request);
 		
-		log.debug("파일 삭제 완료");
-		log.debug("HTTP status ={}",response.sdkHttpResponse().statusCode());
+		DeleteObjectResponse response = s3Client.deleteObject(request);
 		
+		log.debug("<AWS 파일 삭제 완료>");
+		log.debug("HTTP status = {}", response.sdkHttpResponse().statusCode());
 	}
 }
+
+
+
+
+
+
+

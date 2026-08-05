@@ -32,36 +32,36 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 
 @Tag(name = "첨부파일 API")
 @CommonsApiResponse
+
 @Slf4j
 @RestController
 @RequestMapping("/api/attach")
 public class AttachRestController {
 	
 	@Autowired
-	private Environment environment;
-	
-	@Autowired
 	private AttachService attachService;
 	
 	@Autowired
-	private AttachDao attachDao;
+	private Environment environment;
 	
+	@Autowired
+	private AttachDao attachDao;
+	@Autowired
+	private S3Presigner s3Presigner;
 	@Autowired
 	private StorageProperties storageProperties;
 	
-	@Autowired
-	private S3Presigner s3Presigner;
 	@GetMapping("/{attachNo}")
 	public ResponseEntity<?> download(
 		@PathVariable int attachNo
 	) throws IOException {
-		
-		
-		if(environment.matchesProfiles("cloud")) {
+//		log.debug("cloud profile인가? {}", environment.matchesProfiles("cloud"));
+//		log.debug("local profile인가? {}", environment.matchesProfiles("local"));
+		if(environment.matchesProfiles("cloud")) {//profile=cloud 라면
+			//presign 처리로 이동(redirect)
 			return ResponseEntity.status(302)
-					.location(URI.create("/api/attach/p/"+attachNo))
-					//.location(URI.create("./p/"+attachNo))
-					
+						.location(URI.create("./p/"+attachNo))//상대
+//						.location(URI.create("/api/attach/p/"+attachNo))//절대
 					.build();
 		}
 		
@@ -90,41 +90,46 @@ public class AttachRestController {
 	}
 	
 	@GetMapping("/p/{attachNo}")
-	public ResponseEntity<String> presigned(@PathVariable int attachNo) {
-		
+	public ResponseEntity<?> presigned(@PathVariable int attachNo) {
+		//파일 정보 조회
 		AttachDto attachDto = attachDao.selectOne(attachNo);
 		if(attachDto == null) throw new TargetNotfoundException();
-		String objectKey = storageProperties.getAwsRoot()+"/"+ attachNo;
+		
+		String objectKey = storageProperties.getAwsRoot() + "/" + attachNo;
 		
 		GetObjectRequest request = GetObjectRequest.builder()
-				.bucket(storageProperties.getAwsBucket())
-				.key(objectKey)
-				.responseContentDisposition(
+					.bucket(storageProperties.getAwsBucket())
+					.key(objectKey)
+					.responseContentDisposition(
 						ContentDisposition
-						.attachment()
-						.filename(
-							attachDto.getAttachName(),
-							StandardCharsets.UTF_8
-						)
-						.build().toString())
-				
+							.attachment()
+							.filename(
+								attachDto.getAttachName(),
+								StandardCharsets.UTF_8
+							)
+							.build().toString()
+					)
 				.build();
 		
-		GetObjectPresignRequest presignRequest =
+		//Request를 Presigner로 한번더 포장해서 전송
+		GetObjectPresignRequest presignRequest = 
 				GetObjectPresignRequest.builder()
-					.signatureDuration(Duration.ofMinutes(storageProperties.getPresignedLimit()))
+					.signatureDuration(
+							Duration.ofMinutes(storageProperties.getPresignedLimit())
+					)
 					.getObjectRequest(request)
-					.build();
-		
-		//S3가 발급한 임시 다운로드 주소 뽑기
-		String url =s3Presigner.presignGetObject(presignRequest)
-									.url().toString();
-		System.out.printf("URL :",url);
-		
-		//성공하면 200이 아니라 302번 응답을 발생 시켜 S3 presigned url로 이동
-		return ResponseEntity.status(HttpStatusCode.valueOf(302))
-				.location(URI.create(url))
 				.build();
+		
+		//이 코드로 우리가 얻어내고 싶은건 S3가 발급한 임시 다운로드 주소
+		String url = s3Presigner.presignGetObject(presignRequest)
+												.url().toString();
+		log.debug("presigned url = {}", url);
+		
+		//성공하면 200이 아니라 302번 응답을 발생시켜서 S3 Presigned URL로 이동시켜야 한다
+		return ResponseEntity
+				.status(302)
+				.location(URI.create(url))
+			.build();
 	}
 }
 

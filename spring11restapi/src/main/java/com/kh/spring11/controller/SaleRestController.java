@@ -33,7 +33,9 @@ import io.swagger.v3.oas.annotations.media.Encoding;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Tag(name = "상품 API")
 @AuthApiResponse
 @RestController
@@ -90,7 +92,10 @@ public class SaleRestController {
 	@ApiResponse(responseCode = "200", description = "상세 정보 조회 성공")
 	@GetMapping(value = "/{saleNo}", produces = "application/json")
 	public SaleDetailResponseVO detail(@PathVariable int saleNo) {
-		return saleService.findSaleDetail(saleNo);
+		log.debug("Before sale detail");
+		SaleDetailResponseVO response = saleService.findSaleDetail(saleNo);
+		log.debug("After sale detail");
+		return response;
 	}
 	
 	@ApiResponse(responseCode = "200", description = "상품 정보 삭제 성공")
@@ -119,11 +124,13 @@ public class SaleRestController {
 			)
 		)
 		@Valid @RequestPart(value = "sale") SaleEditRequestVO request,
-		@RequestPart(value="detailImages", required= false)
-		List<MultipartFile> detailImages
-			) throws IllegalStateException, IOException {
 		
+		@RequestPart(value = "detailImages", required = false)
+		List<MultipartFile> detailImages
+	) throws IllegalStateException, IOException {
+		log.debug("Before sale edit");
 		saleService.edit(saleNo, request, detailImages);
+		log.debug("After sale edit");
 	}
 	
 	//썸네일만 변경하는 매핑
@@ -138,16 +145,19 @@ public class SaleRestController {
 		//추가된 이미지의 정보를 반환
 		return saleService.changeThumbnail(saleNo, thumbnail);
 	}
-	@ApiResponse(responseCode = "200", description ="썸네일 삭제 성공")
+	
+	@ApiResponse(responseCode = "200", description = "썸네일 이미지 삭제 성공")
 	@DeleteMapping("/thumbnail/{saleNo}")
 	public void deleteThumbnail(@PathVariable int saleNo) {
 		saleService.deleteThumbnail(saleNo);
 	}
-	@DeleteMapping("/detailImage/sale/{saleNo}/attach/{attachNo}")
-	public void deleteDetailImage(@PathVariable int saleNo, @PathVariable int attachNo) {
 	
-		saleService.deleteDetailImage(saleNo,attachNo);
-		
+	@ApiResponse(responseCode = "200", description = "상세 이미지 1개 삭제 성공")
+	@DeleteMapping("/detailImage/sale/{saleNo}/attach/{attachNo}")
+	public void deleteDetailImage(
+		@PathVariable int saleNo, @PathVariable int attachNo
+	) {
+		saleService.deleteDetailImage(saleNo, attachNo);
 	}
 	
 	//삭제이긴 하지만 데이터를 많이 보내야 하기 때문에 POST로 처리
@@ -160,6 +170,16 @@ public class SaleRestController {
 		saleService.deleteDetailImages(saleNo, detailNumbers);
 	}
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
