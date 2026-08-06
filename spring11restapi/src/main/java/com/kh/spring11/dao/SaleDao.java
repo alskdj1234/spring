@@ -23,6 +23,9 @@ public interface SaleDao {
 	boolean delete(int saleNo);
 	
 	boolean update(SaleDto saleDto);
+	
+	List<SaleListItemVO> findOrders(List<Integer> saleNumbers);
+	SaleListItemVO findOrder(int saleNo);
 }
 
 

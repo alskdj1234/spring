@@ -21,6 +21,7 @@ import com.kh.spring11.vo.sale.SaleAddRequestVO2;
 import com.kh.spring11.vo.sale.SaleAddResponseVO;
 import com.kh.spring11.vo.sale.SaleDetailResponseVO;
 import com.kh.spring11.vo.sale.SaleEditRequestVO;
+import com.kh.spring11.vo.sale.SaleListItemVO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -241,6 +242,16 @@ public class SaleServiceImpl implements SaleService{
 		for(int number : detailNumbers) {
 			deleteDetailImage(saleNo, number);
 		}
+	}
+
+	@Override
+	public List<SaleListItemVO> findOrders(List<Integer> saleNumbers) {
+		return saleDao.findOrders(saleNumbers);
+	}
+
+	@Override
+	public SaleListItemVO findOrder(int saleNo) {
+	return saleDao.findOrder(saleNo);
 	}
 	
 }

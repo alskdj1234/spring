@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.purchase">
+	<select id="purchaseSequence" resultType="int">
+	
+		select purchase_seq.nextval from dual
+	</select>
+	
+	<select id="purchaseDetailSequence" resultType="int">
+	
+		select purchase_detail_seq.nextval from dual
+	</select>
+	
+	<insert id="purchaseInsert">
+		insert into purchase(
+		
+			purchase_no , purchase_name ,
+			purchase_total , purchase_remain ,
+			purchase_owner , purchase_tid 
+		)
+		values(
+		 #{purchaseNo}, #{purchaseName},
+		 #{purchaseTotal}, #{purchaseRemain},
+		 #{purchaseOwner}, #{purchaseTid}
+		)
+	
+	</insert>
+	
+	<insert id="purchaseDetailInsert">
+	insert into purchase_detail(
+		
+			purchase_detial_no , purchase_detail_origin ,
+			purchase_detail_item, purchase_detail_name ,
+			purchase_detail_price , purchase_detail_qty 
+		)
+		values(
+		 #{purchaseDetailNo}, #{purchaseDetailOrigin},
+		 #{purchaseDetailItem}, #{purchaseDetailName},
+		 #{ppurchaseDetailPrice}, #{purchaseDetailQty}
+		)
+	
+	</insert>
+	
+	<select id="purchaseFind" resultType="PurchaseDto">
+		select * from purchase where purchase_no =#{purchaseNo}
+	</select>
+	
+	<select id="purchaseDetailFind" resultType="PurchaseDetailDto">
+		select * from purchase_detail
+		where purchase_detail_origin = #{purchaseDetailOrigin}
+		order by purchase_detail_no asc
+	</select>
+</mapper>

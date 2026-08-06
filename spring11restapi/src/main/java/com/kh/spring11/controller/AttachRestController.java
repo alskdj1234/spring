@@ -124,7 +124,7 @@ public class AttachRestController {
 		String url = s3Presigner.presignGetObject(presignRequest)
 												.url().toString();
 		log.debug("presigned url = {}", url);
-		
+		System.out.println(storageProperties);
 		//성공하면 200이 아니라 302번 응답을 발생시켜서 S3 Presigned URL로 이동시켜야 한다
 		return ResponseEntity
 				.status(302)

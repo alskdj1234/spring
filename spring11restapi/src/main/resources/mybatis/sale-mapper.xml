@@ -84,6 +84,39 @@
 		where 	sale_no = #{saleNo}
 	</update>
 	
+	<select id="findOrders" resultType="SaleListItemVO">
+	
+	
+	select 
+			S.sale_no, S.sale_name, S.sale_category, 
+			S.sale_original_price, S.sale_discount_price,
+			T.attach_no
+		from sale S
+			left outer join sale_thumbnail T on S.sale_no = T.sale_no
+		where S.sale_no in(
+			<foreach item="saleNo" collection="list" separator=",">
+			 #{saleNo}
+			</foreach>
+		)
+		order by S.sale_no desc
+	
+	</select>
+	
+	
+	<select id="findOrder" resultType="SaleListItemVO">
+	
+	
+	select 
+			S.sale_no, S.sale_name, S.sale_category, 
+			S.sale_original_price, S.sale_discount_price,
+			T.attach_no
+		from sale S
+			left outer join sale_thumbnail T on S.sale_no = T.sale_no
+		where S.sale_no = #{saleNo}
+	</select>
+	
+	
+	
 </mapper>
 
 
