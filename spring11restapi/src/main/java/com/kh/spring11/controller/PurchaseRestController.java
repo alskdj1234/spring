@@ -3,9 +3,10 @@ package com.kh.spring11.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,7 @@ import com.kh.spring11.service.KakaopayService;
 import com.kh.spring11.service.PurchaseService;
 import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderResponseVO;
 import com.kh.spring11.vo.purchase.PurchaseHeavyInfoResponseVO;
@@ -69,7 +71,7 @@ public class PurchaseRestController {
 	@GetMapping(value ="/heavy/{purchaseNo}", produces = "application/json")
 	// 구매 상세 통합 조회
 	public PurchaseHeavyInfoResponseVO findHeavyInfo(
-			@RequestBody KakaopayOrderRequestVO payRequest,
+			KakaopayOrderRequestVO payRequest,
 	        int purchaseNo,
 	        TokenParseResponseVO parseVO) {
 
@@ -100,7 +102,20 @@ public class PurchaseRestController {
 	            .payResponse(payResponse)
 	            .build();
 	}
+	//구매건 전체취소
+	@ApiResponse(responseCode = "200", description = "전체 취소 성공")
+	@DeleteMapping("/cancelAll/{purchaseNo}")
+	public void cancelAll(@PathVariable int purchaseNo, @CurrentUser TokenParseResponseVO parseVO) {
+		KakaopayCancelResponseVO payResponse =purchaseService.cancelAll(purchaseNo,parseVO);
+	}
 	
+	
+	//구매 상세건 취소(부분취소)
+	@ApiResponse(responseCode = "200", description = "부분 취소 성공")
+	@DeleteMapping("/cancelAll/{purchaseDetailNo}")
+	public void cancelUnit(@PathVariable int purchaseDetailNo) {
+		KakaopayCancelResponseVO payResponse =purchaseService.cancelUnit(purchaseDetailNo);
+	}
 	
 }
 

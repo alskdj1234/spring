@@ -54,4 +54,14 @@
 		where purchase_detail_origin = #{purchaseDetailOrigin}
 		order by purchase_detail_no asc
 	</select>
+	
+	
+	<update id="purchaseCancel">
+	
+	 update purchase
+	 set purchase_status = "전체 취소",
+	     purchase_remain = 0
+	     where purchase_no = #{purchaseNo}
+	</update>
+	
 </mapper>

@@ -6,13 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.PurchaseDetailDto;
 import com.kh.spring11.dto.PurchaseDto;
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.error.GetOutException;
+import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelRequestVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayReadyResultVO2;
 @Service
 public class PurchaseSeviceImpl implements PurchaseService {
@@ -20,6 +26,8 @@ public class PurchaseSeviceImpl implements PurchaseService {
 	private PurchaseDao purchaseDao;
 	@Autowired
 	private SaleDao saleDao;
+	@Autowired
+	private KakaopayService kakaopayService;
 	
 	@Transactional
 	@Override
@@ -55,5 +63,47 @@ public class PurchaseSeviceImpl implements PurchaseService {
 				}
 		
 	}
+
+	@Override
+	public KakaopayCancelResponseVO cancelUnit(int purchaseDetailNo) {
+		//구매 내역 조회 
+		
+		PurchaseDto find = purchaseDao.selectOne(purchaseDetailNo);
+		return null;
+	}
+	@Transactional
+	@Override
+	public KakaopayCancelResponseVO cancelAll(int purchaseNo, TokenParseResponseVO parseVO) {
+		
+		
+		
+		PurchaseDto find = purchaseDao.selectOne(purchaseNo);
+		
+		if(!find.getPurchaseOwner().equals(parseVO.getAccountId())) throw new GetOutException();
+		
+		if(find == null) throw new TargetNotfoundException();
+		if(find.getPurchaseStatus().equals("전체취소"))
+				throw new GetOutException();
+		if(find.getPurchaseStatus().equals("차단"))
+			throw new GetOutException();
+		if(find.getPurchaseRemain() == 0)
+			throw new GetOutException();
+	
+		//db처리
+		
+		purchaseDao.purchaseCancel(purchaseNo);
+		
+		KakaopayCancelResponseVO payResponse = kakaopayService.cancel(
+				
+				KakaopayCancelRequestVO.builder()
+					.tid(find.getPurchaseTid())
+					.cancelAmount(find.getPurchaseRemain())
+					.build()
+				);
+	
+		return payResponse;
+	}
+
+	
 
 }

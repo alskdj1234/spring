@@ -6,15 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.configuration.KakaopayProperties;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dto.PurchaseDto;
-import com.kh.spring11.error.GetOutException;
-import com.kh.spring11.error.TargetNotfoundException;
-import com.kh.spring11.vo.jwt.TokenParseResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelRequestVO;
+import com.kh.spring11.vo.kakaopay.KakaopayCancelResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayOrderResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayReadyRequestVO;
@@ -110,8 +108,21 @@ public class KakaopayService {
 
 		return response;
 	}
-//	//결제 취소
-//	public KakaoCancelResponseVO cancel(KakaopayCancelRequestVO request) {
-//		
-//	}
+	//결제 취소
+	public KakaopayCancelResponseVO cancel(KakaopayCancelRequestVO payRequest) {
+		
+		String url = "/online/v1/payment/cancel";
+		
+		payRequest.setCid(kakaopayProperties.getCid());
+		
+		KakaopayCancelResponseVO payResponse = webClient.post()// POST요청
+				.uri(url)// 상세주소
+				.bodyValue(payRequest)// 첨부데이터
+				.retrieve()// 응답 수신 허용
+				.bodyToMono(KakaopayCancelResponseVO.class)// 일시불(Mono)로 수신 (↔ 할부는 Flux)
+				.block();// 동기방식으로 수신
+
+		return payResponse;
+		
+	}
 }
