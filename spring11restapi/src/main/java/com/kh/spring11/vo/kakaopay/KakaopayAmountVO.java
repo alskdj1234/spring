@@ -12,13 +12,17 @@ import lombok.NoArgsConstructor;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaopayAmountVO {
+	@JsonAlias("total")
 	private Integer total;
 	@JsonAlias("tax_free")
 	private Integer taxFree;
+	@JsonAlias("vat")
 	private Integer vat;
+	@JsonAlias("point")
 	private Integer point;
+	@JsonAlias("discount")
 	private Integer discount;
 	@JsonAlias("green_deposit")
 	private Integer greenDeposit;

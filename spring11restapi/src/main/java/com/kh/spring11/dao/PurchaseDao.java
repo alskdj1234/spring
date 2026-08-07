@@ -8,9 +8,18 @@ import com.kh.spring11.dto.PurchaseDto;
 public interface PurchaseDao {
 	int purchaseSequence();
 	void purchaseInsert(PurchaseDto purchaseDto);
+	
 	int purchaseDetailSequence();
 	void purchaseDetailInsert(PurchaseDetailDto purchaseDetailDto);
-	PurchaseDto selectOne(int purchaseNo);
+	
 	List<PurchaseDetailDto> selectDetails(int purchaseDetailOrigin);
+	
 	boolean purchaseCancel(int purchaseNo);
+	boolean purchaseDetailCancel(int purchaseDetailOrigin);
+	
+	PurchaseDto selectOne(int purchaseNo);
+	PurchaseDetailDto selectDetailOne(int purchaseDetailNo);
+	
+	boolean purchaseCancel(int purchaseNo, int amount);
+	boolean purchaseDetailCancelUnit(int purchaseDetailNo);
 }

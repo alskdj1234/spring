@@ -6,14 +6,28 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(name="결제 상세 정보")
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Schema(name = "결제 상세 정보")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class PurchaseDetailDto {
-	  private int purchaseDetailNo;
-	    private int purchaseDetailOrigin;
-	    private int purchaseDetailItem;
-	    private String purchaseDetailName;
-	    private int purchaseDetailPrice;
-	    private int purchaseDetailQty;
-	    private String purchaseDetailStatus;
+	private int purchaseDetailNo;
+	private int purchaseDetailOrigin;
+	private int purchaseDetailItem;
+	private String purchaseDetailName;
+	private int purchaseDetailPrice;
+	private int purchaseDetailQty;
+	private String purchaseDetailStatus;
+	
+	//이 상품의 총 금액
+	public int getPurchaseDetailTotal() {
+		return purchaseDetailPrice * purchaseDetailQty;
+	}
 }
+
+
+
+

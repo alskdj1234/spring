@@ -17,3 +17,13 @@ public class PurchaseInfoResponseVO {
 	private PurchaseDto purchase;
 	private List<SaleListItemVO> sales;
 }
+
+
+
+
+
+
+
+
+
+

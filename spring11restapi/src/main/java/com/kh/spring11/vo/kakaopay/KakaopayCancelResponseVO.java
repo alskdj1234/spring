@@ -14,10 +14,15 @@ import lombok.Data;
 public class KakaopayCancelResponseVO {
 	private String aid, tid, cid, status;
 	private String partnerOrderId, partnerUserId;
-	private String paymentMenthodType;
+	private String paymentMethodType;
+	private KakaopayAmountVO amount, approvedCancelAmount, canceledAmount, cancelAvailableAmount;
 	private String itemName, itemCode;
-	private String payload;
 	private Integer quantity;
-	private KakaopayAmountVO amount, approvedCancelAmount, canceledAmount, cancelTaxFreeAmount;
 	private LocalDateTime createdAt, approvedAt, canceledAt;
+	private String payload;
 }
+
+
+
+
+

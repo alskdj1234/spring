@@ -5,17 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class KakaopaySelectedCardInfoVO {
 	@JsonAlias("card_bin")
 	private String cardBin;//카드BIN
@@ -28,3 +22,10 @@ public class KakaopaySelectedCardInfoVO {
 	@JsonAlias("interest_free_install")
 	private String interestFreeInstall;//무이자할부(Y/N)
 }
+
+
+
+
+
+
+

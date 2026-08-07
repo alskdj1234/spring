@@ -24,7 +24,6 @@ public class KakaopayReadyRequestVO {
 	private String approvalUrl;
 	private String cancelUrl;
 	private String failUrl;
-	private String orderUrl;
 }
 
 

@@ -7,13 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Schema(name ="결제 대표 정보")
+
+@Schema(name = "결제 대표 정보")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class PurchaseDto {
 	private int purchaseNo;
+	private String purchaseName;
 	private int purchaseTotal;
 	private int purchaseRemain;
-	private String purchaseName;
 	private String purchaseOwner;
 	private String purchaseStatus;
 	private String purchaseTid;

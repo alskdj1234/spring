@@ -105,8 +105,8 @@ public class SecurityConfiguration {
 					.requestMatchers(
 						"/api/account/me"//내정보
 						,"/api/account/password"//비밀번호 변경
-						,"/api/kakao/v2/buy"
-							)
+						,"/api/kakaopay/v2/buy"
+					)
 					//.authenticated()//인증 필요
 					.hasAnyAuthority("브론즈","실버","골드","다이아","플래티넘")
 					

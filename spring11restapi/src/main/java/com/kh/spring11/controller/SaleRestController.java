@@ -172,13 +172,17 @@ public class SaleRestController {
 	) {
 		saleService.deleteDetailImages(saleNo, detailNumbers);
 	}
-	@ApiResponse(responseCode = "200", description = "주문 상품 조회 성공")
+	
+//	주문용 상품 정보 조회 명령
+	@ApiResponse(responseCode = "200", description = "주문할 상품 정보 조회 성공")
 	@PostMapping(value = "/orders", produces = "application/json")
 	public SaleOrderResponseVO orders(
-			@Valid @RequestBody SaleOrderRequestVO request){
-		List<SaleListItemVO> saleList = saleService.findOrders(request.getSaleNumbers());
+		@Valid @RequestBody SaleOrderRequestVO request) {
+		List<SaleListItemVO> saleList = 
+				saleService.findOrders(request.getSaleNumbers());
+		
 		return SaleOrderResponseVO.builder()
-				.saleList(saleList)
+					.saleList(saleList)
 				.build();
 	}
 }

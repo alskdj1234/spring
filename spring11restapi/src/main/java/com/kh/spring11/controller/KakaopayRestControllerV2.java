@@ -20,12 +20,16 @@ import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dao.SaleDao;
+import com.kh.spring11.dto.PurchaseDetailDto;
+import com.kh.spring11.dto.PurchaseDto;
+import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.service.FlashService;
 import com.kh.spring11.service.KakaopayService;
 import com.kh.spring11.service.PurchaseService;
 import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayBuyRequestVO2;
@@ -60,9 +64,6 @@ public class KakaopayRestControllerV2 {
 	
 	@Autowired
 	private PurchaseService purchaseService;
-	
-	@Autowired
-	private SaleDao saleDao;
 	
 	@ApiResponse(responseCode = "200", description = "구매 요청 성공")
 	@PostMapping(value = "/buy", produces = "application/json")
@@ -173,16 +174,22 @@ public class KakaopayRestControllerV2 {
 		);
 		
 		//실 결제가 승인된 뒤 DB에 결제한 상품의 정보를 저장
-		
-		purchaseService.save(payResponse,result);
+		purchaseService.save(payResponse, result);
 		
 		//React로 리다이렉트
 		return ResponseEntity.status(302)
-					.location(URI.create(result.getClientPage()+"/success/"+result.getPartnerOrderId()))
-				.build();
+			.location(URI.create(
+				result.getClientPage()+"/success/"+result.getPartnerOrderId()
+			))
+		.build();
 	}
 	
 //	@GetMapping("/buy/cancel/{partnerOrderId}")
 //	@GetMapping("/buy/fail/{partnerOrderId}")
 	
 }
+
+
+
+
+

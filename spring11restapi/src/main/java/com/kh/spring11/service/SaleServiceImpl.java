@@ -246,14 +246,14 @@ public class SaleServiceImpl implements SaleService{
 
 	@Override
 	public List<SaleListItemVO> findOrders(List<Integer> saleNumbers) {
+		//상태검사 추가 (판매중지상품여부 or 구매자격검증 or 재고소진 or ...)
 		return saleDao.findOrders(saleNumbers);
 	}
-
 	@Override
 	public SaleListItemVO findOrder(int saleNo) {
-	return saleDao.findOrder(saleNo);
+		//상태검사 추가 가능
+		return saleDao.findOrder(saleNo);
 	}
-	
 }
 
 
