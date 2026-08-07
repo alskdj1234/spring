@@ -63,7 +63,7 @@ public class PurchaseDaoMybatis implements PurchaseDao {
 		Map<String, Object> params = new HashMap<>();
 		params.put("purchaseNo", purchaseNo);
 		params.put("amount", amount);
-		return sqlSession.update("mapper.purchase.purchaseCancel", params) > 0;
+		return sqlSession.update("mapper.purchase.purchaseCancelUnit", params) > 0;
 	}
 	@Override
 	public boolean purchaseDetailCancelUnit(int purchaseDetailNo) {

@@ -27,7 +27,7 @@ import com.kh.spring11.vo.cert.CertSendRequestVO;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
-
+import org.springframework.http.MediaType;
 @Tag(name = "이메일 발송 서비스")
 @CommonsApiResponse
 
@@ -50,7 +50,7 @@ public class CertRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description = "이메일 검사 성공")	
-	@PostMapping(value = "/check", produces = "application/json")
+	@PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CertCheckResponseVO check(@RequestBody CertCheckRequestVO vo) {
 		//1. 정보가 있는지 확인
 		CertDto findDto = certDao.find(vo.getCertEmail());

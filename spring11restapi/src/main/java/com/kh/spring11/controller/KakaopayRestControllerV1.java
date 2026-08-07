@@ -30,7 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.http.MediaType;
 @Tag(name = "무식한 결제 API")
 @AuthApiResponse
 
@@ -49,7 +49,7 @@ public class KakaopayRestControllerV1 {
 	private FlashService flashService;
 
 	@ApiResponse(responseCode = "200", description = "무식한 결제 성공")
-	@PostMapping(value = "/buy", produces = "application/json")
+	@PostMapping(value = "/buy", produces = MediaType.APPLICATION_JSON_VALUE)
 	public KakaopayBuyResponseVO buy(
 		@Valid @RequestBody KakaopayBuyRequestVO request,
 		@RequestHeader("X-Client-Page") String clientPage

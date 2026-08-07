@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import org.springframework.http.MediaType;
 //문서에 표시되기 위한 정보들도 Annotation 형태로 설정한다 (혼동되지 않도록 주의)
 @Tag(name = "강좌API", description = "강좌 CRUD를 위한 API 입니다")
 
@@ -53,7 +53,7 @@ public class LectureRestController {
 				responseCode = "200", 
 				description = "등록 성공",
 				content = @Content(
-					mediaType = "application/json",
+					mediaType = MediaType.APPLICATION_JSON_VALUE,
 					schema = @Schema(implementation = LectureDto.class)
 				)
 			)
@@ -86,7 +86,7 @@ public class LectureRestController {
 				responseCode = "200",
 				description = "강좌 목록 조회 성공",
 				content = @Content(
-					mediaType = "application/json",
+					mediaType = MediaType.APPLICATION_JSON_VALUE,
 					array = @ArraySchema(
 						schema = @Schema(implementation = LectureDto.class)
 					)
@@ -140,7 +140,7 @@ public class LectureRestController {
 			responseCode = "200",
 			description = "삭제 성공",
 			content = @Content(
-				mediaType = "application/json",
+				mediaType = MediaType.APPLICATION_JSON_VALUE,
 				schema = @Schema(implementation = LectureDto.class)
 			)
 		)
@@ -163,7 +163,7 @@ public class LectureRestController {
 			responseCode = "200",
 			description = "강좌 정보 수정 성공",
 			content = @Content(
-				mediaType = "application/json",
+				mediaType = MediaType.APPLICATION_JSON_VALUE,
 				schema = @Schema(implementation = LectureDto.class)
 			)
 		)
@@ -195,7 +195,7 @@ public class LectureRestController {
 			responseCode = "200",
 			description = "강좌 정보 변경 성공",
 			content = @Content(
-				mediaType = "application/json",
+				mediaType = MediaType.APPLICATION_JSON_VALUE,
 				schema = @Schema(implementation = LectureDto.class)
 			)
 		)

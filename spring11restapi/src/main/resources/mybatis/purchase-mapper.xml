@@ -69,7 +69,7 @@
 	</select>
 	
 	<!-- 세부항목취소에 따른 주문내역 변경 구문 -->
-	<update id="purchaseCancel">
+	<update id="purchaseCancelUnit">
 		update	purchase
 		set		purchase_remain = purchase_remain - #{amount},
 				purchase_status = case

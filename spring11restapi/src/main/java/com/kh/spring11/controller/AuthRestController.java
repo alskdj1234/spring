@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.MediaType;
 import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.configuration.JwtProperties;
 import com.kh.spring11.dao.AccountDao;
@@ -54,7 +54,7 @@ public class AuthRestController {
 	private AccountRefreshDao accountRefreshDao;
 	
 	@ApiResponse(responseCode = "200", description = "로그인 성공")
-	@PostMapping(value = "/login", produces = "application/json")
+	@PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
 	//public AuthLoginResponseVO login(//데이터만 반환
 	public ResponseEntity<AuthLoginResponseVO> login(//데이터+헤더+쿠키를 반환
 			@RequestHeader(

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kh.spring11.dao.CartDao;
 import com.kh.spring11.dao.PurchaseDao;
 import com.kh.spring11.dao.SaleDao;
 import com.kh.spring11.dto.PurchaseDetailDto;
@@ -28,7 +29,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 	private SaleDao saleDao;
 	@Autowired
 	private KakaopayService kakaopayService;
-	
+	@Autowired
+	private CartDao cartDao;
 	@Transactional
 	@Override
 	public void save(KakaopayApproveResponseVO payResponse, KakaopayReadyResultVO2 result) {
@@ -61,6 +63,17 @@ public class PurchaseServiceImpl implements PurchaseService {
 				.build()
 			);
 		}
+		
+		//[3] 상품 재고 차감
+		//saleDao.updateSaleQty();
+		
+		//[4]장바구니 내역 삭제 (구매 상품만)
+		
+		cartDao.delete(payResponse.getPartnerUserId()
+			,orders.stream()
+				.map(order->order.getSaleNo())
+				.toList()
+				);
 	}
 	
 	@Transactional

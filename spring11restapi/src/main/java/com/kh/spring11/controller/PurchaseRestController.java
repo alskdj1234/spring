@@ -29,7 +29,7 @@ import com.kh.spring11.vo.sale.SaleListItemVO;
 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import org.springframework.http.MediaType;
 @Tag(name = "결제 정보 API")
 @AuthApiResponse
 
@@ -48,7 +48,7 @@ public class PurchaseRestController {
 	
 	//소유자 확인이 필요
 	@ApiResponse(responseCode = "200", description = "결제 정보 조회 성공")
-	@GetMapping(value = "/simple/{purchaseNo}", produces = "application/json")
+	@GetMapping(value = "/simple/{purchaseNo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PurchaseInfoResponseVO find(@PathVariable int purchaseNo,
 			@CurrentUser TokenParseResponseVO parseVO) {
 		//구매내역 조회
@@ -74,7 +74,7 @@ public class PurchaseRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description = "결제 정보(+카카오페이) 조회 성공")
-	@GetMapping(value = "/heavy/{purchaseNo}", produces = "application/json")
+	@GetMapping(value = "/heavy/{purchaseNo}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public PurchaseHeavyInfoResponseVO findWithKakao(
 			@PathVariable int purchaseNo,
 			@CurrentUser TokenParseResponseVO parseVO) {

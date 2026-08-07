@@ -25,7 +25,7 @@ import com.kh.spring11.vo.ListVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import org.springframework.http.MediaType;
 @Tag(name = "도서 처리 시스템", description = "도서 정보에 대해 DB처리를 수행하는 컨트롤러입니다")
 @CommonsApiResponse
 
@@ -43,7 +43,7 @@ public class BookRestController {
 	
 	@ApiResponse(responseCode = "200", description = "등록 성공")
 	//@PostMapping("/")
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	public BookDto insert(@RequestBody BookDto bookDto) {
 		int bookId = bookDao.sequence();
 		bookDto.setBookId(bookId);

@@ -42,7 +42,7 @@ import com.kh.spring11.vo.sale.SaleListItemVO;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
+import org.springframework.http.MediaType;
 @Tag(name = "실제 상품 구매 API")
 @AuthApiResponse
 
@@ -66,7 +66,7 @@ public class KakaopayRestControllerV2 {
 	private PurchaseService purchaseService;
 	
 	@ApiResponse(responseCode = "200", description = "구매 요청 성공")
-	@PostMapping(value = "/buy", produces = "application/json")
+	@PostMapping(value = "/buy", produces = MediaType.APPLICATION_JSON_VALUE)
 	public KakaopayBuyResponseVO2 buy(
 			@Valid @RequestBody KakaopayBuyRequestVO2 request,
 			@RequestHeader("X-Client-Page") String clientPage,
@@ -98,6 +98,8 @@ public class KakaopayRestControllerV2 {
 		if(saleList.size() >= 2) {//상품이 2개 이상이면
 			itemName += " 외 " + (saleList.size()-1) + "건";//추가 개수를 표시
 		}
+		
+		//(+추가) 재고 수 검사
 		
 		//상품금액 계산
 		//- 구매상품 수량정보 (request.getOrders())를 Map으로 만들 필요가 있다
@@ -175,6 +177,9 @@ public class KakaopayRestControllerV2 {
 		
 		//실 결제가 승인된 뒤 DB에 결제한 상품의 정보를 저장
 		purchaseService.save(payResponse, result);
+		//상품의 재고 차감
+		
+		
 		
 		//React로 리다이렉트
 		return ResponseEntity.status(302)

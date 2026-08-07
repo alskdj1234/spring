@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.MediaType;
 import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.AccountDao;
@@ -46,7 +46,7 @@ public class AccountRestController {
 	
 	//회원가입
 	@ApiResponse(responseCode = "200", description = "가입 성공")
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountJoinResponseVO join(
 			@RequestBody AccountJoinRequestVO request) {
 		//AccountDto에 AccountJoinRequestVO의 데이터를 복사하고 가입 처리
@@ -80,7 +80,7 @@ public class AccountRestController {
 	//@CookieValue로 쿠키의 값을 읽어서 해당하는 정보를 조회해서 반환
 	//stateless(무상태) 서버의 세션 대체 방안
 	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value = "/me", produces = "application/json")
+	@GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountMeResponseVO me(
 //		accessToken이라는 쿠키를 읽는 명령 (+나의 해석 및 검증이 필요)
 //		@CookieValue(value = "accessToken") String accessToken

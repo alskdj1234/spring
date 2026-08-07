@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.http.MediaType;
 import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CommonsApiResponse;
 import com.kh.spring11.dao.AccountDao;
@@ -48,7 +48,7 @@ public class AdminRestController {
 	
 	//회원 정보를 반환하는 매핑(주의 : 내정보 아님)
 	@ApiResponse(responseCode = "200", description = "조회 성공")
-	@GetMapping(value = "/{accountId}", produces = "application/json")
+	@GetMapping(value = "/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountFindResponseVO find(@PathVariable String accountId) {
 		AccountDto accountDto = accountDao.selectOne(accountId);
 		if(accountDto == null) throw new TargetNotfoundException();
@@ -59,7 +59,7 @@ public class AdminRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description = "검색 성공")
-	@PostMapping(value = "/search", produces = "application/json")
+	@PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountSearchResponseVO search(
 		/*@Valid*/@RequestBody AccountSearchRequestVO request
 	) {
@@ -77,7 +77,7 @@ public class AdminRestController {
 	}
 	
 	@ApiResponse(responseCode = "200", description = "차단/해제 성공")
-	@PatchMapping(value = "/block/{accountId}", produces = "application/json")
+	@PatchMapping(value = "/block/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public AccountBlockResponseVO block(
 			//@RequestBody AccountBlockRequestVO request,
 			@PathVariable String accountId) {
