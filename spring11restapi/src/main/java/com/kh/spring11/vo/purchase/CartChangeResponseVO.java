@@ -7,8 +7,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-@Schema(name ="장바구니 변경 사항 응답")
-@Data @NoArgsConstructor @AllArgsConstructor @Builder
+
+@Schema(name = "장바구니 수량 변경 결과 데이터")
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CartChangeResponseVO {
-private CartDto cartDto;
+	private CartDto cart;
 }
+
+
+
+

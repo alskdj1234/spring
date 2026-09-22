@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
@@ -35,6 +36,8 @@ public interface SaleService {
 	
 	List<SaleListItemVO> findOrders(List<Integer> saleNumbers);
 	SaleListItemVO findOrder(int saleNo);
+	
+	boolean checkSaleStock(List<BuyVO> orders);
 }
 
 

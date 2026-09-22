@@ -28,9 +28,10 @@ public class PurchaseServiceImpl implements PurchaseService {
 	@Autowired
 	private SaleDao saleDao;
 	@Autowired
-	private KakaopayService kakaopayService;
-	@Autowired
 	private CartDao cartDao;
+	@Autowired
+	private KakaopayService kakaopayService;
+	
 	@Transactional
 	@Override
 	public void save(KakaopayApproveResponseVO payResponse, KakaopayReadyResultVO2 result) {
@@ -64,16 +65,20 @@ public class PurchaseServiceImpl implements PurchaseService {
 			);
 		}
 		
-		//[3] 상품 재고 차감
-		//saleDao.updateSaleQty();
+		//[3] 상품의 재고 차감
+		for(BuyVO order : orders) {//구매한 상품목록을 확인하여
+			saleDao.updateSaleQty(order);//상품번호와 개수를 전달하고 수정을 요청
+		}
 		
-		//[4]장바구니 내역 삭제 (구매 상품만)
-		
-		cartDao.delete(payResponse.getPartnerUserId()
-			,orders.stream()
-				.map(order->order.getSaleNo())
-				.toList()
-				);
+		//[4] 장바구니의 내역 삭제 (구매한 상품만)
+		//cartDao.delete(구매자, 상품번호);
+		//cartDao.del ete(구매자, 상품번호들);
+		cartDao.delete(
+			payResponse.getPartnerUserId(),
+			orders.stream()
+				.map(order -> order.getSaleNo())
+			.toList()
+		);
 	}
 	
 	@Transactional
@@ -120,11 +125,14 @@ public class PurchaseServiceImpl implements PurchaseService {
 	public KakaopayCancelResponseVO cancelUnit(
 			int purchaseDetailNo, TokenParseResponseVO parseVO) {
 		//[1] 구매 상세 정보를 조회
-		PurchaseDetailDto purchaseDetailDto = purchaseDao.selectDetailOne(purchaseDetailNo);
+		PurchaseDetailDto purchaseDetailDto = 
+					purchaseDao.selectDetailOne(purchaseDetailNo);
 		if(purchaseDetailDto == null) throw new TargetNotfoundException();
 		
 		//[2] 구매 대표 정보를 조회
-		PurchaseDto purchaseDto = purchaseDao.selectOne(purchaseDetailDto.getPurchaseDetailOrigin());
+		PurchaseDto purchaseDto = purchaseDao.selectOne(
+			purchaseDetailDto.getPurchaseDetailOrigin()
+		);
 		if(purchaseDto == null) throw new TargetNotfoundException();
 		
 		//[3] 취소 가능한 구매건인지 검증

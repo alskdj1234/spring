@@ -8,8 +8,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Schema(name = "장바구니 추가 요청 정보")
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Data @JsonIgnoreProperties(ignoreUnknown = true)
 public class CartAddRequestVO {
 	@NotNull @Positive
 	private int item;

@@ -3,6 +3,7 @@ package com.kh.spring11.dao;
 import java.util.List;
 
 import com.kh.spring11.dto.SaleDto;
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.sale.SaleListItemVO;
 import com.kh.spring11.vo.sale.SaleListRequestVO;
 
@@ -26,6 +27,8 @@ public interface SaleDao {
 	
 	List<SaleListItemVO> findOrders(List<Integer> saleNumbers);
 	SaleListItemVO findOrder(int saleNo);
+	
+	boolean updateSaleQty(BuyVO order);
 }
 
 

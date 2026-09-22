@@ -8,8 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Schema(name = "장바구니 목록 결과 데이터")
+@Schema(name = "현재 사용자의 장바구니 조회 데이터")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CartListResponseVO {
-	List<CartItemVO> cartItems;
+	private List<CartItemVO> cartItems;
 }

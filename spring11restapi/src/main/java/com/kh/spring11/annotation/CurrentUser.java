@@ -13,9 +13,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 @Documented
 
 @AuthenticationPrincipal(
-	expression = "@jwtService.parseAccessToken(#this.tokenValue)",
+	expression = "#this instanceof T(org.springframework.security.oauth2.jwt.Jwt) ? @jwtService.parseAccessToken(#this.tokenValue) : null",
 	errorOnInvalidType = true
 )
 public @interface CurrentUser {
-
+	//boolean required() default true;//required=true 옵션을 내장시킨다 (추가 해석도구 필요)
 }

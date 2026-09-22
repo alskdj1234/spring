@@ -167,6 +167,19 @@
 		    <artifactId>spring-boot-starter-webflux</artifactId>
 		    <scope>compile</scope>
 		</dependency>
+		
+		<!-- 웹소켓을 위해 필요한 도구 -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-websocket</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- 스프링 시큐리티 메세지 처리도구 -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-messaging</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

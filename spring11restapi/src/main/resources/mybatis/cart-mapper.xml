@@ -5,40 +5,34 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="mapper.cart">
+	
 	<insert id="add">
-	
 		insert into cart (cart_owner, cart_item, cart_qty)
-		values(#{cartOwner},#{cartItem},#{cartQty})
-	
+		values(#{cartOwner}, #{cartItem}, #{cartQty})
 	</insert>
-	
 	<update id="change">
-	
-		update cart 
-		set cart_qty = #{cartQty}
-		where cart_owner = #{cartOwner}
+		update 	cart 
+		set 	cart_qty = #{cartQty}
+		where 	cart_owner = #{cartOwner}
 				and
 				cart_item = #{cartItem}
-	
 	</update>
-	
 	<delete id="delete">
-	
-		delete cart where cart_owner=#{cartOwner} and cart_item=#{cartItem}
-	
+		delete 	cart 
+		where 	cart_owner = #{cartOwner} 
+				and 
+				cart_item = #{cartItem}
 	</delete>
 	
 	<select id="find" resultType="CartDto">
-	
-		
-		select * from cart
-		where cart_owner = #{cartOwner}
-				and
+		select 	* from cart
+		where 	cart_owner = #{cartOwner} 
+				and 
 				cart_item = #{cartItem}
-	
 	</select>
 	
-	<!-- 양식을 수동 작성 -->
+	
+	<!-- 마이바티스에게 알려줄 양식을 수동으로 작성 -->
 	<resultMap type="CartItemVO" id="CustomCartItemVO">
 		<result column="sale_no" property="no"/>
 		<result column="sale_name" property="name"/>
@@ -48,52 +42,41 @@
 		<result column="sale_reg_time" property="time"/>
 		<result column="cart_qty" property="qty"/>
 		<result column="attach_no" property="thumbnail"/>
-	
-	
 	</resultMap>
 	
-	
-	<!-- 고객이 볼 장바구니 상품 목록 -->
+	<!-- 장바구니 목록 : 수동매핑이므로 resultType 대신 resultMap을 사용 -->
 	<select id="list" resultMap="CustomCartItemVO">
 		select 
-		
-		S.sale_no,
-		S.sale_name,
-		S.sale_category,
-		S.sale_original_price,
-		S.sale_discount_price,
-		S.sale_reg_time,
-		C.cart_qty,
-		ST.attach_no
-		
+		    S.sale_no, S.sale_name, S.sale_category,
+		    S.sale_original_price, S.sale_discount_price,
+		    S.sale_reg_time, C.cart_qty, ST.attach_no
 		from cart C 
-		
-		inner join sale S on C.cart_item = S.sale_no
-		left outer join sale_thumbnail ST on S.sale_no = ST.sale_no
-		
+		    inner join sale S on C.cart_item = S.sale_no
+		    left outer join sale_thumbnail ST on S.sale_no = ST.sale_no
 		where C.cart_owner = #{cartOwner}
-		
-		order by cart_item asc
+		order by C.cart_item asc
 	</select>
 	
-	
+	<!-- 특정 사용자의 장바구니에서 지정한 번호들을 삭제 -->
 	<delete id="deleteItems">
-	
-	
-		delete cart
-		where cart_owner = #{cartOwner}
+		delete 	cart
+		where	cart_owner = #{cartOwner}
 				and
 				cart_item in (
-				
-			<foreach item="number" collection="list" separator=",">
-					#{number}
-			</foreach>
-		)
+					<foreach item="number" collection="numbers" separator=",">
+						#{number}
+					</foreach>
+				)
 	</delete>
 	
-	
-	
-	
-	
+	<delete id="deleteItem">
+		delete 	cart
+		where	cart_owner = #{cartOwner}
+				and
+				cart_item = #{cartItem}
+	</delete>
 	
 </mapper>
+
+
+

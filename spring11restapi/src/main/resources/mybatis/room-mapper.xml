@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.room">
+	
+	<!-- 방 생성 -->
+	<select id="sequence" resultType="int">
+		select room_seq.nextval from dual
+	</select>
+	<insert id="create">
+		insert into room (
+			room_no, room_owner, room_name, room_limit
+		)
+		values( 
+			#{roomNo} , #{roomOwner}, #{roomName} , #{roomLimit} 
+		)
+	</insert>
+	
+	<!-- 방 삭제 -->
+	<delete id="delete">
+		delete room where room_no = #{roomNo}
+	</delete>
+	
+	<!-- 방 상세 -->
+	<select id="find" resultType="RoomDto">
+		select * from room where room_no = #{roomNo}
+	</select>
+	
+	<!-- 방 목록(검색x) -->
+	<select id="list" resultType="RoomListVO">
+		select 
+			R.*,
+			nvl(U.cnt, 0) cnt, 
+			'N' enter
+		from room R 
+			left outer join (
+		        select room_no, count(*) cnt from room_user group by room_no
+		    ) U on R.room_no = U.room_no
+		order by R.room_no asc
+	</select>
+	<!-- 방 목록(+인원수+참여여부) -->
+	<select id="listUpgrade" resultType="RoomListVO">
+		select 
+		    R.*, 
+		    nvl(U.cnt, 0) cnt, 
+		    nvl2(MY.account_id, 'Y', 'N') enter
+		from room R 
+		    left outer join (
+		        select room_no, count(*) cnt from room_user group by room_no
+		    ) U on R.room_no = U.room_no
+		    left outer join (
+		        select * from room_user where account_id = #{accountId}
+		    ) MY on R.room_no = MY.room_no
+		order by R.room_no asc
+	</select>
+	
+	<!-- 방 참여(참여자 등록) -->
+	<insert id="enter">
+		insert into room_user(room_no, account_id)
+		values( #{roomNo} , #{accountId} )
+	</insert>
+	
+	<!-- 방 나가기(참여자 제거) -->
+	<delete id="leave">
+		delete 	room_user 
+		where 	room_no = #{roomNo} 
+				and
+				account_id = #{accountId} 
+	</delete>
+	
+	<!-- 참여자 명단 조회 -->
+	<select id="member" resultType="String">
+		select 	account_id from room_user
+		where 	room_no = #{roomNo}
+		order by account_id asc
+	</select>
+	
+	<!-- 참여자 정보(아이디, 등급, 닉네임) 조회 -->
+	<select id="memberInfo" resultType="RoomUserVO">
+		select 
+			ACC.account_id, 
+			ACC.account_nickname, 
+			ACC.account_level 
+		from room_user RU
+			inner join account ACC on RU.account_id = ACC.account_id
+		where room_no = #{roomNo}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+

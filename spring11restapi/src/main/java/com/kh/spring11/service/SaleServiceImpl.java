@@ -15,6 +15,7 @@ import com.kh.spring11.dto.AttachDto;
 import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.error.TargetNotfoundException;
+import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.sale.ChangeThumbnailResponseVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO;
 import com.kh.spring11.vo.sale.SaleAddRequestVO2;
@@ -253,6 +254,18 @@ public class SaleServiceImpl implements SaleService{
 	public SaleListItemVO findOrder(int saleNo) {
 		//상태검사 추가 가능
 		return saleDao.findOrder(saleNo);
+	}
+	
+	@Override
+	public boolean checkSaleStock(List<BuyVO> orders) {
+		for(BuyVO order : orders) {
+			SaleDto saleDto = saleDao.selectOne(order.getSaleNo());//상품정보 조회
+			//if(상품재고 < 구매요청수량) {
+			if(saleDto.getSaleStock() < order.getQuantity()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
 

@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 @Schema(name = "장바구니 내의 상품 1개 정보")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CartItemVO {
-	private int  no ;
-	private int  origin, discount ;
-	private int  qty ;
-	private Integer  thumbnail ;
+	private int no;
 	private String name;
 	private String category;
+	private int origin, discount;
 	private Timestamp time;
-	
+	private int qty;
+	private int thumbnail;
 }

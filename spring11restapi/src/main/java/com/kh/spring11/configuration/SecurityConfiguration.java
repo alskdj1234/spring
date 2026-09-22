@@ -105,7 +105,7 @@ public class SecurityConfiguration {
 					.requestMatchers(
 						"/api/account/me"//내정보
 						,"/api/account/password"//비밀번호 변경
-						,"/api/kakaopay/v2/buy/"
+						,"/api/kakaopay/v2/buy"
 						,"/api/purchase/**"
 						,"/api/cart/**"
 					)
@@ -128,8 +128,21 @@ public class SecurityConfiguration {
 						HttpMethod.PATCH, "/api/sale/thumbnail/**"
 					).hasAuthority("마스터")
 					
-					//나머지 모두 허용
-					.anyRequest().permitAll()//운영할 때 denyAll()이나 authenticated()로 변경
+					//회원전용 웹소켓 주소에 대한 인증 요구 처리 (이걸 해야 웹소켓 접속시 인증정보가 같이 넘어감)
+					.requestMatchers("/ws-member/**").authenticated()
+					
+					.requestMatchers(HttpMethod.POST, "/api/room/**").authenticated()
+					.requestMatchers(HttpMethod.PUT, "/api/room/**").authenticated()
+					.requestMatchers(HttpMethod.PATCH, "/api/room/**").authenticated()
+					.requestMatchers(HttpMethod.DELETE, "/api/room/**").authenticated()
+					
+					.requestMatchers(HttpMethod.GET, "/api/room/").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/room/**").authenticated()
+					
+					//나머지 매핑
+					.anyRequest().permitAll()
+					//.anyRequest().authenticated()
+					//.anyRequest().denyAll()
 			)
 			//JWT를 어떻게 검증할 것인지 설정 (JwtDecoder가 반드시 필요)
 			//→ BearerTokenResolver : AccessToken을 꺼내서 Jwt를 뽑아내는 도구
@@ -174,6 +187,7 @@ public class SecurityConfiguration {
 		//[1] 허용되는 접근 대상을 지정 (allow origins or pattern)
 		config.setAllowedOrigins(List.of(
 			"http://localhost:5173"
+			,"http://192.168.20.31:5173"
 //			,"http://kh.sysout.co.kr:5173"
 		));
 		//[2] 허용할 HTTP 메소드 설정

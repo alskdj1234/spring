@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class CartDto {
-  private String cartOwner;
-  private int cartItem;
-  private int cartQty;
+	private String cartOwner;
+	private int cartItem;
+	private int cartQty;
 }

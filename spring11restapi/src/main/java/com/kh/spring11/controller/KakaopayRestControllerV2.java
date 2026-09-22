@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,17 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.spring11.annotation.AuthApiResponse;
 import com.kh.spring11.annotation.CurrentUser;
 import com.kh.spring11.dao.PurchaseDao;
-import com.kh.spring11.dao.SaleDao;
-import com.kh.spring11.dto.PurchaseDetailDto;
-import com.kh.spring11.dto.PurchaseDto;
-import com.kh.spring11.dto.SaleDto;
 import com.kh.spring11.error.GetOutException;
 import com.kh.spring11.service.FlashService;
 import com.kh.spring11.service.KakaopayService;
 import com.kh.spring11.service.PurchaseService;
 import com.kh.spring11.service.SaleService;
 import com.kh.spring11.vo.jwt.TokenParseResponseVO;
-import com.kh.spring11.vo.kakaopay.BuyVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveRequestVO;
 import com.kh.spring11.vo.kakaopay.KakaopayApproveResponseVO;
 import com.kh.spring11.vo.kakaopay.KakaopayBuyRequestVO2;
@@ -42,7 +38,7 @@ import com.kh.spring11.vo.sale.SaleListItemVO;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.http.MediaType;
+
 @Tag(name = "실제 상품 구매 API")
 @AuthApiResponse
 
@@ -93,13 +89,18 @@ public class KakaopayRestControllerV2 {
 		List<SaleListItemVO> saleList = saleService.findOrders(saleNumbers);
 		if(saleList.isEmpty()) throw new GetOutException();//안전장치
 		
+		//(+추가) 상품의 재고수량 검사
+		boolean canOrder = saleService.checkSaleStock(request.getOrders());
+		if(canOrder == false) {
+			//거절로직 (ex : 403, 거절응답 반환, ...)
+			throw new GetOutException();
+		}
+		
 		//상품명 계산
 		String itemName = saleList.get(0).getSaleName();//첫 상품명
 		if(saleList.size() >= 2) {//상품이 2개 이상이면
 			itemName += " 외 " + (saleList.size()-1) + "건";//추가 개수를 표시
 		}
-		
-		//(+추가) 재고 수 검사
 		
 		//상품금액 계산
 		//- 구매상품 수량정보 (request.getOrders())를 Map으로 만들 필요가 있다
@@ -177,8 +178,6 @@ public class KakaopayRestControllerV2 {
 		
 		//실 결제가 승인된 뒤 DB에 결제한 상품의 정보를 저장
 		purchaseService.save(payResponse, result);
-		//상품의 재고 차감
-		
 		
 		
 		//React로 리다이렉트

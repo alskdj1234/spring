@@ -108,6 +108,13 @@
 			left outer join sale_thumbnail T on S.sale_no = T.sale_no
 		where S.sale_no = #{saleNo}
 	</select>
+	
+	<!-- 재고 차감 -->
+	<update id="updateQty">
+		update 	sale 
+		set		sale_stock = GREATEST(sale_stock - #{quantity}, 0)
+		where 	sale_no = #{saleNo}
+	</update>
 </mapper>
 
 
